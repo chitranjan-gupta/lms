@@ -11,7 +11,8 @@ datasource db {
 }
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
 model Course {
@@ -26,10 +27,12 @@ model Course {
   category    Category?    @relation(fields: [categoryId], references: [id])
   chapters    Chapter[]
   attachments Attachment[]
-  purchases Purchase[]
+  purchases   Purchase[]
   createdAt   DateTime     @default(now())
-  updateAt    DateTime     @updatedAt  
+  updateAt    DateTime     @updatedAt
+
   @@index([categoryId])
+  @@fulltext([title])
 }
 
 model Category {
@@ -64,6 +67,7 @@ model Chapter {
   userProgress UserProgress[]
   createdAt    DateTime       @default(now())
   updatedAt    DateTime       @updatedAt
+
   @@index([courseId])
 }
 
@@ -88,21 +92,22 @@ model UserProgress {
   @@index([chapterId])
 }
 
-model Purchase{
-  id String @id @default(uuid())
-  userId String
-  courseId String
-  course Course @relation(fields: [courseId], references: [id], onDelete: Cascade)
+model Purchase {
+  id        String   @id @default(uuid())
+  userId    String
+  courseId  String
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
+  @@unique([userId, courseId])
   @@index([courseId])
 }
 
-model StripeCustomer{
-  id String @id @default(uuid())
-  userId String @unique
-  stripeCustomerId String @unique
-  createdAt DateTime @default(now())
-  updatedAt DateTime @updatedAt
+model StripeCustomer {
+  id               String   @id @default(uuid())
+  userId           String   @unique
+  stripeCustomerId String   @unique
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
 }
