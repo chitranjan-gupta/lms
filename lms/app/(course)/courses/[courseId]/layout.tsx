@@ -34,9 +34,6 @@ const CourseLayout = async ({
         },
       },
     },
-    orderBy: {
-      position: "asc",
-    },
   });
   if (!course) {
     return redirect("/");
