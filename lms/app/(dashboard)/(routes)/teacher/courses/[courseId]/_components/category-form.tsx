@@ -19,7 +19,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import { Course } from "@prisma/client";
 import { Combobox } from "@/components/ui/combobox";
 
@@ -101,14 +100,14 @@ export const CategoryForm = ({
               render={({ field }) => (
                 <FormItem>
                   <FormControl>
-                    <Combobox options={options} {...field}/>
+                    <Combobox options={options} {...field} />
                   </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="button">
+              <Button disabled={!isValid || isSubmitting} type="submit">
                 Save
               </Button>
             </div>

@@ -49,7 +49,7 @@ const ChapterIdPage = async ({
       {isLocked && (
         <Banner
           variant="success"
-          label="You need to purchase this course tp watch this chapter."
+          label="You need to purchase this course to watch this chapter."
         />
       )}
       <div className="flex flex-col max-w-4xl mx-auto pb-2">

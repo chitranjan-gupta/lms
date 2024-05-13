@@ -4,12 +4,11 @@ import * as z from "zod";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
-import { ImageIcon, Pencil, PlusCircle, File, Loader2, X } from "lucide-react";
+import { PlusCircle, File, Loader2, X } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Attachment, Course } from "@prisma/client";
-import Image from "next/image";
 import { FileUpload } from "@/components/file-upload";
 
 interface AttachmentFormProps {
@@ -62,12 +61,6 @@ export const AttachmentForm = ({
           {!isEditing && (
             <>
               <PlusCircle className="h-4 w-4 mr-2" /> Add a file
-            </>
-          )}
-          {!isEditing && initialData.imageUrl && (
-            <>
-              <Pencil className="h-4 w-4 mr-2" />
-              Edit image
             </>
           )}
         </Button>

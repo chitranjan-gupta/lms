@@ -19,7 +19,6 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import { Course } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 import { formatPrice } from "@/lib/format";
@@ -105,7 +104,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="button">
+              <Button disabled={!isValid || isSubmitting} type="submit">
                 Save
               </Button>
             </div>

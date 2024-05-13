@@ -40,7 +40,7 @@ export const CourseCard = ({
               <IconBadge size="sm" icon={BookOpen} />
               <span>
                 {chaptersLength}
-                {chaptersLength === 1 ? "Chapter" : "Chapters"}
+                {chaptersLength === 1 ? " Chapter" : " Chapters"}
               </span>
             </div>
           </div>

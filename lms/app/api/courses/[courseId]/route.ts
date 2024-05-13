@@ -59,7 +59,7 @@ export async function PATCH(
   try {
     const { userId } = auth();
     const values = await req.json();
-    if (!userId || !isTeacher(userId)) {
+    if (!userId) {
       return new NextResponse("Unauthroized", { status: 401 });
     }
     const course = await db.course.update({
@@ -71,6 +71,7 @@ export async function PATCH(
         ...values,
       },
     });
+    return NextResponse.json(course);
   } catch (error) {
     console.log("[COURSE_ID]", error);
     return new NextResponse("Internal Error", { status: 500 });

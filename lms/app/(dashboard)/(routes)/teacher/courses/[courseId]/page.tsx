@@ -3,10 +3,11 @@ import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { IconBadge } from "@/components/icon-badge";
 import {
-  CircleDollarSign,
   File,
   LayoutDashboard,
   ListChecks,
+  IndianRupee,
+  ArrowLeft,
 } from "lucide-react";
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
@@ -17,6 +18,7 @@ import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
 import { Actions } from "./_components/actions";
 import { Banner } from "@/components/banner";
+import Link from "next/link";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
   const { userId } = auth();
@@ -75,6 +77,15 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
         <Banner label="This course is unpublished. It will not be visible to the students." />
       )}
       <div className="p-6">
+        <div>
+          <Link
+            href={`/teacher/courses/`}
+            className="flex items-center text-sm hover:opacity-75 transition mb-6"
+          >
+            <ArrowLeft className="h-4 w-4 mr-2" />
+            Back to courses
+          </Link>
+        </div>
         <div className="flex items-center justify-between">
           <div className="flex flex-col gap-y-2">
             <h1 className="text-2xl font-medium">Course Setup</h1>
@@ -116,7 +127,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             </div>
             <div>
               <div className="flex items-center gap-x-2">
-                <IconBadge icon={CircleDollarSign} />
+                <IconBadge icon={IndianRupee} />
                 <h2 className="text-xl">Sell you course</h2>
               </div>
               <PriceForm initialData={course} courseId={course.id} />

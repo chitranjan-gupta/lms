@@ -106,7 +106,7 @@ export const DescriptionForm = ({
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Button disabled={!isValid || isSubmitting} type="button">
+              <Button disabled={!isValid || isSubmitting} type="submit">
                 Save
               </Button>
             </div>
