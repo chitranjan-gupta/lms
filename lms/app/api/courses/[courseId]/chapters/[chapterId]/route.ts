@@ -31,23 +31,32 @@ export async function DELETE(
         id: params.chapterId,
         courseId: params.courseId,
       },
+      include: {
+        lectures: {
+          include: {
+            muxData: true,
+          },
+        },
+      },
     });
     if (!chapter) {
       return new NextResponse("Not Found", { status: 400 });
     }
-    if (chapter.videoUrl) {
-      const existingMuxData = await db.muxData.findFirst({
-        where: {
-          chapterId: params.chapterId,
-        },
-      });
-      if (existingMuxData) {
-        await video.assets.delete(existingMuxData.assetId);
-        await db.muxData.delete({
+    if (chapter.lectures) {
+      for (const lecture of chapter.lectures) {
+        const existingMuxData = await db.muxData.findFirst({
           where: {
-            id: existingMuxData.id,
+            lectureId: lecture.id,
           },
         });
+        if (existingMuxData) {
+          await video.assets.delete(existingMuxData.assetId);
+          await db.muxData.delete({
+            where: {
+              id: existingMuxData.id,
+            },
+          });
+        }
       }
     }
     const deletedChapter = await db.chapter.delete({
@@ -109,33 +118,6 @@ export async function PATCH(
         ...values,
       },
     });
-    if (values.videoUrl) {
-      const existingMuxData = await db.muxData.findFirst({
-        where: {
-          chapterId: params.chapterId,
-        },
-      });
-      if (existingMuxData) {
-        await video.assets.delete(existingMuxData.assetId);
-        await db.muxData.delete({
-          where: {
-            id: existingMuxData.id,
-          },
-        });
-      }
-      const asset = await video.assets.create({
-        input: values.videoUrl,
-        playback_policy: ["public"],
-        test: false,
-      });
-      await db.muxData.create({
-        data: {
-          chapterId: params.chapterId,
-          assetId: asset.id,
-          playbackId: asset.playback_ids?.[0]?.id,
-        },
-      });
-    }
     return NextResponse.json(chapter);
   } catch (error) {
     console.log("[COURSE_CHAPTERS_ID]", error);

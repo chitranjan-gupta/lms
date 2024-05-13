@@ -83,7 +83,7 @@ export const ChapterAccessForm = ({
             !initialData.isFree && "text-slate-500 italic"
           )}
         >
-          {initialData.description ? (
+          {initialData.isFree ? (
             <>This chapter is free for preview</>
           ) : (
             <>This chapter is not free</>

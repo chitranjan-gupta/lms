@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
+import { Preview } from "@/components/preview";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
@@ -82,7 +83,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <h3 className="sr-only">Description</h3>
 
               <div className="space-y-6">
-                <p className="text-base text-gray-900">{course.description}</p>
+                {course.description && <Preview value={course.description} />}
               </div>
             </div>
 

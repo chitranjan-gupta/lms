@@ -2,7 +2,6 @@ import Mux from "@mux/mux-node";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
 import { NextResponse } from "next/server";
-import { isTeacher } from "@/lib/teacher";
 
 const { video } = new Mux({
   tokenId: process.env.MUX_TOKEN_ID!,
@@ -26,7 +25,11 @@ export async function DELETE(
       include: {
         chapters: {
           include: {
-            muxData: true,
+            lectures: {
+              include:{
+                muxData: true
+              }
+            },
           },
         },
       },
@@ -35,8 +38,10 @@ export async function DELETE(
       return new NextResponse("Not Found", { status: 404 });
     }
     for (const chapter of course.chapters) {
-      if (chapter.muxData?.assetId) {
-        await video.assets.delete(chapter.muxData.assetId);
+      for(const lecture of chapter.lectures){
+        if (lecture.muxData?.assetId) {
+          await video.assets.delete(lecture.muxData.assetId);
+        }
       }
     }
     const deletedCourse = await db.course.delete({

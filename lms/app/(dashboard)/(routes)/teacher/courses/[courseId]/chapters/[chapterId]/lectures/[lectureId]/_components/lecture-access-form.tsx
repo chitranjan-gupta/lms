@@ -8,9 +8,9 @@ import { useForm } from "react-hook-form";
 import {
   Form,
   FormControl,
+  FormDescription,
   FormField,
   FormItem,
-  FormMessage,
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
@@ -19,40 +19,43 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { Course } from "@prisma/client";
-import { Editor } from "@/components/editor";
-import { Preview } from "@/components/preview";
+import { Lecture } from "@prisma/client";
+import { Checkbox } from "@/components/ui/checkbox";
 
-interface DescriptionFormProps {
-  initialData: Course;
+interface LectureAccessFormProps {
+  initialData: Lecture;
   courseId: string;
+  chapterId: string;
+  lectureId: string;
 }
 
 const formSchema = z.object({
-  description: z.string().min(1, {
-    message: "Description is required",
-  }),
+  isFree: z.boolean().default(false),
 });
 
-export const DescriptionForm = ({
+export const LectureAccessForm = ({
   initialData,
   courseId,
-}: DescriptionFormProps) => {
+  chapterId,
+  lectureId
+}: LectureAccessFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      description: initialData?.description || "",
+      isFree: !!initialData.isFree,
     },
   });
   const { isSubmitting, isValid } = form.formState;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
-      toast.success("Course updated");
+      await axios.patch(
+        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
+        values
+      );
+      toast.success("Lecture updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -63,30 +66,31 @@ export const DescriptionForm = ({
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Course description
+        Lecture access
         <Button variant="ghost" onClick={toggleEdit}>
           {isEditing ? (
             <>Cancel</>
           ) : (
             <>
               <Pencil className="h-4 w-4 mr-2" />
-              Edit description
+              Edit access
             </>
           )}
         </Button>
       </div>
       {!isEditing && (
-        <p
+        <div
           className={cn(
             "text-sm mt-2",
-            !initialData.description && "text-slate-500 italic"
+            !initialData.isFree && "text-slate-500 italic"
           )}
         >
-          {!initialData.description && "No description"}
-          {initialData.description && (
-            <Preview value={initialData.description} />
+          {initialData.isFree ? (
+            <>This chapter is free for preview</>
+          ) : (
+            <>This chapter is not free</>
           )}
-        </p>
+        </div>
       )}
       {isEditing && (
         <Form {...form}>
@@ -96,13 +100,21 @@ export const DescriptionForm = ({
           >
             <FormField
               control={form.control}
-              name="description"
+              name="isFree"
               render={({ field }) => (
-                <FormItem>
+                <FormItem className="flex flex-row items-start space-x-3 space-y-0 rounded-md border p-4">
                   <FormControl>
-                    <Editor {...field} />
+                    <Checkbox
+                      checked={field.value}
+                      onCheckedChange={field.onChange}
+                    />
                   </FormControl>
-                  <FormMessage />
+                  <div className="space-y-1 leading-none">
+                    <FormDescription>
+                      Check this box if you want to make this lecture free for
+                      preview
+                    </FormDescription>
+                  </div>
                 </FormItem>
               )}
             />

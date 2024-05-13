@@ -8,35 +8,37 @@ import {  Pencil, PlusCircle, Video } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Chapter, MuxData } from "@prisma/client";
+import { Lecture, MuxData } from "@prisma/client";
 import { FileUpload } from "@/components/file-upload";
 import MuxPlayer from "@mux/mux-player-react"
 
-interface ChapterVideoFormProps {
-  initialData: Chapter & { muxData?: MuxData | null };
+interface LectureVideoFormProps {
+  initialData: Lecture & { muxData?: MuxData | null };
   courseId: string;
   chapterId: string;
+  lectureId: string;
 }
 
 const formSchema = z.object({
   videoUrl: z.string().min(1),
 });
 
-export const ChapterVideoForm = ({
+export const LectureVideoForm = ({
   initialData,
   courseId,
   chapterId,
-}: ChapterVideoFormProps) => {
+  lectureId
+}: LectureVideoFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}`,
+        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
         values
       );
-      toast.success("Chapter updated");
+      toast.success("Lecture updated");
       toggleEdit();
       router.refresh();
     } catch (error) {
@@ -47,7 +49,7 @@ export const ChapterVideoForm = ({
   return (
     <div className="mt-6 border bg-slate-100 rounded-md p-4">
       <div className="font-medium flex items-center justify-between">
-        Chapter Video
+        Lecture Video
         <Button variant="ghost" onClick={toggleEdit}>
           {isEditing && <>Cancel</>}
           {!isEditing && !initialData.videoUrl && (

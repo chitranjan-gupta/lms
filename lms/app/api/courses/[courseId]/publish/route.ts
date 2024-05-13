@@ -17,11 +17,7 @@ export async function PATCH(
         userId,
       },
       include: {
-        chapters: {
-          include: {
-            muxData: true,
-          },
-        },
+        chapters: true,
       },
     });
     if (!course) {

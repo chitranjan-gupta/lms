@@ -25,18 +25,17 @@ export async function PATCH(
         id: params.chapterId,
         courseId: params.courseId,
       },
+      include:{
+        lectures:true
+      }
     });
-    const muxData = await db.muxData.findUnique({
-      where: {
-        chapterId: params.chapterId,
-      },
-    });
+    const hasPublished = chapter?.lectures.some((lecture) => lecture.isPublished);
+
     if (
       !chapter ||
-      !muxData ||
       !chapter.title ||
       !chapter.description ||
-      !chapter.videoUrl
+      !hasPublished
     ) {
       return new NextResponse("Missing required fields", { status: 400 });
     }
