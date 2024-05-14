@@ -1,9 +1,9 @@
 import Link from "next/link";
 import Image from "next/image";
 import { BookOpen } from "lucide-react";
-import { IconBadge } from "./icon-badge";
+import { IconBadge } from "@/components/icon-badge";
 import { formatPrice } from "@/lib/format";
-import { CourseProgress } from "./course-progress";
+import { CourseProgress } from "@/components/course-progress";
 
 interface CourseCardProps {
   id: string;

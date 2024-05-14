@@ -95,7 +95,7 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
                       type="number"
                       step="0.01"
                       disabled={isSubmitting}
-                      placeholder="e.g. This course is about..."
+                      placeholder="e.g. 500..."
                       {...field}
                     />
                   </FormControl>

@@ -86,9 +86,9 @@ export const LectureAccessForm = ({
           )}
         >
           {initialData.isFree ? (
-            <>This chapter is free for preview</>
+            <>This lecture is free for preview</>
           ) : (
-            <>This chapter is not free</>
+            <>This lecture is not free</>
           )}
         </div>
       )}

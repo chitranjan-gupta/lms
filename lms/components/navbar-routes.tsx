@@ -2,10 +2,10 @@
 
 import { UserButton } from "@clerk/nextjs";
 import { usePathname } from "next/navigation";
-import { Button } from "./ui/button";
 import Link from "next/link";
 import { LogOut } from "lucide-react";
-import { SearchInput } from "./search-input";
+import { Button } from "@/components/ui/button";
+import { SearchInput } from "@/components/search-input";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();

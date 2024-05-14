@@ -27,6 +27,11 @@ const CourseLayout = async ({
           isPublished: true,
         },
         include: {
+          lectures: {
+            where: {
+              isPublished: true,
+            },
+          },
           userProgress: {
             where: {
               userId,
@@ -53,4 +58,4 @@ const CourseLayout = async ({
   );
 };
 
-export default CourseLayout
+export default CourseLayout;

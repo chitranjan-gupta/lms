@@ -27,7 +27,11 @@ const ChapterIdPage = async ({
       courseId: params.courseId,
     },
     include: {
-      lectures: true,
+      lectures: {
+        orderBy:{
+          position: "asc"
+        }
+      },
     },
   });
 

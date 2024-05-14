@@ -1,7 +1,7 @@
 import React from "react";
 import { db } from "@/lib/db";
 import { auth } from "@clerk/nextjs/server";
-import { Chapter, Course, UserProgress } from "@prisma/client";
+import { Chapter, Course, Lecture, UserProgress } from "@prisma/client";
 import { redirect } from "next/navigation";
 import { CourseSidebarItem } from "./course-sidebar-item";
 import { CourseProgress } from "@/components/course-progress";
@@ -9,6 +9,8 @@ import { CourseProgress } from "@/components/course-progress";
 interface CourseSidebarProps {
   course: Course & {
     chapters: (Chapter & {
+      lectures: Lecture[] | null;
+    } & {
       userProgress: UserProgress[] | null;
     })[];
   };
@@ -50,6 +52,7 @@ export const CourseSidebar = async ({
             isCompleted={!!chapter.userProgress?.[0]?.isCompleted}
             courseId={course.id}
             isLocked={!chapter.isFree && !purchase}
+            lectures={chapter.lectures!}
           />
         ))}
       </div>

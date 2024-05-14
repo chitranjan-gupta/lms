@@ -1,17 +1,19 @@
 import { db } from "@/lib/db";
-import { Attachment, Chapter } from "@prisma/client";
+import { Attachment, Chapter, Lecture } from "@prisma/client";
 
-interface GetChapterProps {
+interface GetLectureProps {
   userId: string;
   courseId: string;
   chapterId: string;
+  lectureId: string;
 }
 
-export const getChapter = async ({
+export const getLecture = async ({
   userId,
   courseId,
   chapterId,
-}: GetChapterProps) => {
+  lectureId
+}: GetLectureProps) => {
   try {
     const purchase = await db.purchase.findUnique({
       where: {
@@ -39,6 +41,7 @@ export const getChapter = async ({
     if (!chapter || !course) {
       throw new Error("Chapter or course not found");
     }
+    let muxData = null;
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
     if (purchase) {
@@ -50,6 +53,11 @@ export const getChapter = async ({
     }
 
     if (chapter.isFree || purchase) {
+      muxData = await db.muxData.findUnique({
+        where: {
+          lectureId: lectureId,
+        },
+      });
 
       nextChapter = await db.chapter.findFirst({
         where: {
@@ -75,16 +83,18 @@ export const getChapter = async ({
     return {
       chapter,
       course,
+      muxData,
       attachments,
       nextChapter,
       userProgress,
       purchase,
     };
   } catch (error) {
-    console.log("[GET_CHAPTER]", error);
+    console.log("[GET_LECTURE]", error);
     return {
       chapter: null,
       course: null,
+      muxData: null,
       attachments: [],
       nextChapter: null,
       userProgress: null,

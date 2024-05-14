@@ -5,6 +5,12 @@ import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
 import { Preview } from "@/components/preview";
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
@@ -17,6 +23,16 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
       chapters: {
         where: {
           isPublished: true,
+        },
+        include: {
+          lectures: {
+            where: {
+              isPublished: true,
+            },
+            orderBy: {
+              position: "asc",
+            },
+          },
         },
         orderBy: {
           position: "asc",
@@ -92,16 +108,30 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 Course overview
               </h3>
               <div className="mt-4">
-                <ul role="list" className="list-disc space-y-2 pl-4 text-sm">
+                <Accordion type="single" collapsible>
                   {course.chapters.map((chapter) => (
-                    <Link
-                      key={chapter.id}
-                      href={`/courses/${course.id}/chapters/${chapter.id}`}
-                    >
-                      <li>{chapter.title}</li>
-                    </Link>
+                    <>
+                      <AccordionItem value={chapter.id}>
+                        <AccordionTrigger>{chapter.title}</AccordionTrigger>
+                        <AccordionContent>
+                          <ul
+                            role="list"
+                            className="list-disc space-y-2 pl-4 text-sm"
+                          >
+                            {chapter.lectures.map((lecture) => (
+                              <Link
+                                key={lecture.id}
+                                href={`/courses/${course.id}/chapters/${chapter.id}/lectures/${lecture.id}`}
+                              >
+                                <li>{lecture.title}</li>
+                              </Link>
+                            ))}
+                          </ul>
+                        </AccordionContent>
+                      </AccordionItem>
+                    </>
                   ))}
-                </ul>
+                </Accordion>
               </div>
             </div>
 

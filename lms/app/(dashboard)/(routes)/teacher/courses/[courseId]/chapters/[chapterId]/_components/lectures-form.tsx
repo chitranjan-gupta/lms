@@ -14,12 +14,11 @@ import {
 } from "@/components/ui/form";
 
 import { Button } from "@/components/ui/button";
-import { Loader2, Pencil, PlusCircle } from "lucide-react";
+import { Loader2, PlusCircle } from "lucide-react";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
 import { Chapter, Lecture } from "@prisma/client";
 import { Input } from "@/components/ui/input";
 import { LecturesList } from "./lectures-list";
@@ -76,6 +75,7 @@ export const LecturesForm = ({
       toast.success("Lectures reordered");
       router.refresh();
     } catch (error) {
+      console.log(error);
       toast.error("Something went wrong");
     } finally {
       setIsUpdating(false);

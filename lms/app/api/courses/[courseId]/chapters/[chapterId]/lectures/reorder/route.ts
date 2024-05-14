@@ -20,7 +20,15 @@ export async function PUT(
       },
     });
     if (!courseOwner) {
-      return new NextResponse("Unauthroized", { status: 401 });
+      return new NextResponse("Unauthorized", { status: 401 });
+    }
+    const chapterOwner = await db.chapter.findUnique({
+      where: {
+        id: params.chapterId,
+      },
+    });
+    if (!chapterOwner) {
+      return new NextResponse("Not Found", { status: 404 });
     }
     for (let item of list) {
       await db.lecture.update({
@@ -34,7 +42,7 @@ export async function PUT(
     }
     return new NextResponse("Success", { status: 200 });
   } catch (error) {
-    console.log("[LECTURES]", error);
+    console.log("[LECTURES_REORDER]", error);
     return new NextResponse("Internal Error", { status: 500 });
   }
 }

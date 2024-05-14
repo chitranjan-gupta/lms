@@ -78,7 +78,7 @@ export const LectureVideoForm = ({
       {isEditing && (
         <div>
           <FileUpload
-            endpoint="chapterVideo"
+            endpoint="lectureVideo"
             onChange={(url) => {
               if (url) {
                 onSubmit({ videoUrl: url });
@@ -86,7 +86,7 @@ export const LectureVideoForm = ({
             }}
           />
           <div className="text-xs text-muted-foreground mt-4">
-            Upload this chapter&apos;s video
+            Upload this lecture&apos;s video
           </div>
         </div>
       )}
