@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Fragment } from "react";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import Image from "next/image";
@@ -110,7 +110,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <div className="mt-4">
                 <Accordion type="single" collapsible>
                   {course.chapters.map((chapter) => (
-                    <>
+                    <Fragment key={chapter.id}>
                       <AccordionItem value={chapter.id}>
                         <AccordionTrigger>{chapter.title}</AccordionTrigger>
                         <AccordionContent>
@@ -129,7 +129,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                           </ul>
                         </AccordionContent>
                       </AccordionItem>
-                    </>
+                    </Fragment>
                   ))}
                 </Accordion>
               </div>

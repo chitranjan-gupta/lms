@@ -1,6 +1,5 @@
 import React from "react";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 
 const CourseLayout = async ({
@@ -10,10 +9,6 @@ const CourseLayout = async ({
   children: React.ReactNode;
   params: { courseId: string };
 }) => {
-  const { userId } = auth();
-  if (!userId) {
-    return redirect("/");
-  }
   const course = await db.course.findUnique({
     where: {
       id: params.courseId,
@@ -22,13 +17,6 @@ const CourseLayout = async ({
       chapters: {
         where: {
           isPublished: true,
-        },
-        include: {
-          userProgress: {
-            where: {
-              userId,
-            },
-          },
         },
       },
     },

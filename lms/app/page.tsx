@@ -161,7 +161,7 @@ export default function Page() {
 
               <Link
                 prefetch={false}
-                href="/search"
+                href="/courses"
                 className="inline-block rounded-md border border-transparent bg-sky-600 px-8 py-3 text-center font-medium text-white hover:bg-sky-600"
               >
                 Find Course
