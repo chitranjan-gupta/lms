@@ -11,10 +11,10 @@ interface CourseSidebarProps {
     chapters: (Chapter & {
       lectures: Lecture[] | null;
     } & {
-      userProgress: UserProgress[] | null;
+      userProgress?: UserProgress[] | null;
     })[];
   };
-  progressCount: number;
+  progressCount?: number;
 }
 
 export const CourseSidebar = async ({
@@ -37,7 +37,7 @@ export const CourseSidebar = async ({
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-8 flex flex-col border-b">
         <h1 className="font-semibold">{course.title}</h1>
-        {purchase && (
+        {purchase && progressCount &&(
           <div className="mt-10">
             <CourseProgress variant="success" value={progressCount} />
           </div>

@@ -1,6 +1,5 @@
 import { IconBadge } from "@/components/icon-badge";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
 import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
 import Link from "next/link";
 import { redirect } from "next/navigation";
@@ -16,7 +15,7 @@ const LectureIdPage = async ({
 }: {
   params: { courseId: string; chapterId: string; lectureId: string };
 }) => {
-  const { userId } = auth();
+  const userId = "";
   if (!userId) {
     return redirect("/");
   }

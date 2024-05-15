@@ -1,7 +1,6 @@
 import React from "react";
 import { getProgress } from "@/actions/get-actions";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { CourseSidebar } from "./_components/course-sidebar";
 import { CourseNavbar } from "./_components/course-navbar";
@@ -13,38 +12,61 @@ const CourseLayout = async ({
   children: React.ReactNode;
   params: { courseId: string };
 }) => {
-  const { userId } = auth();
-  if (!userId) {
-    return redirect("/");
-  }
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-    },
-    include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
-        include: {
-          lectures: {
-            where: {
-              isPublished: true,
-            },
+  const userId = "";
+  let course;
+  if(userId){
+    course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+      },
+      include: {
+        chapters: {
+          where: {
+            isPublished: true,
           },
-          userProgress: {
-            where: {
-              userId,
+          include: {
+            lectures: {
+              where: {
+                isPublished: true,
+              },
+            },
+            userProgress: {
+              where: {
+                userId,
+              },
             },
           },
         },
       },
-    },
-  });
+    });
+  }else{
+    course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+      },
+      include: {
+        chapters: {
+          where: {
+            isPublished: true,
+          },
+          include: {
+            lectures: {
+              where: {
+                isPublished: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
   if (!course) {
     return redirect("/");
   }
-  const progressCount = await getProgress(userId, course.id);
+  let progressCount;
+  if(userId){
+    progressCount = await getProgress(userId, course.id);
+  }
   return (
     <div className="h-full">
       <div className="h-[80px] md:pl-80 fixed inset-y-0 bg-white w-full z-50">

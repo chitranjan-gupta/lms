@@ -1,5 +1,4 @@
-"use client";
-import React, { useState } from "react";
+import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.svg";
@@ -16,6 +15,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { SearchPage } from "./_components/courses-view";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -26,8 +26,6 @@ const navigation = [
 ];
 
 export default function Page() {
-  const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
   return (
     <div className="bg-white">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -36,15 +34,17 @@ export default function Page() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <Link href="#" className="-m-1.5 p-1.5 relative" prefetch={false}>
+            <Link href="/" className="-m-1.5 p-1.5 relative" prefetch={false}>
               <span className="sr-only">LMS</span>
+              <div className="relative h-10 w-28">
+                <Image src={logo} alt="logo" fill />
+              </div>
             </Link>
           </div>
           <div className="flex lg:hidden">
             <button
               type="button"
               className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-              onClick={() => setMobileMenuOpen(true)}
             >
               <span className="sr-only">Open main menu</span>
             </button>
@@ -68,6 +68,15 @@ export default function Page() {
               prefetch={false}
             >
               Sign in <span aria-hidden="true">&rarr;</span>
+            </Link>
+          </div>
+          <div className="hidden ml-5 lg:flex lg:justify-end">
+            <Link
+              href="/sign-up"
+              className="text-sm font-semibold leading-6 text-gray-900"
+              prefetch={false}
+            >
+              Sign up <span aria-hidden="true">&rarr;</span>
             </Link>
           </div>
         </nav>
@@ -171,6 +180,10 @@ export default function Page() {
         </div>
       </div>
 
+      <div>
+        <SearchPage />
+      </div>
+
       <div className="w-full ">
         <div className="mx-auto max-w-7xl px-6 lg:px-8">
           <h2 className="text-center text-lg font-semibold leading-8 text-gray-900">
@@ -219,30 +232,21 @@ export default function Page() {
             <h2 className="mb-4 text-4xl tracking-tight font-extrabold text-gray-900 dark:text-white">
               Testimonials
             </h2>
-            <p className="mb-8 font-light text-gray-500 lg:mb-16 sm:text-xl dark:text-gray-400">
-              Explore the whole collection of open-source web components and
-              elements built with the utility classes from Tailwind
-            </p>
           </div>
           <div className="grid mb-8 lg:mb-12 lg:grid-cols-2">
             <figure className="flex flex-col justify-center items-center p-8 text-center bg-gray-50 border-b border-gray-200 md:p-12 lg:border-r dark:bg-gray-800 dark:border-gray-700">
               <blockquote className="mx-auto mb-8 max-w-2xl text-gray-500 dark:text-gray-400">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Speechless with how easy this was to integrate
+                  Speechless with how easy
                 </h3>
                 <p className="my-4">
-                  I recently got my hands on Flowbite Pro, and holy crap,
-                  I&apos;m speechless with how easy this was to integrate within
-                  my application. Most templates are a pain, code is scattered,
-                  and near impossible to theme.
-                </p>
-                <p className="my-4">
-                  Flowbite has code in one place and I&apos;m not joking when I
-                  say it took me a matter of minutes to copy the code, customise
-                  it and integrate within a Laravel + Vue application.
-                </p>
-                <p className="my-4">
-                  If you care for your time, I hands down would go with this.
+                  As someone who values flexibility and convenience in my
+                  learning journey, this LMS has been a game-changer for me. The
+                  variety of courses available and the user-friendly interface
+                  make it easy for me to explore new topics and skills at my own
+                  pace. The interactive features keep me engaged, and I
+                  appreciate being able to access the content whenever and
+                  wherever I want.
                 </p>
               </blockquote>
               <figcaption className="flex justify-center items-center space-x-3">
@@ -268,15 +272,12 @@ export default function Page() {
                   Solid foundation for any project
                 </h3>
                 <p className="my-4">
-                  FlowBite provides a robust set of design tokens and components
-                  based on the popular Tailwind CSS framework. From the most
-                  used UI components like forms and navigation bars to the whole
-                  app screens designed both for desktop and mobile, this UI kit
-                  provides a solid foundation for any project.
-                </p>
-                <p className="my-4">
-                  Designing with Figma components that can be easily translated
-                  to the utility classes of Tailwind CSS is a huge timesaver!
+                  This LMS is a lifesaver for someone like me who&apos;s
+                  constantly on the go. The bite-sized lessons and mobile
+                  compatibility make it easy for me to squeeze in learning
+                  between work and family commitments. I love that I can pick up
+                  right where I left off, and the clear, concise content keeps
+                  me focused even with a busy schedule.
                 </p>
               </blockquote>
               <figcaption className="flex justify-center items-center space-x-3">
@@ -299,20 +300,20 @@ export default function Page() {
             <figure className="flex flex-col justify-center items-center p-8 text-center bg-gray-50 border-b border-gray-200 lg:border-b-0 md:p-12 lg:border-r dark:bg-gray-800 dark:border-gray-700">
               <blockquote className="mx-auto mb-8 max-w-2xl text-gray-500 dark:text-gray-400">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Mindblowing workflow and variants
+                  Mindblowing courses
                 </h3>
                 <p className="my-4">
-                  As someone who mainly designs in the browser, I&apos;ve been a
-                  casual user of Figma, but as soon as I saw and started playing
-                  with FlowBite my mind was 🤯.
+                  I cant&apos;t recommend this LMS enough for recent graduates
+                  like myself who are eager to jumpstart their careers. The
+                  courses offered are highly relevant to my field of interest,
+                  and the resources available for professional development, such
+                  as resume building and job search assistance, have been
+                  invaluable.
                 </p>
                 <p className="my-4">
-                  Everything is so well structured and simple to use (I&apos;ve
-                  learnt so much about Figma by just using the toolkit).
-                </p>
-                <p className="my-4">
-                  Aesthetically, the well designed components are beautiful and
-                  will undoubtedly level up your next application.
+                  The platform also provides opportunities for networking and
+                  mentorship, which have been crucial for me as I navigate the
+                  job market.
                 </p>
               </blockquote>
               <figcaption className="flex justify-center items-center space-x-3">
@@ -335,16 +336,17 @@ export default function Page() {
             <figure className="flex flex-col justify-center items-center p-8 text-center bg-gray-50 border-gray-200 md:p-12 dark:bg-gray-800 dark:border-gray-700">
               <blockquote className="mx-auto mb-8 max-w-2xl text-gray-500 dark:text-gray-400">
                 <h3 className="text-lg font-semibold text-gray-900 dark:text-white">
-                  Efficient Collaborating
+                  Robust system
                 </h3>
                 <p className="my-4">
-                  This is a very complex and beautiful set of elements. Under
-                  the hood it comes with the best things from 2 different
-                  worlds: Figma and Tailwind.
-                </p>
-                <p className="my-4">
-                  You have many examples that can be used to create a fast
-                  prototype for your team.
+                  As a CTO, I need an LMS that can scale with the needs of my
+                  organization and provide robust tracking and reporting
+                  features. This LMS delivers on all fronts. The customizable
+                  content allows me to align training with company objectives,
+                  and the integration with our existing HR systems streamlines
+                  the process. The security measures in place give me peace of
+                  mind, and the detailed analytics help me monitor employee
+                  progress and measure the impact of our training programs.
                 </p>
               </blockquote>
               <figcaption className="flex justify-center items-center space-x-3">
@@ -359,7 +361,7 @@ export default function Page() {
                 <div className="space-y-0.5 font-medium dark:text-white text-left">
                   <div>Joseph McFall</div>
                   <div className="text-sm font-light text-gray-500 dark:text-gray-400">
-                    CTO at Google
+                    CTO at Reform
                   </div>
                 </div>
               </figcaption>
@@ -369,8 +371,10 @@ export default function Page() {
       </div>
       <section id="#fyq">
         <div className="py-16 flex flex-col justify-center items-center">
-          <div>
-            <h3>Common FAQ</h3>
+          <div className="mb-5">
+            <h3 className="text-4xl font-extrabold text-gray-900">
+              Common FAQ
+            </h3>
           </div>
           <div>
             <Accordion type="single" collapsible>

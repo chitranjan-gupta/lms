@@ -2,7 +2,7 @@ import { db } from "@/lib/db";
 import { Attachment, Chapter, Lecture } from "@prisma/client";
 
 interface GetLectureProps {
-  userId: string;
+  userId?: string | null;
   courseId: string;
   chapterId: string;
   lectureId: string;
@@ -12,17 +12,20 @@ export const getLecture = async ({
   userId,
   courseId,
   chapterId,
-  lectureId
+  lectureId,
 }: GetLectureProps) => {
   try {
-    const purchase = await db.purchase.findUnique({
-      where: {
-        userId_courseId: {
-          userId,
-          courseId,
+    let purchase;
+    if (userId) {
+      purchase = await db.purchase.findUnique({
+        where: {
+          userId_courseId: {
+            userId,
+            courseId,
+          },
         },
-      },
-    });
+      });
+    }
     const course = await db.course.findUnique({
       where: {
         isPublished: true,
@@ -72,14 +75,17 @@ export const getLecture = async ({
         },
       });
     }
-    const userProgress = await db.userProgress.findUnique({
-      where: {
-        userId_chapterId: {
-          userId,
-          chapterId,
+    let userProgress;
+    if(userId){
+      userProgress = await db.userProgress.findUnique({
+        where: {
+          userId_chapterId: {
+            userId,
+            chapterId,
+          },
         },
-      },
-    });
+      });
+    }
     return {
       chapter,
       course,

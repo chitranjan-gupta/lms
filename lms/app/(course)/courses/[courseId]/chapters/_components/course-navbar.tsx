@@ -1,15 +1,17 @@
 import React from "react";
 import { NavbarRoutes } from "@/components/navbar-routes";
-import { Chapter, Course, UserProgress } from "@prisma/client";
+import { Chapter, Course, UserProgress, Lecture } from "@prisma/client";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
 
 interface CourseNavbarProps {
   course: Course & {
     chapters: (Chapter & {
-      userProgress: UserProgress[] | null;
+      lectures: Lecture[] | null;
+    } & {
+      userProgress?: UserProgress[] | null;
     })[];
   };
-  progressCount: number;
+  progressCount?: number;
 }
 
 export const CourseNavbar = ({ course, progressCount }: CourseNavbarProps) => {

@@ -1,6 +1,5 @@
 import { getLecture } from "@/actions/get-lecture";
 import { Banner } from "@/components/banner";
-import { auth } from "@clerk/nextjs/server";
 import { redirect } from "next/navigation";
 import { VideoPlayer } from "./_components/video-player";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
@@ -18,10 +17,7 @@ const LectureIdPage = async ({
     lectureId: string;
   };
 }) => {
-  const { userId } = auth();
-  if (!userId) {
-    return redirect("/");
-  }
+  const userId = "";
   const {
     chapter,
     course,

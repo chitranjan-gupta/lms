@@ -1,15 +1,7 @@
 import { db } from "@/lib/db";
-import { Categories } from "./_components/categories";
-import { SearchInput } from "@/components/search-input";
+import { Categories } from "./categories";
 import { CoursesList } from "@/components/courses-list";
 import { Category, Course } from "@prisma/client";
-
-interface SearchPageProps {
-  searchParams: {
-    title: string;
-    categoryId: string;
-  };
-}
 
 type CourseWithProgressWithCategory = Course & {
   category: Category | null;
@@ -17,7 +9,7 @@ type CourseWithProgressWithCategory = Course & {
   progress: number | null;
 };
 
-const SearchPage = async ({ searchParams }: SearchPageProps) => {
+export const SearchPage = async () => {
   const categories = await db.category.findMany({
     orderBy: {
       name: "asc",
@@ -27,10 +19,6 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
   const courses = (await db.course.findMany({
     where: {
       isPublished: true,
-      title: {
-        contains: searchParams.title,
-      },
-      categoryId: searchParams.categoryId,
     },
     include: {
       category: true,
@@ -65,14 +53,3 @@ const SearchPage = async ({ searchParams }: SearchPageProps) => {
     </>
   );
 };
-
-export default function Page({ searchParams }: SearchPageProps) {
-  return (
-    <>
-      <div className="px-6 pt-6 block md:mb-0">
-        <SearchInput />
-      </div>
-      <SearchPage searchParams={searchParams} />
-    </>
-  );
-}

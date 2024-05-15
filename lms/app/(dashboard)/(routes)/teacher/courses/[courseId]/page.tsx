@@ -1,4 +1,3 @@
-import { auth } from "@clerk/nextjs/server";
 import { db } from "@/lib/db";
 import { redirect } from "next/navigation";
 import { IconBadge } from "@/components/icon-badge";
@@ -21,7 +20,7 @@ import { Banner } from "@/components/banner";
 import Link from "next/link";
 
 const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const { userId } = auth();
+  const userId = "";
   if (!userId) {
     return redirect("/");
   }
