@@ -15,23 +15,37 @@ generator client {
   previewFeatures = ["fullTextSearch", "fullTextIndex"]
 }
 
+model User {
+  id            String   @id @default(uuid())
+  name          String   @db.Text
+  email         String   @unique @db.VarChar(45)
+  username      String   @unique @db.VarChar(45)
+  password      String   @db.Text
+  courses       Course[]
+  refresh_token String?  @db.LongText
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}
+
 model Course {
-  id          String       @id @default(uuid())
-  userId      String
-  title       String       @db.Text
-  description String?      @db.Text
-  imageUrl    String?      @db.Text
+  id          String             @id @default(uuid())
+  title       String             @db.Text
+  description String?            @db.Text
+  imageUrl    String?            @db.Text
   price       Float?
-  isPublished Boolean      @default(false)
+  isPublished Boolean            @default(false)
   categoryId  String?
-  category    Category?    @relation(fields: [categoryId], references: [id])
+  category    Category?          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   chapters    Chapter[]
-  attachments Attachment[]
+  attachments CourseAttachment[]
   purchases   Purchase[]
-  createdAt   DateTime     @default(now())
-  updateAt    DateTime     @updatedAt
+  userId      String
+  User        User               @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime           @default(now())
+  updateAt    DateTime           @updatedAt
 
   @@index([categoryId])
+  @@index([userId])
   @@fulltext([title])
 }
 
@@ -41,7 +55,7 @@ model Category {
   courses Course[]
 }
 
-model Attachment {
+model CourseAttachment {
   id        String   @id @default(uuid())
   name      String
   url       String   @db.Text
@@ -54,39 +68,67 @@ model Attachment {
 }
 
 model Chapter {
-  id           String         @id @default(uuid())
+  id           String              @id @default(uuid())
   title        String
-  description  String?        @db.Text
+  description  String?             @db.Text
   position     Int
-  isPublished  Boolean        @default(false)
-  isFree       Boolean        @default(false)
+  isPublished  Boolean             @default(false)
+  isFree       Boolean             @default(false)
   courseId     String
-  course       Course         @relation(fields: [courseId], references: [id], onDelete: Cascade)
-  userProgress UserProgress[]
+  course       Course              @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  userProgress ChapterProgress[]
   lectures     Lecture[]
-  createdAt    DateTime       @default(now())
-  updatedAt    DateTime       @updatedAt
+  attachments  ChapterAttachment[]
+  duration     Float
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
 
   @@index([courseId])
 }
 
-model Lecture {
-  id           String            @id @default(uuid())
-  title        String
-  description  String?           @db.Text
-  videoUrl     String?           @db.Text
-  position     Int
-  isPublished  Boolean           @default(false)
-  isFree       Boolean           @default(false)
-  muxData      MuxData?
-  userProgress LectureProgress[]
-  courseId     String
-  chapterId    String
-  chapter      Chapter           @relation(fields: [chapterId], references: [id], onDelete: Cascade)
-  createdAt    DateTime          @default(now())
-  updatedAt    DateTime          @updatedAt
+model ChapterAttachment {
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @db.Text
+  chapterId String
+  chapter   Chapter  @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
   @@index([chapterId])
+}
+
+model Lecture {
+  id           String              @id @default(uuid())
+  title        String
+  description  String?             @db.Text
+  videoUrl     String?             @db.Text
+  position     Int
+  isPublished  Boolean             @default(false)
+  isFree       Boolean             @default(false)
+  muxData      MuxData?
+  userProgress LectureProgress[]
+  attachments  LectureAttachment[]
+  duration     Float
+  courseId     String
+  chapterId    String
+  chapter      Chapter             @relation(fields: [chapterId], references: [id], onDelete: Cascade)
+  createdAt    DateTime            @default(now())
+  updatedAt    DateTime            @updatedAt
+
+  @@index([chapterId])
+}
+
+model LectureAttachment {
+  id        String   @id @default(uuid())
+  name      String
+  url       String   @db.Text
+  lectureId String
+  lecture   Lecture  @relation(fields: [lectureId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@index([lectureId])
 }
 
 model MuxData {
@@ -97,7 +139,7 @@ model MuxData {
   lecture    Lecture @relation(fields: [lectureId], references: [id], onDelete: Cascade)
 }
 
-model UserProgress {
+model ChapterProgress {
   id          String   @id @default(uuid())
   userId      String
   chapterId   String

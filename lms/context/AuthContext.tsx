@@ -1,12 +1,13 @@
 "use client";
-import { createContext, useContext, useState } from "react";
+import { type Dispatch, type SetStateAction, createContext, useContext, useState } from "react";
 
 interface AuthContextProps {
   userId: string;
+  setUserId?: Dispatch<SetStateAction<string>>
 }
 
 const AuthContext = createContext<AuthContextProps>({
-  userId: "ha",
+  userId: "",
 });
 
 export const useAuth = () => useContext(AuthContext);
@@ -18,6 +19,6 @@ export function AuthContextProvider({
 }) {
   const [userId, setUserId] = useState<string>("");
   return (
-    <AuthContext.Provider value={{ userId }}>{children}</AuthContext.Provider>
+    <AuthContext.Provider value={{ userId, setUserId }}>{children}</AuthContext.Provider>
   );
 }

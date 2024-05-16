@@ -29,9 +29,11 @@
     "@tanstack/react-table": "^8.16.0",
     "@uploadthing/react": "^6.5.1",
     "axios": "^1.6.8",
+    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "0.2.0",
+    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.376.0",
     "next": "14.2.3",
     "prisma": "^5.13.0",
@@ -53,6 +55,8 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
+    "@types/bcryptjs": "^2.4.6",
+    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

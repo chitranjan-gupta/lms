@@ -14,6 +14,9 @@ const CourseLayout = ({ children }: { children: React.ReactNode }) => {
             </div>
           </Link>
         </div>
+        <div className="flex">
+          <Link href="/courses" prefetch={false}>Courses</Link>
+        </div>
       </div>
       <main className="pt-[80px] h-full">{children}</main>
     </div>

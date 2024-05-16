@@ -4,7 +4,8 @@ import { Categories } from "./_components/categories";
 import { SearchInput } from "@/components/search-input";
 import { CoursesList } from "@/components/courses-list";
 import { Category, Course } from "@prisma/client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, Suspense } from "react";
+import { Progress } from "@/components/ui/progress"
 
 interface SearchPageProps {
   searchParams: {
@@ -63,11 +64,11 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
 
 export default function Page({ searchParams }: SearchPageProps) {
   return (
-    <>
+    <Suspense fallback={<div><Progress value={33} /></div>}>
       <div className="px-6 pt-6 block md:mb-0">
         <SearchInput />
       </div>
       <SearchPage searchParams={searchParams} />
-    </>
+    </Suspense>
   );
 }
