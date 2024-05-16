@@ -1,8 +1,9 @@
-import { db } from "@/lib/db";
+//import { db } from "@/lib/db";
 import { Category, Chapter, Course } from "@prisma/client";
 import { getProgress } from "./get-actions";
+import axios from "axios";
 
-type CourseWithProgressWithCategory = Course & {
+export type CourseWithProgressWithCategory = Course & {
   category: Category;
   chapters: Chapter[];
   progress: number | null;
@@ -17,23 +18,14 @@ export const getDashboardCourses = async (
   userId: string
 ): Promise<DashboardCourses> => {
   try {
-    const purchasedCourses = await db.purchase.findMany({
-      where: {
-        userId: userId,
-      },
-      select: {
-        course: {
-          include: {
-            category: true,
-            chapters: {
-              where: {
-                isPublished: true,
-              },
-            },
-          },
-        },
-      },
-    });
+    const purchasedCourses = (
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/purchases`,
+        JSON.stringify({
+          userId: userId,
+        })
+      )
+    ).data as { course: Course }[];
     const courses = purchasedCourses.map(
       (purchase) => purchase.course
     ) as CourseWithProgressWithCategory[];

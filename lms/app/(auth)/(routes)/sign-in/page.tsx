@@ -4,9 +4,11 @@ import { type FormEvent, useState } from "react";
 import Image from "next/image";
 import logo from "@/public/logo.svg";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 
 export default function Page() {
   const { setUserId } = useAuth();
+  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
   const [email, setEmail] = useState<string>("");
@@ -27,6 +29,7 @@ export default function Page() {
         if (res.data.userId) {
           if (setUserId) {
             setUserId(res.data.userId);
+            router.push("/dashboard");
           }
         }
       } else {
