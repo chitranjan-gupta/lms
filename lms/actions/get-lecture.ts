@@ -44,9 +44,19 @@ export const getLecture = async ({
     if (!chapter || !course) {
       throw new Error("Chapter or course not found");
     }
+    const lecture = await db.lecture.findUnique({
+      where:{
+        id: lectureId,
+        isPublished: true
+      }
+    });
+    if(!lecture){
+      throw new Error("Lecture not found");
+    }
     let muxData = null;
     let attachments: Attachment[] = [];
     let nextChapter: Chapter | null = null;
+    let nextLecture: Lecture | null = null;
     if (purchase) {
       attachments = await db.attachment.findMany({
         where: {
@@ -55,12 +65,25 @@ export const getLecture = async ({
       });
     }
 
-    if (chapter.isFree || purchase) {
+    if (lecture.isFree || purchase) {
       muxData = await db.muxData.findUnique({
         where: {
           lectureId: lectureId,
         },
       });
+
+      nextLecture = await db.lecture.findFirst({
+        where:{
+          courseId: courseId,
+          isPublished: true,
+          position:{
+            gt: lecture?.position
+          }
+        },
+        orderBy:{
+          position: "asc"
+        }
+      })
 
       nextChapter = await db.chapter.findFirst({
         where: {
@@ -87,6 +110,7 @@ export const getLecture = async ({
       });
     }
     return {
+      lecture,
       chapter,
       course,
       muxData,
@@ -98,6 +122,7 @@ export const getLecture = async ({
   } catch (error) {
     console.log("[GET_LECTURE]", error);
     return {
+      lecture: null,
       chapter: null,
       course: null,
       muxData: null,

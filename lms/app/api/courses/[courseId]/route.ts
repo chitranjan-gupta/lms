@@ -8,6 +8,47 @@ const { video } = new Mux({
   tokenSecret: process.env.MUX_TOKEN_SECRET!,
 });
 
+export async function GET(
+  req: Request,
+  {
+    params,
+  }: {
+    params: { courseId: string };
+  }
+) {
+  try {
+    const course = await db.course.findUnique({
+      where: {
+        id: params.courseId,
+      },
+      include: {
+        chapters: {
+          where: {
+            isPublished: true,
+          },
+          include: {
+            lectures: {
+              where: {
+                isPublished: true,
+              },
+              orderBy: {
+                position: "asc",
+              },
+            },
+          },
+          orderBy: {
+            position: "asc",
+          },
+        },
+      },
+    });
+    return NextResponse.json(course);
+  } catch (error) {
+    console.log("[COURSE_ID]", error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
+}
+
 export async function DELETE(
   req: Request,
   { params }: { params: { courseId: string } }
@@ -26,9 +67,9 @@ export async function DELETE(
         chapters: {
           include: {
             lectures: {
-              include:{
-                muxData: true
-              }
+              include: {
+                muxData: true,
+              },
             },
           },
         },
@@ -38,7 +79,7 @@ export async function DELETE(
       return new NextResponse("Not Found", { status: 404 });
     }
     for (const chapter of course.chapters) {
-      for(const lecture of chapter.lectures){
+      for (const lecture of chapter.lectures) {
         if (lecture.muxData?.assetId) {
           await video.assets.delete(lecture.muxData.assetId);
         }

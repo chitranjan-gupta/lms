@@ -19,6 +19,7 @@ const LectureIdPage = async ({
 }) => {
   const userId = "";
   const {
+    lecture,
     chapter,
     course,
     muxData,
@@ -33,11 +34,11 @@ const LectureIdPage = async ({
     lectureId: params.lectureId
   });
 
-  if (!chapter || !course) {
+  if (!chapter || !course || !lecture) {
     return redirect("/");
   }
 
-  const isLocked = !chapter.isFree && !purchase;
+  const isLocked = !lecture.isFree && !purchase;
   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
   return (
     <div>

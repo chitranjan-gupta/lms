@@ -1,6 +1,5 @@
-import React, { Fragment } from "react";
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+"use client";
+import React, { Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
@@ -11,37 +10,37 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
+import { Course, Chapter, Lecture } from "@prisma/client";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-    },
-    include: {
-      chapters: {
-        where: {
-          isPublished: true,
-        },
-        include: {
-          lectures: {
-            where: {
-              isPublished: true,
-            },
-            orderBy: {
-              position: "asc",
-            },
-          },
-        },
-        orderBy: {
-          position: "asc",
-        },
-      },
-    },
-  });
+const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
+  const [course, setCourse] = useState<
+    Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
+  >();
+  const getCourse = async () => {
+    try {
+      const course = await (
+        await fetch(
+          `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`,
+          {
+            method: "GET",
+          }
+        )
+      ).json();
+      if (course) {
+        setCourse(course);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    void getCourse();
+  }, [params.courseId]);
+
   if (!course) {
-    return redirect("/");
+    return <div>Not Found</div>;
   }
   return (
     <div className="bg-white">

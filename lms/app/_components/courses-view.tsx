@@ -1,49 +1,20 @@
-import { db } from "@/lib/db";
+"use client";
 import { Categories } from "./categories";
 import { CoursesList } from "@/components/courses-list";
 import { Category, Course } from "@prisma/client";
 
-type CourseWithProgressWithCategory = Course & {
+export type CourseWithProgressWithCategory = Course & {
   category: Category | null;
   chapters: { id: string }[];
   progress: number | null;
 };
 
-export const SearchPage = async () => {
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
+interface SearchPageProps {
+  categories: Category[];
+  courses: CourseWithProgressWithCategory[];
+}
 
-  const courses = (await db.course.findMany({
-    where: {
-      isPublished: true,
-    },
-    include: {
-      category: true,
-      chapters: {
-        where: {
-          isPublished: true,
-        },
-        select: {
-          id: true,
-          lectures: {
-            where: {
-              isPublished: true,
-            },
-            select: {
-              id: true,
-            },
-          },
-        },
-      },
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  })) as unknown as CourseWithProgressWithCategory[];
-
+export const SearchPage = ({ categories, courses }: SearchPageProps) => {
   return (
     <>
       <div className="p-6 space-y-4">

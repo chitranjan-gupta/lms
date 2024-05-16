@@ -1,11 +1,17 @@
 import { db } from "@/lib/db";
+import { NextResponse } from "next/server";
 
-export default async function GET(){
+export async function GET(req: Request) {
+  try {
     const categories = await db.category.findMany({
-        orderBy: {
-          name: "asc",
-        },
-      });
+      orderBy: {
+        name: "asc",
+      },
+    });
 
-    return categories
+    return NextResponse.json(categories);
+  } catch (error) {
+    console.log(error);
+    return new NextResponse("Internal Error", { status: 500 });
+  }
 }

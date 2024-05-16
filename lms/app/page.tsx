@@ -1,4 +1,5 @@
-import React from "react";
+"use client";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import logo from "@/public/logo.svg";
@@ -15,7 +16,9 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { SearchPage } from "./_components/courses-view";
+import {
+  SearchPage,
+} from "./_components/courses-view";
 
 const navigation = [
   { name: "Home", href: "/" },
@@ -26,6 +29,34 @@ const navigation = [
 ];
 
 export default function Page() {
+  const [categories, setCategories] = useState([]);
+  const [courses, setCourses] = useState([]);
+  const getData = async () => {
+    try {
+      const categories = await (
+        await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, {
+          method: "GET",
+        })
+      ).json();
+      const courses = await (
+        await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/courses`, {
+          method: "GET",
+        })
+      ).json();
+      if (categories) {
+        setCategories(categories);
+      }
+      if (courses) {
+        setCourses(courses);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+  useEffect(() => {
+    void getData();
+  }, []);
+
   return (
     <div className="bg-white">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -181,7 +212,7 @@ export default function Page() {
       </div>
 
       <div>
-        <SearchPage />
+        <SearchPage categories={categories} courses={courses} />
       </div>
 
       <div className="w-full ">
