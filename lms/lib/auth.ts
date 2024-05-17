@@ -11,7 +11,7 @@ export async function refresh_auth(request: NextRequest) {
         REFRESH_TOKEN!,
         process.env.REFRESH_TOKEN_SECRET!
       );
-      if (data.email) {
+      if (data.email && data.userId) {
         const existingUser = await db.user.findUnique({
           where: {
             email: data.email,
@@ -46,8 +46,8 @@ export async function refresh_auth(request: NextRequest) {
           email: null,
           name: null,
         },
-        message: "Internal Error",
-        status: 500,
+        message: "Unauthorized",
+        status: 401,
       };
     } catch (error) {
       if (error instanceof jwt.TokenExpiredError) {

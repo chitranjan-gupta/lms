@@ -5,6 +5,7 @@ import Image from "next/image";
 import logo from "@/public/logo.svg";
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
+import { Eye } from "lucide-react";
 
 export default function Page() {
   const { setUserId } = useAuth();
@@ -40,6 +41,14 @@ export default function Page() {
       setError(error.message);
     } finally {
       setLoading(false);
+    }
+  }
+  function show(id: string) {
+    const element = document.getElementById(id) as HTMLInputElement;
+    if (element.type === "password") {
+      element.type = "text";
+    } else {
+      element.type = "password";
     }
   }
   return (
@@ -83,16 +92,22 @@ export default function Page() {
               >
                 Password
               </label>
-              <input
-                type="password"
-                name="password"
-                id="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5 "
-                required
-              />
+              <div className="flex flex-row items-center">
+                <input
+                  type="password"
+                  name="password"
+                  id="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="••••••••"
+                  className="z-10 bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5 "
+                  required
+                />
+                <Eye
+                  className="h-5 w-5 z-20 bg-gray-50 -ml-8"
+                  onClick={() => show("password")}
+                />
+              </div>
             </div>
             {error && <div className="text-red-500">{error}</div>}
             <div className="flex items-center justify-between">

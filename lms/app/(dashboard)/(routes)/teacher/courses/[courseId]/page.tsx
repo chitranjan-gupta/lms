@@ -1,5 +1,4 @@
-import { db } from "@/lib/db";
-import { redirect } from "next/navigation";
+"use client";
 import { IconBadge } from "@/components/icon-badge";
 import {
   File,
@@ -18,42 +17,51 @@ import { ChaptersForm } from "./_components/chapters-form";
 import { Actions } from "./_components/actions";
 import { Banner } from "@/components/banner";
 import Link from "next/link";
+import { useAuth } from "@/context/AuthContext";
+import { Category, Chapter, Course, CourseAttachment } from "@prisma/client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { useRouter } from "next/navigation";
 
-const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
-  const userId = "";
-  if (!userId) {
-    return redirect("/");
+const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
+  const { userId } = useAuth();
+  const [refresh, setRefresh] = useState(false);
+  const [course, setCourse] = useState<
+    Course & { chapters: Chapter[] } & { attachments: CourseAttachment[] }
+  >();
+  const [categories, setCategories] = useState<Category[]>([]);
+  async function getData() {
+    try {
+      const resp = await axios.get(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/categories`
+      );
+      if (resp.status == 200) {
+        setCategories(resp.data);
+      }
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user`,
+        JSON.stringify({
+          userId: userId,
+          courseId: params.courseId,
+        })
+      );
+      if (res.status == 200) {
+        setCourse(res.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
   }
-
-  const course = await db.course.findUnique({
-    where: {
-      id: params.courseId,
-      userId,
-    },
-    include: {
-      chapters: {
-        orderBy: {
-          position: "asc",
-        },
-      },
-      attachments: {
-        orderBy: {
-          createdAt: "desc",
-        },
-      },
-    },
-  });
-
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
+  useEffect(() => {
+    if (userId) {
+      void getData();
+    }
+  }, [refresh]);
   if (!course) {
-    return redirect("/");
+    return <div>No course found</div>;
   }
-
   const requiredFields = [
     course.title,
     course.description,
@@ -96,6 +104,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
             disabled={!isComplete}
             courseId={params.courseId}
             isPublished={course.isPublished}
+            setRefresh={setRefresh}
           />
         </div>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mt-16">
@@ -104,9 +113,21 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
               <IconBadge icon={LayoutDashboard} />
               <h2 className="text-xl">Customize your course</h2>
             </div>
-            <TitleForm initialData={course} courseId={course.id} />
-            <DescriptionForm initialData={course} courseId={course.id} />
-            <ImageForm initialData={course} courseId={course.id} />
+            <TitleForm
+              initialData={course}
+              courseId={course.id}
+              setRefresh={setRefresh}
+            />
+            <DescriptionForm
+              initialData={course}
+              courseId={course.id}
+              setRefresh={setRefresh}
+            />
+            <ImageForm
+              initialData={course}
+              courseId={course.id}
+              setRefresh={setRefresh}
+            />
             <CategoryForm
               initialData={course}
               courseId={course.id}
@@ -114,6 +135,7 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 label: category.name,
                 value: category.id,
               }))}
+              setRefresh={setRefresh}
             />
           </div>
           <div className="space-y-6">
@@ -122,21 +144,33 @@ const CourseIdPage = async ({ params }: { params: { courseId: string } }) => {
                 <IconBadge icon={ListChecks} />
                 <h2 className="text-xl">Course Chapter</h2>
               </div>
-              <ChaptersForm initialData={course} courseId={course.id} />
+              <ChaptersForm
+                initialData={course}
+                courseId={course.id}
+                setRefresh={setRefresh}
+              />
             </div>
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={IndianRupee} />
                 <h2 className="text-xl">Sell you course</h2>
               </div>
-              <PriceForm initialData={course} courseId={course.id} />
+              <PriceForm
+                initialData={course}
+                courseId={course.id}
+                setRefresh={setRefresh}
+              />
             </div>
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={File} />
                 <h2 className="text-xl">Resources & Attachment</h2>
               </div>
-              <AttachmentForm initialData={course} courseId={course.id} />
+              <AttachmentForm
+                initialData={course}
+                courseId={course.id}
+                setRefresh={setRefresh}
+              />
             </div>
           </div>
         </div>

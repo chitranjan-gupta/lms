@@ -3,8 +3,9 @@ import { refresh_auth } from "@/lib/auth";
 import { NextResponse, type NextRequest } from "next/server";
 import { db } from "@/lib/db";
 import { cookies } from "next/headers";
+import { User } from "@prisma/client";
 
-async function createToken(user: any) {
+async function createToken(user: User) {
   const data: JwtPayload = {
     userId: user.id,
     email: user.email,
@@ -29,7 +30,12 @@ export async function GET(req: NextRequest) {
   try {
     const { user, message, status } = await refresh_auth(req);
     if (user && message == "Authorized") {
-      const res = await createToken(user);
+      const existingUser = await db.user.findUnique({
+        where:{
+          email: user.email
+        }
+      });
+      const res = await createToken(existingUser as User);
       await db.user.update({
         where: {
           email: user.email,
@@ -50,7 +56,7 @@ export async function GET(req: NextRequest) {
       });
       return NextResponse.json(res);
     }
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse(message, { status: status });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

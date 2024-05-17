@@ -1,21 +1,36 @@
+"use client";
+import { useEffect, useState } from "react";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
-import { redirect } from "next/navigation";
-import { db } from "@/lib/db";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 
-const CoursesPage = async () => {
-  const userId = "";
-  if (!userId) {
-    return redirect("/");
+const CoursesPage = () => {
+  const { userId } = useAuth();
+  const [courses, setCourses] = useState([]);
+  async function getData() {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user`,
+        JSON.stringify({
+          userId: userId,
+        })
+      );
+      if (res.status == 200) {
+        console.log(res.data)
+        setCourses(res.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
   }
-  const courses = await db.course.findMany({
-    where: {
-      userId,
-    },
-    orderBy: {
-      createdAt: "desc",
-    },
-  });
+  useEffect(() => {
+    if (userId) {
+      void getData();
+    }
+  }, [userId]);
   return (
     <div className="p-6">
       <DataTable columns={columns} data={courses} />

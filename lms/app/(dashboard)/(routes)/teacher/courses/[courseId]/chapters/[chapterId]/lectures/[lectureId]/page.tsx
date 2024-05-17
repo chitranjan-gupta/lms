@@ -1,41 +1,62 @@
+"use client";
 import { IconBadge } from "@/components/icon-badge";
-import { db } from "@/lib/db";
-import { ArrowLeft, Eye, LayoutDashboard, Video } from "lucide-react";
+import { ArrowLeft, Eye, LayoutDashboard, Video, Clock } from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { LectureTitleForm } from "./_components/lecture-title-form";
 import { LectureDescriptionForm } from "./_components/lecture-description-form";
 import { LectureAccessForm } from "./_components/lecture-access-form";
 import { LectureVideoForm } from "./_components/lecture-video-form";
 import { Banner } from "@/components/banner";
 import { LectureActions } from "./_components/lecture-actions";
+import { useAuth } from "@/context/AuthContext";
+import { Lecture } from "@prisma/client";
+import { useEffect, useState } from "react";
+import axios from "axios";
+import { LectureDurationForm } from "./_components/lecture-duration-form";
 
-const LectureIdPage = async ({
+const LectureIdPage = ({
   params,
 }: {
   params: { courseId: string; chapterId: string; lectureId: string };
 }) => {
-  const userId = "";
-  if (!userId) {
-    return redirect("/");
+  const { userId } = useAuth();
+  const [refresh, setRefresh] = useState(false);
+  const [lecture, setLecture] = useState<Lecture>();
+  async function getData() {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/lecture`,
+        JSON.stringify({
+          userId: userId,
+          lectureId: params.lectureId,
+          chapterId: params.chapterId,
+          courseId: params.courseId,
+        })
+      );
+      if (res.status == 200) {
+        setLecture(res.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
   }
-
-  const lecture = await db.lecture.findUnique({
-    where: {
-      id: params.lectureId,
-      courseId: params.courseId,
-      chapterId: params.chapterId,
-    },
-    include: {
-      muxData: true,
-    },
-  });
-
+  useEffect(() => {
+    if (userId) {
+      void getData();
+    }
+  }, [refresh]);
   if (!lecture) {
-    return redirect("/");
+    return <div>No Lecture</div>;
   }
 
-  const requiredFields = [lecture.title, lecture.description, lecture.videoUrl];
+  const requiredFields = [
+    lecture.title,
+    lecture.description,
+    lecture.duration,
+    lecture.videoUrl,
+  ];
   const totalFields = requiredFields.length;
   const compledtedFields = requiredFields.filter(Boolean).length;
   const completionText = `(${compledtedFields}/${totalFields})`;
@@ -73,6 +94,7 @@ const LectureIdPage = async ({
                 chapterId={params.chapterId}
                 lectureId={params.lectureId}
                 isPublished={lecture.isPublished}
+                setRefresh={setRefresh}
               />
             </div>
           </div>
@@ -89,12 +111,14 @@ const LectureIdPage = async ({
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 lectureId={params.lectureId}
+                setRefresh={setRefresh}
               />
               <LectureDescriptionForm
                 initialData={lecture}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 lectureId={params.lectureId}
+                setRefresh={setRefresh}
               />
             </div>
             <div>
@@ -107,20 +131,37 @@ const LectureIdPage = async ({
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 lectureId={params.lectureId}
+                setRefresh={setRefresh}
               />
             </div>
           </div>
-          <div>
-            <div className="flex items-center gap-x-2">
-              <IconBadge icon={Video} />
-              <h2 className="text-xl">Add a video</h2>
+          <div className="space-y-4">
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={Clock} />
+                <h2 className="text-xl">Duration</h2>
+              </div>
+              <LectureDurationForm
+                initialData={lecture}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                lectureId={params.lectureId}
+                setRefresh={setRefresh}
+              />
             </div>
-            <LectureVideoForm
-              initialData={lecture}
-              courseId={params.courseId}
-              chapterId={params.chapterId}
-              lectureId={params.lectureId}
-            />
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={Video} />
+                <h2 className="text-xl">Add a video</h2>
+              </div>
+              <LectureVideoForm
+                initialData={lecture}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                lectureId={params.lectureId}
+                setRefresh={setRefresh}
+              />
+            </div>
           </div>
         </div>
       </div>

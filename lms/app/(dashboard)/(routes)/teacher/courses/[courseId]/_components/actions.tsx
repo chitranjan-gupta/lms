@@ -6,19 +6,21 @@ import { useConfettiStore } from "@/hooks/use-confetti-store";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import toast from "react-hot-toast";
 
 interface ActionsProps {
   disabled: boolean;
   courseId: string;
   isPublished: boolean;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 export const Actions = ({
   disabled,
   courseId,
   isPublished,
+  setRefresh,
 }: ActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -27,18 +29,15 @@ export const Actions = ({
     try {
       setIsLoading(false);
       if (isPublished) {
-        await axios.patch(
-          `/api/courses/${courseId}/unpublish`
-        );
+        await axios.patch(`/api/courses/${courseId}/unpublish`);
         toast.success("Course unpublished");
       } else {
-        await axios.patch(
-          `/api/courses/${courseId}/publish`
-        );
+        await axios.patch(`/api/courses/${courseId}/publish`);
         toast.success("Course Published");
         confetti.onOpen();
       }
-      router.refresh();
+      setRefresh((prev) => !prev);
+      // router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -50,7 +49,8 @@ export const Actions = ({
       setIsLoading(true);
       await axios.delete(`/api/courses/${courseId}`);
       toast.success("Course deleted");
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
       router.push(`/teacher/courses`);
     } catch (error) {
       toast.error("Something went wrong");

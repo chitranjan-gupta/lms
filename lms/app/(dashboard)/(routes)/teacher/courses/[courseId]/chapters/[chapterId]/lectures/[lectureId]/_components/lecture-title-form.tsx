@@ -15,7 +15,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
@@ -26,6 +26,7 @@ interface LectureTitleFormProps {
   courseId: string;
   chapterId: string;
   lectureId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
@@ -36,7 +37,8 @@ export const LectureTitleForm = ({
   initialData,
   courseId,
   chapterId,
-  lectureId
+  lectureId,
+  setRefresh,
 }: LectureTitleFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -48,10 +50,14 @@ export const LectureTitleForm = ({
   const { isSubmitting, isValid } = form.formState;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`, values);
+      await axios.patch(
+        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
+        values
+      );
       toast.success("Lecture updated");
       toggleEdit();
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

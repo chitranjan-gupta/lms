@@ -21,7 +21,7 @@ export async function GET(req: NextRequest) {
         tokens: { access_token: null, refresh_token: null },
       });
     }
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse(message, { status: status });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });

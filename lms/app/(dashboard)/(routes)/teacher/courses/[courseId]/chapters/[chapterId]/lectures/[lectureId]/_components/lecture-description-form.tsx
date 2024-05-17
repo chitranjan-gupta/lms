@@ -15,7 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -28,6 +28,7 @@ interface LectureDescriptionFormProps {
   courseId: string;
   chapterId: string;
   lectureId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
@@ -38,7 +39,8 @@ export const LectureDescriptionForm = ({
   initialData,
   courseId,
   chapterId,
-  lectureId
+  lectureId,
+  setRefresh,
 }: LectureDescriptionFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -58,7 +60,8 @@ export const LectureDescriptionForm = ({
       );
       toast.success("Lecture updated");
       toggleEdit();
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

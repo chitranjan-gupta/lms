@@ -15,7 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -26,13 +26,18 @@ import { formatPrice } from "@/lib/format";
 interface PriceFormProps {
   initialData: Course;
   courseId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
   price: z.coerce.number(),
 });
 
-export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
+export const PriceForm = ({
+  initialData,
+  courseId,
+  setRefresh,
+}: PriceFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
@@ -48,7 +53,8 @@ export const PriceForm = ({ initialData, courseId }: PriceFormProps) => {
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success("Course updated");
       toggleEdit();
-      router.refresh();
+      //router.refresh();
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

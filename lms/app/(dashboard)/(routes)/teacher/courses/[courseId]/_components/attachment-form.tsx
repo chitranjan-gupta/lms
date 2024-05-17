@@ -5,15 +5,16 @@ import axios from "axios";
 
 import { Button } from "@/components/ui/button";
 import { PlusCircle, File, Loader2, X } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Attachment, Course } from "@prisma/client";
+import { CourseAttachment, Course } from "@prisma/client";
 import { FileUpload } from "@/components/file-upload";
 
 interface AttachmentFormProps {
-  initialData: Course & { attachments: Attachment[] };
+  initialData: Course & { attachments: CourseAttachment[] };
   courseId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
@@ -23,6 +24,7 @@ const formSchema = z.object({
 export const AttachmentForm = ({
   initialData,
   courseId,
+  setRefresh,
 }: AttachmentFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -33,7 +35,8 @@ export const AttachmentForm = ({
       await axios.post(`/api/courses/${courseId}/attachments`, values);
       toast.success("Course updated");
       toggleEdit();
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

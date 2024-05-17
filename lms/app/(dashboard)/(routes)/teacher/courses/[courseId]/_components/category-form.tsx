@@ -15,7 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -26,6 +26,7 @@ interface CategoryFormProps {
   initialData: Course;
   courseId: string;
   options: { label: string; value: string }[];
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
@@ -36,6 +37,7 @@ export const CategoryForm = ({
   initialData,
   courseId,
   options,
+  setRefresh,
 }: CategoryFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -52,7 +54,8 @@ export const CategoryForm = ({
       await axios.patch(`/api/courses/${courseId}`, values);
       toast.success("Course updated");
       toggleEdit();
-      router.refresh();
+      // router.refresh();
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");

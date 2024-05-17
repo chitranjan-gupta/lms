@@ -1,9 +1,9 @@
+import { auth } from "@/lib/auth";
 import { db } from "@/lib/db";
-import { auth } from "@clerk/nextjs/server";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(
-  req: Request,
+  req: NextRequest,
   {
     params,
   }: {
@@ -11,15 +11,15 @@ export async function POST(
   }
 ) {
   try {
-    const { userId } = auth();
+    const { user } = await auth(req);
     const { url } = await req.json();
-    if (!userId) {
+    if (!user.userId) {
       return new NextResponse("Unauthorized", { status: 401 });
     }
     const courseOwner = await db.course.findUnique({
       where: {
         id: params.courseId,
-        userId: userId,
+        userId: user.userId,
       },
     });
 
@@ -27,7 +27,7 @@ export async function POST(
       return new NextResponse("Unauthroized", { status: 401 });
     }
 
-    const attachment = await db.attachment.create({
+    const attachment = await db.courseAttachment.create({
       data: {
         url,
         name: url.split("/").pop(),

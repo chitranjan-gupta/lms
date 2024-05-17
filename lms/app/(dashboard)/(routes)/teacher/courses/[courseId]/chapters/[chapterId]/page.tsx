@@ -1,46 +1,68 @@
+"use client";
 import { IconBadge } from "@/components/icon-badge";
-import { db } from "@/lib/db";
-import { ArrowLeft, Eye, LayoutDashboard, ListChecks } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  LayoutDashboard,
+  ListChecks,
+  Clock,
+} from "lucide-react";
 import Link from "next/link";
-import { redirect } from "next/navigation";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
 import { ChapterDescriptionForm } from "./_components/chapter-description-form";
 import { ChapterAccessForm } from "./_components/chapter-access-form";
 import { Banner } from "@/components/banner";
 import { ChapterActions } from "./_components/chapter-actions";
 import { LecturesForm } from "./_components/lectures-form";
+import { useAuth } from "@/context/AuthContext";
+import { useEffect, useState } from "react";
+import { Chapter, Lecture } from "@prisma/client";
+import axios from "axios";
+import { ChapterDurationForm } from "./_components/chapter-duration-form";
 
-const ChapterIdPage = async ({
+const ChapterIdPage = ({
   params,
 }: {
   params: { courseId: string; chapterId: string };
 }) => {
-  const userId = "";
-  if (!userId) {
-    return redirect("/");
+  const { userId } = useAuth();
+  const [refresh, setRefresh] = useState(false);
+  const [chapter, setChapter] = useState<Chapter & { lectures: Lecture[] }>();
+
+  async function getData() {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/chapter`,
+        JSON.stringify({
+          userId: userId,
+          courseId: params.courseId,
+          chapterId: params.chapterId,
+        })
+      );
+      if (res.status == 200) {
+        setChapter(res.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
   }
 
-  const chapter = await db.chapter.findUnique({
-    where: {
-      id: params.chapterId,
-      courseId: params.courseId,
-    },
-    include: {
-      lectures: {
-        orderBy:{
-          position: "asc"
-        }
-      },
-    },
-  });
+  useEffect(() => {
+    if (userId) {
+      void getData();
+    }
+  }, [refresh]);
 
   if (!chapter) {
-    return redirect("/");
+    return <div>No Chapter</div>;
   }
 
   const requiredFields = [
     chapter.title,
     chapter.description,
+    chapter.duration,
     chapter.lectures.some((lecture) => lecture.isPublished),
   ];
   const totalFields = requiredFields.length;
@@ -79,6 +101,7 @@ const ChapterIdPage = async ({
                 courseId={params.courseId}
                 chapterId={params.chapterId}
                 isPublished={chapter.isPublished}
+                setRefresh={setRefresh}
               />
             </div>
           </div>
@@ -94,11 +117,13 @@ const ChapterIdPage = async ({
                 initialData={chapter}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                setRefresh={setRefresh}
               />
               <ChapterDescriptionForm
                 initialData={chapter}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                setRefresh={setRefresh}
               />
             </div>
             <div>
@@ -110,10 +135,23 @@ const ChapterIdPage = async ({
                 initialData={chapter}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                setRefresh={setRefresh}
               />
             </div>
           </div>
           <div className="space-y-4">
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={Clock} />
+                <h2 className="text-xl">Chapter Duration</h2>
+              </div>
+              <ChapterDurationForm
+                initialData={chapter}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                setRefresh={setRefresh}
+              />
+            </div>
             <div>
               <div className="flex items-center gap-x-2">
                 <IconBadge icon={ListChecks} />
@@ -123,6 +161,7 @@ const ChapterIdPage = async ({
                 initialData={chapter}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
+                setRefresh={setRefresh}
               />
             </div>
           </div>

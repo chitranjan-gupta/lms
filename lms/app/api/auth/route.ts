@@ -7,7 +7,7 @@ export async function GET(req: NextRequest) {
     if (user && message == "Authorized") {
       return NextResponse.json(user);
     }
-    return new NextResponse("Unauthorized", { status: 401 });
+    return new NextResponse(message, { status: status });
   } catch (error) {
     return new NextResponse("Internal Error", { status: 500 });
   }

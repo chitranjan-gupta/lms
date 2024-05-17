@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { SetStateAction, Dispatch,useState } from "react";
 import toast from "react-hot-toast";
 
 interface LectureActionsProps {
@@ -14,6 +14,7 @@ interface LectureActionsProps {
   chapterId: string;
   lectureId: string;
   isPublished: boolean;
+  setRefresh: Dispatch<SetStateAction<boolean>>
 }
 
 export const LectureActions = ({
@@ -22,6 +23,7 @@ export const LectureActions = ({
   chapterId,
   lectureId,
   isPublished,
+  setRefresh
 }: LectureActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -39,7 +41,8 @@ export const LectureActions = ({
         );
         toast.success("Lecture Published");
       }
-      router.refresh();
+      setRefresh((prev) => !prev)
+      // router.refresh();
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -51,7 +54,8 @@ export const LectureActions = ({
       setIsLoading(true);
       await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`);
       toast.success("Lecture deleted");
-      router.refresh();
+      setRefresh(true);
+      //router.refresh();
       router.push(`/teacher/courses/${courseId}/chapters/${chapterId}`);
     } catch (error) {
       toast.error("Something went wrong");

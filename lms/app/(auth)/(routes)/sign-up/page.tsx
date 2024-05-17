@@ -146,7 +146,7 @@ export default function Page() {
                     required
                   />
                   <Eye
-                    className="w-5 h-5 -ml-8 z-20 bg-white"
+                    className="w-5 h-5 -ml-8 z-20 bg-gray-50"
                     onClick={() => show("password")}
                   />
                 </div>
@@ -168,7 +168,7 @@ export default function Page() {
                     required
                   />
                   <Eye
-                    className="w-5 h-5 -ml-8 z-20 bg-white"
+                    className="w-5 h-5 -ml-8 z-20 bg-gray-50"
                     onClick={() => show("confirm-password")}
                   />
                 </div>

@@ -4,19 +4,20 @@ import * as z from "zod";
 import axios from "axios";
 
 import { Button } from "@/components/ui/button";
-import {  Pencil, PlusCircle, Video } from "lucide-react";
-import { useState } from "react";
+import { Pencil, PlusCircle, Video } from "lucide-react";
+import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Lecture, MuxData } from "@prisma/client";
 import { FileUpload } from "@/components/file-upload";
-import MuxPlayer from "@mux/mux-player-react"
+import MuxPlayer from "@mux/mux-player-react";
 
 interface LectureVideoFormProps {
   initialData: Lecture & { muxData?: MuxData | null };
   courseId: string;
   chapterId: string;
   lectureId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
@@ -27,7 +28,8 @@ export const LectureVideoForm = ({
   initialData,
   courseId,
   chapterId,
-  lectureId
+  lectureId,
+  setRefresh,
 }: LectureVideoFormProps) => {
   const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
@@ -40,7 +42,8 @@ export const LectureVideoForm = ({
       );
       toast.success("Lecture updated");
       toggleEdit();
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -72,7 +75,7 @@ export const LectureVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""}/>
+            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
           </div>
         ))}
       {isEditing && (
@@ -92,8 +95,8 @@ export const LectureVideoForm = ({
       )}
       {initialData.videoUrl && !isEditing && (
         <div className="text-xs text-muted-foreground mt-2">
-            Videos can take a few minutes to process.
-            Refresh the page video does not appear.
+          Videos can take a few minutes to process. Refresh the page video does
+          not appear.
         </div>
       )}
     </div>

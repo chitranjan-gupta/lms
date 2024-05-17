@@ -15,7 +15,7 @@ import {
 
 import { Button } from "@/components/ui/button";
 import { Loader2, PlusCircle } from "lucide-react";
-import { useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
@@ -26,13 +26,18 @@ import { ChaptersList } from "./chapters-list";
 interface ChaptersFormProps {
   initialData: Course & { chapters: Chapter[] };
   courseId: string;
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 const formSchema = z.object({
   title: z.string().min(1),
 });
 
-export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
+export const ChaptersForm = ({
+  initialData,
+  courseId,
+  setRefresh,
+}: ChaptersFormProps) => {
   const router = useRouter();
   const [isCreating, setIsCreating] = useState(false);
   const [isUpdating, setIsUpdating] = useState(false);
@@ -49,7 +54,8 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
       await axios.post(`/api/courses/${courseId}/chapters`, values);
       toast.success("Chapter created");
       toggleCreating();
-      router.refresh();
+      // router.refresh();
+      setRefresh((prev) => !prev);
     } catch (error) {
       console.log(error);
       toast.error("Something went wrong");
@@ -71,8 +77,8 @@ export const ChaptersForm = ({ initialData, courseId }: ChaptersFormProps) => {
   };
 
   const onEdit = (id: string) => {
-    router.push(`/teacher/courses/${courseId}/chapters/${id}`)
-  }
+    router.push(`/teacher/courses/${courseId}/chapters/${id}`);
+  };
 
   return (
     <div className="relative mt-6 border bg-slate-100 rounded-md p-4">
