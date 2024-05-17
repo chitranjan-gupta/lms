@@ -9,7 +9,7 @@ export async function POST(
   { params }: { params: { courseId: string } }
 ) {
   try {
-    const {user} = await auth(req);
+    const { user } = await auth(req);
     if (!user || !user.userId || !user.email) {
       return new NextResponse("Unauthorized", { status: 401 });
     }

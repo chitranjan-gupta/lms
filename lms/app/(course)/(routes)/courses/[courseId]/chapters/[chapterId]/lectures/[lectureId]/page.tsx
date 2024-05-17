@@ -31,7 +31,7 @@ const LectureIdPage = async ({
     userId,
     chapterId: params.chapterId,
     courseId: params.courseId,
-    lectureId: params.lectureId
+    lectureId: params.lectureId,
   });
 
   if (!chapter || !course || !lecture) {
@@ -95,7 +95,7 @@ const LectureIdPage = async ({
                     target="_blank"
                     className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
                   >
-                    <File />
+                    <File className=""/>
                     <p>{attachment.name}</p>
                   </a>
                 ))}

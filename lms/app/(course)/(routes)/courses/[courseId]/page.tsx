@@ -1,5 +1,5 @@
 "use client";
-import React, { Fragment, useEffect, useState } from "react";
+import React, { FormEvent, Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
@@ -11,28 +11,42 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import { Course, Chapter, Lecture } from "@prisma/client";
+import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
+import toast from "react-hot-toast";
 
 const reviews = { href: "#", average: 4, totalCount: 117 };
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
+  const { userId } = useAuth();
   const [course, setCourse] = useState<
     Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
   >();
   const getCourse = async () => {
     try {
-      const course = await (
-        await fetch(
-          `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`,
-          {
-            method: "GET",
-          }
-        )
-      ).json();
-      if (course) {
-        setCourse(course);
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`
+      );
+      if (res.status == 200) {
+        setCourse(res.data);
       }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
+  };
+  const [isLoading, setIsLoading] = useState(false);
+  const onSubmit = async (event: FormEvent) => {
+    event.preventDefault();
+    try {
+      setIsLoading(true);
+      const response = await axios.post(`/api/courses/${params.courseId}/checkout`);
+      window.location.assign(response.data.url);
     } catch (error) {
-      console.log(error);
+      toast.error("Something went wrong");
+    } finally {
+      setIsLoading(false);
     }
   };
   useEffect(() => {
@@ -82,8 +96,9 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
               </div>
             </div>
 
-            <form className="mt-10">
+            <form className="mt-10" onSubmit={onSubmit}>
               <button
+                disabled={isLoading}
                 type="submit"
                 className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-sky-600 px-8 py-3 text-base font-medium text-white hover:bg-sky-700 focus:outline-none focus:ring-2 focus:ring-sky-500 focus:ring-offset-2"
               >

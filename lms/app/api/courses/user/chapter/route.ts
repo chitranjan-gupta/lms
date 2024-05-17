@@ -5,20 +5,31 @@ export async function POST(req: NextRequest) {
   try {
     const data = await req.json();
     if (data.userId && data.courseId && data.chapterId) {
-        const chapter = await db.chapter.findUnique({
-            where: {
-              id: data.chapterId,
-              courseId: data.courseId,
+      const chapter = await db.chapter.findUnique({
+        where: {
+          id: data.chapterId,
+          courseId: data.courseId,
+        },
+        include: {
+          lectures: {
+            orderBy: {
+              position: "asc",
             },
-            include: {
-              lectures: {
-                orderBy:{
-                  position: "asc"
-                }
-              },
-            },
-          });
+          },
+        },
+      });
       return NextResponse.json(chapter);
+    } else if (data.userId && data.courseId) {
+      const publishedChapters = await db.chapter.findMany({
+        where: {
+          courseId: data.courseId,
+          isPublished: true,
+        },
+        select: {
+          id: true,
+        },
+      });
+      return NextResponse.json(publishedChapters);
     }
     return new NextResponse("Not Found", { status: 404 });
   } catch (error) {

@@ -1,6 +1,7 @@
+'use client';
 import React from "react";
 import { NavbarRoutes } from "@/components/navbar-routes";
-import { Chapter, Course, UserProgress, Lecture } from "@prisma/client";
+import { Chapter, Course, ChapterProgress, Lecture } from "@prisma/client";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
 
 interface CourseNavbarProps {
@@ -8,7 +9,7 @@ interface CourseNavbarProps {
     chapters: (Chapter & {
       lectures: Lecture[] | null;
     } & {
-      userProgress?: UserProgress[] | null;
+      userProgress?: ChapterProgress[] | null;
     })[];
   };
   progressCount?: number;

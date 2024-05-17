@@ -2,8 +2,13 @@
 
 import { cn } from "@/lib/utils";
 import { Lecture } from "@prisma/client";
-import { CheckCircle, Lock, PlayCircle, ArrowDown } from "lucide-react";
+import { CheckCircle, Lock, PlayCircle } from "lucide-react";
 import { usePathname, useRouter } from "next/navigation";
+import {
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@/components/ui/accordion";
 
 interface CourseSidebarItemProps {
   label: string;
@@ -11,8 +16,58 @@ interface CourseSidebarItemProps {
   isCompleted: boolean;
   courseId: string;
   isLocked: boolean;
-  lectures?: Lecture[];
+  chapterId: string;
+  purchase: boolean;
 }
+
+interface CouseSidebarDropDownItemsProps {
+  label: string;
+  id: string;
+  isCompleted: boolean;
+  courseId: string;
+  isLocked: boolean;
+  lectures?: Lecture[];
+  purchase: boolean;
+}
+
+export const CourseSidebarDropDownItem = ({
+  label,
+  id,
+  isCompleted,
+  courseId,
+  isLocked,
+  lectures,
+  purchase,
+}: CouseSidebarDropDownItemsProps) => {
+  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
+  return (
+    <AccordionItem value={id}>
+      <AccordionTrigger disabled={isLocked}>
+        <div className="flex items-center gap-x-2 py-4">
+          <Icon
+            size={22}
+            className={cn("text-slate-500", isCompleted && "text-emerald-700")}
+          />
+          {label}
+        </div>
+      </AccordionTrigger>
+      <AccordionContent>
+        {lectures?.map((lecture) => (
+          <CourseSidebarItem
+            key={lecture.id}
+            id={lecture.id}
+            label={lecture.title}
+            isCompleted={false}
+            isLocked={lecture.isFree && purchase}
+            courseId={lecture.courseId}
+            chapterId={id}
+            purchase={purchase}
+          />
+        ))}
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
 
 export const CourseSidebarItem = ({
   label,
@@ -20,14 +75,14 @@ export const CourseSidebarItem = ({
   isCompleted,
   courseId,
   isLocked,
-  lectures,
+  chapterId,
 }: CourseSidebarItemProps) => {
   const pathname = usePathname();
   const router = useRouter();
   const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
   const isActive = pathname?.includes(id);
   const onClick = () => {
-    router.push(`/courses/${courseId}/chapters/${id}`);
+    router.push(`/courses/${courseId}/chapters/${chapterId}/lectures/${id}`);
   };
   return (
     <>
@@ -53,7 +108,6 @@ export const CourseSidebarItem = ({
           />
           {label}
         </div>
-            { lectures && <ArrowDown />}
         <div
           className={cn(
             "ml-auto opacity-0 border-2 border-slate-700 h-full transition-all",
@@ -62,20 +116,6 @@ export const CourseSidebarItem = ({
           )}
         />
       </button>
-      {lectures && (
-        <div className="pl-4 w-full h-full">
-          {lectures?.map((lecture) => (
-            <CourseSidebarItem
-              key={lecture.id}
-              id={lecture.id}
-              label={lecture.title}
-              isCompleted={false}
-              isLocked={lecture.isFree}
-              courseId={lecture.courseId}
-            />
-          ))}
-        </div>
-      )}
     </>
   );
 };

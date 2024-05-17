@@ -1,5 +1,6 @@
+"use client";
 import { Menu } from "lucide-react";
-import { Chapter, Course, UserProgress, Lecture } from "@prisma/client";
+import { Chapter, Course, ChapterProgress, Lecture } from "@prisma/client";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -10,7 +11,7 @@ interface CourseMobileSidebarProps {
     chapters: (Chapter & {
       lectures: Lecture[] | null;
     } & {
-      userProgress?: UserProgress[] | null;
+      userProgress?: ChapterProgress[] | null;
     })[];
   };
   progressCount?: number;

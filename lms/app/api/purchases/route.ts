@@ -4,7 +4,17 @@ import { NextResponse } from "next/server";
 export default async function POST(req: Request) {
   try {
     const data = await req.json();
-    if (data.userId) {
+    if (data.userId && data.courseId) {
+      const purchase = await db.purchase.findUnique({
+        where: {
+          userId_courseId: {
+            userId: data.userId,
+            courseId: data.courseId,
+          },
+        },
+      });
+      return NextResponse.json(purchase)
+    } else if (data.userId) {
       const purchasedCourses = await db.purchase.findMany({
         where: {
           userId: data.userId,
@@ -24,7 +34,7 @@ export default async function POST(req: Request) {
       });
       return NextResponse.json(purchasedCourses);
     }
-    return NextResponse.json([]);
+    return new NextResponse("Not Found", { status: 404 });
   } catch (error) {
     console.log(error);
     return new NextResponse("Internal Error", { status: 500 });
