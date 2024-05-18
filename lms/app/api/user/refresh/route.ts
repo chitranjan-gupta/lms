@@ -5,6 +5,8 @@ import { db } from "@/lib/db";
 import { cookies } from "next/headers";
 import { User } from "@prisma/client";
 
+export const dynamic = 'force-dynamic'
+
 async function createToken(user: User) {
   const data: JwtPayload = {
     userId: user.id,

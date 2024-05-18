@@ -5,7 +5,7 @@ import { VideoPlayer } from "./_components/video-player";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { Separator } from "@/components/ui/separator";
 import { Preview } from "@/components/preview";
-import { File } from "lucide-react";
+import { File, Lock } from "lucide-react";
 import { CourseProgressButton } from "./_components/course-progress-button";
 import { useAuth } from "@/context/AuthContext";
 import {
@@ -82,15 +82,22 @@ const LectureIdPage = ({
       )}
       <div className="flex flex-col max-w-4xl mx-auto pb-2">
         <div className="p-4">
-          <VideoPlayer
-            chapterId={params.chapterId}
-            title={chapter.title}
-            courseId={params.courseId}
-            nextChapterId={nextChapter?.id}
-            playbackId={muxData?.playbackId!}
-            isLocked={isLocked}
-            completeOnEnd={completeOnEnd}
-          />
+          {muxData?.playbackId && (
+            <VideoPlayer
+              chapterId={params.chapterId}
+              title={chapter.title}
+              courseId={params.courseId}
+              nextChapterId={nextChapter?.id}
+              playbackId={muxData?.playbackId!}
+              isLocked={isLocked}
+              completeOnEnd={completeOnEnd}
+            />
+          )}
+          {(!muxData?.playbackId || isLocked) && (
+            <div className="w-full h-96 flex flex-row justify-center items-center bg-slate-300">
+              {isLocked ? <Lock className="w-10 h-10"/> : <></>}
+            </div>
+          )}
         </div>
         <div>
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
