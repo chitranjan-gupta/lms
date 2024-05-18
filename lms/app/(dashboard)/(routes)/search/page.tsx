@@ -1,9 +1,15 @@
-import { db } from "@/lib/db";
+"use client";
 import { Categories } from "./_components/categories";
 import { SearchInput } from "@/components/search-input";
-import { redirect } from "next/navigation";
-import { getCourses } from "@/actions/get-courses";
+import {
+  getCourses,
+  CourseWithProgressWithCategory,
+} from "@/actions/get-courses";
 import { CoursesList } from "@/components/courses-list";
+import { useAuth } from "@/context/AuthContext";
+import { Category } from "@prisma/client";
+import { useState, useEffect } from "react";
+import axios from "axios";
 
 interface SearchPageProps {
   searchParams: {
@@ -12,26 +18,40 @@ interface SearchPageProps {
   };
 }
 
-const SearchPage = async ({ searchParams }: SearchPageProps) => {
-  const userId = "";
-  if (!userId) {
-    return redirect("/");
+const SearchPage = ({ searchParams }: SearchPageProps) => {
+  const { userId } = useAuth();
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [courses, setCourses] = useState<CourseWithProgressWithCategory[]>([]);
+  async function getData() {
+    try {
+      const res = await axios.get(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/categories`
+      );
+      if (res.status == 200) {
+        setCategories(res.data);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
   }
-  const categories = await db.category.findMany({
-    orderBy: {
-      name: "asc",
-    },
-  });
-
-  const courses = await getCourses({
-    userId,
-    ...searchParams,
-  });
+  useEffect(() => {
+    void getData();
+    if (userId) {
+      getCourses({
+        userId,
+        ...searchParams,
+      }).then((value) => {
+        setCourses(value);
+      });
+    }
+  }, [userId, searchParams.title, searchParams.categoryId]);
 
   return (
     <>
       <div className="px-6 pt-6 md:hidden md:mb-0 block">
-          <SearchInput />
+        <SearchInput />
       </div>
       <div className="p-6 space-y-4">
         <Categories items={categories} />

@@ -1,5 +1,5 @@
-import { db } from "@/lib/db";
-import { Attachment, Chapter, Lecture } from "@prisma/client";
+import { LectureAttachment, ChapterAttachment } from "@prisma/client";
+import axios from "axios";
 
 interface GetLectureProps {
   userId?: string | null;
@@ -15,118 +15,42 @@ export const getLecture = async ({
   lectureId,
 }: GetLectureProps) => {
   try {
-    let purchase;
-    if (userId) {
-      purchase = await db.purchase.findUnique({
-        where: {
-          userId_courseId: {
-            userId,
-            courseId,
-          },
-        },
-      });
-    }
-    const course = await db.course.findUnique({
-      where: {
-        isPublished: true,
-        id: courseId,
-      },
-      select: {
-        price: true,
-      },
-    });
-    const chapter = await db.chapter.findUnique({
-      where: {
-        id: chapterId,
-        isPublished: true,
-      },
-    });
-    if (!chapter || !course) {
-      throw new Error("Chapter or course not found");
-    }
-    const lecture = await db.lecture.findUnique({
-      where:{
-        id: lectureId,
-        isPublished: true
-      }
-    });
-    if(!lecture){
-      throw new Error("Lecture not found");
-    }
-    let muxData = null;
-    let attachments: Attachment[] = [];
-    let nextChapter: Chapter | null = null;
-    let nextLecture: Lecture | null = null;
-    if (purchase) {
-      attachments = await db.attachment.findMany({
-        where: {
+    const res = (
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/lecture`,
+        JSON.stringify({
+          userId: userId,
           courseId: courseId,
-        },
-      });
-    }
-
-    if (lecture.isFree || purchase) {
-      muxData = await db.muxData.findUnique({
-        where: {
+          chapterId: chapterId,
           lectureId: lectureId,
-        },
-      });
-
-      nextLecture = await db.lecture.findFirst({
-        where:{
-          courseId: courseId,
-          isPublished: true,
-          position:{
-            gt: lecture?.position
-          }
-        },
-        orderBy:{
-          position: "asc"
-        }
-      })
-
-      nextChapter = await db.chapter.findFirst({
-        where: {
-          courseId: courseId,
-          isPublished: true,
-          position: {
-            gt: chapter?.position,
-          },
-        },
-        orderBy: {
-          position: "asc",
-        },
-      });
-    }
-    let userProgress;
-    if(userId){
-      userProgress = await db.userProgress.findUnique({
-        where: {
-          userId_chapterId: {
-            userId,
-            chapterId,
-          },
-        },
-      });
-    }
+          purchase: true,
+        })
+      )
+    ).data;
     return {
-      lecture,
-      chapter,
-      course,
-      muxData,
-      attachments,
-      nextChapter,
-      userProgress,
-      purchase,
+      lecture: res.lecture,
+      chapter: res.chapter,
+      course: res.course,
+      muxData: res.muxData,
+      attachments: res.attachments as LectureAttachment[],
+      chapterAttachments: res.chapterAttachments as ChapterAttachment[],
+      nextLecture: res.nextLecture,
+      nextChapter: res.nextChapter,
+      userProgress: res.userProgress,
+      purchase: res.purchase,
     };
-  } catch (error) {
-    console.log("[GET_LECTURE]", error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log("[GET_LECTURE]", error.response);
+    }
     return {
       lecture: null,
       chapter: null,
       course: null,
       muxData: null,
       attachments: [],
+      chapterAttachments: [],
+      nextLecture: null,
       nextChapter: null,
       userProgress: null,
       purchase: null,

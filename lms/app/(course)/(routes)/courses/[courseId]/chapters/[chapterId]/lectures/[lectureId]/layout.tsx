@@ -1,13 +1,13 @@
 "use client";
 import React, { useEffect, useState } from "react";
-// import { getProgress } from "@/actions/get-actions";
+import { getProgress } from "@/actions/get-actions";
 import { CourseSidebar } from "./_components/course-sidebar";
 import { CourseNavbar } from "./_components/course-navbar";
 import { useAuth } from "@/context/AuthContext";
 import { Chapter, Course, Lecture } from "@prisma/client";
 import axios from "axios";
 
-const CourseLayout = async ({
+const CourseLayout = ({
   children,
   params,
 }: {
@@ -18,6 +18,7 @@ const CourseLayout = async ({
   const [course, setCourse] = useState<
     Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
   >();
+  const [progressCount, setProgressCount] = useState<number>(0);
   async function getData() {
     try {
       const res = await axios.get(
@@ -41,9 +42,11 @@ const CourseLayout = async ({
           courseId: params.courseId,
         })
       );
+      const progress = await getProgress(userId, params.courseId);
       if (res.status == 200) {
         setCourse(res.data);
       }
+      setProgressCount(progress);
     } catch (error: any) {
       if (error.response) {
         console.log(error.response);
@@ -57,16 +60,9 @@ const CourseLayout = async ({
       void getData();
     }
   }, [userId, params.courseId]);
-  if (userId) {
-  } else {
-  }
   if (!course) {
     return <div>No Course</div>;
   }
-  let progressCount = 0;
-  // if(userId){
-  //   progressCount = await getProgress(userId, course.id);
-  // }
   return (
     <div className="h-full">
       <div className="h-[80px] md:pl-80 fixed inset-y-0 bg-white w-full z-50">

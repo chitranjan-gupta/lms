@@ -1,5 +1,5 @@
-import { db } from "@/lib/db";
 import { Course, Purchase } from "@prisma/client";
+import axios from "axios";
 
 type PurchaseWithCourse = Purchase & {
   course: Course;
@@ -20,16 +20,14 @@ const groupByCourse = (purchases: PurchaseWithCourse[]) => {
 
 export const getAnalytics = async (userId: string) => {
   try {
-    const purchases = await db.purchase.findMany({
-      where: {
-        course: {
+    const purchases = (
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/purchase`,
+        JSON.stringify({
           userId: userId,
-        },
-      },
-      include: {
-        course: true,
-      },
-    });
+        })
+      )
+    ).data;
     const groupedEarnings = groupByCourse(purchases);
     const data = Object.entries(groupedEarnings).map(
       ([courseTitle, total]) => ({
@@ -44,8 +42,10 @@ export const getAnalytics = async (userId: string) => {
       totalRevenue,
       totalSales,
     };
-  } catch (error) {
-    console.log("[GET_ANALYTICS]", error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log("[GET_ANALYTICS]", error.response);
+    }
     return {
       data: [],
       totalRevenue: 0,

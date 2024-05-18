@@ -1,4 +1,5 @@
 "use client";
+
 import React, { FormEvent, Fragment, useEffect, useState } from "react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
@@ -14,8 +15,6 @@ import { Course, Chapter, Lecture } from "@prisma/client";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
 import toast from "react-hot-toast";
-
-const reviews = { href: "#", average: 4, totalCount: 117 };
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { userId } = useAuth();
@@ -81,21 +80,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
                 {formatPrice(course.price!)}
               </p>
             </div>
-            {/* Reviews */}
-            <div className="mt-6">
-              <h3 className="sr-only">Reviews</h3>
-              <div className="flex items-center">
-                <div className="flex items-center"></div>
-                <p className="sr-only">{reviews.average} out of 5 stars</p>
-                <a
-                  href={reviews.href}
-                  className="ml-3 text-sm font-medium text-sky-600 hover:text-sky-500"
-                >
-                  {reviews.totalCount} reviews
-                </a>
-              </div>
-            </div>
-
+            
             <form className="mt-10" onSubmit={onSubmit}>
               <button
                 disabled={isLoading}

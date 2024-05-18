@@ -42,7 +42,7 @@ export const CourseSidebarDropDownItem = ({
   const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
   return (
     <AccordionItem value={id}>
-      <AccordionTrigger disabled={isLocked}>
+      <AccordionTrigger disabled={isLocked} className="p-2">
         <div className="flex items-center gap-x-2 py-4">
           <Icon
             size={22}
@@ -58,7 +58,7 @@ export const CourseSidebarDropDownItem = ({
             id={lecture.id}
             label={lecture.title}
             isCompleted={false}
-            isLocked={lecture.isFree && purchase}
+            isLocked={!lecture.isFree && !purchase}
             courseId={lecture.courseId}
             chapterId={id}
             purchase={purchase}
@@ -87,10 +87,11 @@ export const CourseSidebarItem = ({
   return (
     <>
       <button
+        disabled={isLocked}
         onClick={onClick}
         type="button"
         className={cn(
-          "w-full h-full flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
+          "w-full h-14 flex items-center gap-x-2 text-slate-500 text-sm font-[500] pl-6 transition-all hover:text-slate-600 hover:bg-slate-300/20",
           isActive &&
             "text-slate-700 bg-slate-200/20 hover:bg-slate-200/20 hover:text-slate-700",
           isCompleted && "text-emerald-700 hover:text-emerald-700",
@@ -110,7 +111,7 @@ export const CourseSidebarItem = ({
         </div>
         <div
           className={cn(
-            "ml-auto opacity-0 border-2 border-slate-700 h-full transition-all",
+            "ml-auto opacity-0 border-2 border-slate-700 h-14 transition-all",
             isActive && "opacity-100",
             isCompleted && "text-emerald-700"
           )}

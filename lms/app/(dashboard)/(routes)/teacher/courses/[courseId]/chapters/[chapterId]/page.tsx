@@ -6,6 +6,7 @@ import {
   LayoutDashboard,
   ListChecks,
   Clock,
+  File,
 } from "lucide-react";
 import Link from "next/link";
 import { ChapterTitleForm } from "./_components/chapter-title-form";
@@ -16,9 +17,10 @@ import { ChapterActions } from "./_components/chapter-actions";
 import { LecturesForm } from "./_components/lectures-form";
 import { useAuth } from "@/context/AuthContext";
 import { useEffect, useState } from "react";
-import { Chapter, Lecture } from "@prisma/client";
+import { Chapter, Lecture, ChapterAttachment } from "@prisma/client";
 import axios from "axios";
 import { ChapterDurationForm } from "./_components/chapter-duration-form";
+import { ChapterAttachmentForm } from "./_components/chapter-attachment-form";
 
 const ChapterIdPage = ({
   params,
@@ -27,7 +29,9 @@ const ChapterIdPage = ({
 }) => {
   const { userId } = useAuth();
   const [refresh, setRefresh] = useState(false);
-  const [chapter, setChapter] = useState<Chapter & { lectures: Lecture[] }>();
+  const [chapter, setChapter] = useState<
+    Chapter & { lectures: Lecture[] } & { attachments: ChapterAttachment[] }
+  >();
 
   async function getData() {
     try {
@@ -158,6 +162,18 @@ const ChapterIdPage = ({
                 <h2 className="text-xl">Chapter Lectures</h2>
               </div>
               <LecturesForm
+                initialData={chapter}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                setRefresh={setRefresh}
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={File} />
+                <h2 className="text-xl">Resources & Attachment</h2>
+              </div>
+              <ChapterAttachmentForm
                 initialData={chapter}
                 courseId={params.courseId}
                 chapterId={params.chapterId}

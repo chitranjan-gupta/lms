@@ -9,7 +9,6 @@ import {
 } from "@prisma/client";
 import {
   CourseSidebarDropDownItem,
-  CourseSidebarItem,
 } from "./course-sidebar-item";
 import { CourseProgress } from "@/components/course-progress";
 import { useAuth } from "@/context/AuthContext";
@@ -77,6 +76,7 @@ export const CourseSidebar = ({
               courseId={course.id}
               isLocked={!chapter.isFree && !purchase}
               purchase={purchase ? true : false}
+              lectures={chapter.lectures!}
             />
           ))}
         </Accordion>

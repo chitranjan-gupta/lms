@@ -1,9 +1,8 @@
-import { Category, Course } from "@prisma/client";
+import { Category, Chapter, Course, Purchase } from "@prisma/client";
 import { getProgress } from "./get-actions";
+import axios from "axios";
 
-import { db } from "@/lib/db";
-
-type CourseWithProgressWithCategory = Course & {
+export type CourseWithProgressWithCategory = Course & {
   category: Category | null;
   chapters: { id: string }[];
   progress: number | null;
@@ -21,34 +20,18 @@ export const getCourses = async ({
   categoryId,
 }: GetCourses): Promise<CourseWithProgressWithCategory[]> => {
   try {
-    const courses = await db.course.findMany({
-      where: {
-        isPublished: true,
-        title: {
-          contains: title,
-        },
-        categoryId,
-      },
-      include: {
-        category: true,
-        chapters: {
-          where: {
-            isPublished: true,
-          },
-          select: {
-            id: true,
-          },
-        },
-        purchases: {
-          where: {
-            userId,
-          },
-        },
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const courses = (
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/course`,
+        JSON.stringify({
+          userId: userId,
+          title: title,
+          categoryId: categoryId,
+        })
+      )
+    ).data as (Course & { category: Category } & { chapters: Chapter[] } & {
+      purchases: Purchase[];
+    })[];
     const coursesWithProgress: CourseWithProgressWithCategory[] =
       await Promise.all(
         courses.map(async (course) => {
@@ -66,8 +49,10 @@ export const getCourses = async ({
         })
       );
     return coursesWithProgress;
-  } catch (error) {
-    console.log("[GET_COURSES]", error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log("[GET_COURSES]", error.response);
+    }
     return [];
   }
 };

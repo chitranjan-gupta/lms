@@ -18,6 +18,12 @@ export const ourFileRouter = {
   courseAttachment: f(["text", "image", "video", "audio", "pdf"])
     .middleware(async ({ req }) => await handleAuth(req))
     .onUploadComplete(() => {}),
+  chapterAttachment: f(["text", "image", "video", "audio", "pdf"])
+    .middleware(async ({ req }) => await handleAuth(req))
+    .onUploadComplete(() => {}),
+  lectureAttachment: f(["text", "image", "video", "audio", "pdf"])
+    .middleware(async ({ req }) => await handleAuth(req))
+    .onUploadComplete(() => {}),
   lectureVideo: f({ video: { maxFileCount: 1, maxFileSize: "512GB" } })
     .middleware(async ({ req }) => await handleAuth(req))
     .onUploadComplete(() => {}),

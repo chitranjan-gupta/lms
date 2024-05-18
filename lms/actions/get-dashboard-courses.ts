@@ -20,7 +20,7 @@ export const getDashboardCourses = async (
   try {
     const purchasedCourses = (
       await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/purchases`,
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/purchases`,
         JSON.stringify({
           userId: userId,
         })
@@ -45,8 +45,10 @@ export const getDashboardCourses = async (
       completedCourses,
       coursesInProgress,
     };
-  } catch (error) {
-    console.log("[GET_DASHBOARD_COURSES]", error);
+  } catch (error: any) {
+    if (error.response) {
+      console.log("[GET_DASHBOARD_COURSES]", error.response);
+    }
     return {
       completedCourses: [],
       coursesInProgress: [],

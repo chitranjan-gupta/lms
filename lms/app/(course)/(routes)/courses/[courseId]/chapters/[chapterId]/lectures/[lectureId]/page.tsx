@@ -1,14 +1,25 @@
+"use client";
 import { getLecture } from "@/actions/get-lecture";
 import { Banner } from "@/components/banner";
-import { redirect } from "next/navigation";
 import { VideoPlayer } from "./_components/video-player";
 import { CourseEnrollButton } from "./_components/course-enroll-button";
 import { Separator } from "@/components/ui/separator";
 import { Preview } from "@/components/preview";
 import { File } from "lucide-react";
 import { CourseProgressButton } from "./_components/course-progress-button";
+import { useAuth } from "@/context/AuthContext";
+import {
+  Chapter,
+  ChapterAttachment,
+  ChapterProgress,
+  Course,
+  Lecture,
+  LectureAttachment,
+  MuxData,
+} from "@prisma/client";
+import { useEffect, useState } from "react";
 
-const LectureIdPage = async ({
+const LectureIdPage = ({
   params,
 }: {
   params: {
@@ -17,31 +28,49 @@ const LectureIdPage = async ({
     lectureId: string;
   };
 }) => {
-  const userId = "";
-  const {
-    lecture,
-    chapter,
-    course,
-    muxData,
-    attachments,
-    nextChapter,
-    userProgress,
-    purchase,
-  } = await getLecture({
-    userId,
-    chapterId: params.chapterId,
-    courseId: params.courseId,
-    lectureId: params.lectureId,
-  });
+  const { userId } = useAuth();
+  const [lecture, setLecture] = useState<Lecture>();
+  const [chapter, setChapter] = useState<Chapter>();
+  const [course, setCourse] = useState<Course>();
+  const [muxData, setMuxData] = useState<MuxData>();
+  const [attachments, setAttachments] = useState<LectureAttachment[]>([]);
+  const [chapterAttachments, setChapterAttachments] = useState<
+    ChapterAttachment[]
+  >([]);
+  const [nextChapter, setNextChapter] = useState<Chapter>();
+  const [userProgress, setUserProgress] = useState<ChapterProgress>();
+  const [purchase, setPurchase] = useState();
+
+  useEffect(() => {
+    getLecture({
+      userId,
+      chapterId: params.chapterId,
+      courseId: params.courseId,
+      lectureId: params.lectureId,
+    }).then((value) => {
+      setCourse(value.course);
+      setChapter(value.chapter);
+      setLecture(value.lecture);
+      setMuxData(value.muxData);
+      setAttachments(value.attachments);
+      setChapterAttachments(value.chapterAttachments);
+      setNextChapter(value.nextChapter);
+      setUserProgress(value.userProgress);
+      setPurchase(value.purchase);
+    });
+  }, [userId]);
 
   if (!chapter || !course || !lecture) {
-    return redirect("/");
+    return <div>No lecture</div>;
   }
 
   const isLocked = !lecture.isFree && !purchase;
   const completeOnEnd = !!purchase && !userProgress?.isCompleted;
   return (
     <div>
+      {!purchase && (
+        <Banner variant="success" label="This is free for watching" />
+      )}
       {userProgress?.isCompleted && (
         <Banner variant="success" label="You already completed this chapter." />
       )}
@@ -65,7 +94,7 @@ const LectureIdPage = async ({
         </div>
         <div>
           <div className="p-4 flex flex-col md:flex-row items-center justify-between">
-            <h2 className="text-2xl font-semibold mb-2">{chapter.title}</h2>
+            <h2 className="text-2xl font-semibold mb-2">{lecture.title}</h2>
             {purchase ? (
               <CourseProgressButton
                 chapterId={params.chapterId}
@@ -82,9 +111,9 @@ const LectureIdPage = async ({
           </div>
           <Separator />
           <div>
-            <Preview value={chapter.description!} />
+            <Preview value={lecture.description!} />
           </div>
-          {!!attachments.length && (
+          {purchase && !!attachments.length && (
             <>
               <Separator />{" "}
               <div className="p-4">
@@ -95,8 +124,26 @@ const LectureIdPage = async ({
                     target="_blank"
                     className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
                   >
-                    <File className=""/>
+                    <File className="" />
                     <p>{attachment.name}</p>
+                  </a>
+                ))}
+              </div>
+            </>
+          )}
+          {purchase && !!chapterAttachments.length && (
+            <>
+              <Separator />{" "}
+              <div className="p-4">
+                {chapterAttachments.map((chapterAttachment) => (
+                  <a
+                    href={chapterAttachment.url}
+                    key={chapterAttachment.id}
+                    target="_blank"
+                    className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
+                  >
+                    <File className="" />
+                    <p>{chapterAttachment.name}</p>
                   </a>
                 ))}
               </div>

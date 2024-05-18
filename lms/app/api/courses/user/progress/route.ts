@@ -37,6 +37,17 @@ export async function POST(req: NextRequest) {
         },
       });
       return NextResponse.json(course);
+    } else if (data.userId && data.chapterIds) {
+      const validCompletedChapters = await db.chapterProgress.count({
+        where: {
+          userId: data.userId,
+          chapterId: {
+            in: data.chapterIds,
+          },
+          isCompleted: true,
+        },
+      });
+      return NextResponse.json(validCompletedChapters);
     }
     return new NextResponse("Not Found", { status: 404 });
   } catch (error) {

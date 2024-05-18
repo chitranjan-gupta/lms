@@ -16,6 +16,11 @@ export async function POST(req: NextRequest) {
               position: "asc",
             },
           },
+          attachments:{
+            orderBy: {
+              createdAt: "desc",
+            },
+          }
         },
       });
       return NextResponse.json(chapter);

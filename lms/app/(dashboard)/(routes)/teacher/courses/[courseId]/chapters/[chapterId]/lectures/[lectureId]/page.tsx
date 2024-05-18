@@ -1,6 +1,13 @@
 "use client";
 import { IconBadge } from "@/components/icon-badge";
-import { ArrowLeft, Eye, LayoutDashboard, Video, Clock } from "lucide-react";
+import {
+  ArrowLeft,
+  Eye,
+  LayoutDashboard,
+  Video,
+  Clock,
+  File,
+} from "lucide-react";
 import Link from "next/link";
 import { LectureTitleForm } from "./_components/lecture-title-form";
 import { LectureDescriptionForm } from "./_components/lecture-description-form";
@@ -9,10 +16,11 @@ import { LectureVideoForm } from "./_components/lecture-video-form";
 import { Banner } from "@/components/banner";
 import { LectureActions } from "./_components/lecture-actions";
 import { useAuth } from "@/context/AuthContext";
-import { Lecture } from "@prisma/client";
+import { Lecture, LectureAttachment } from "@prisma/client";
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { LectureDurationForm } from "./_components/lecture-duration-form";
+import { LectureAttachmentForm } from "./_components/lecture-attachment-form";
 
 const LectureIdPage = ({
   params,
@@ -21,7 +29,9 @@ const LectureIdPage = ({
 }) => {
   const { userId } = useAuth();
   const [refresh, setRefresh] = useState(false);
-  const [lecture, setLecture] = useState<Lecture>();
+  const [lecture, setLecture] = useState<
+    Lecture & { attachments: LectureAttachment[] }
+  >();
   async function getData() {
     try {
       const res = await axios.post(
@@ -68,7 +78,7 @@ const LectureIdPage = ({
       {!lecture.isPublished && (
         <Banner
           variant="warning"
-          label="This lecture is unpublished. It will not be visible in the course."
+          label="This lecture is unpublished. It will not be visible in the chapter."
         />
       )}
       <div className="p-6">
@@ -155,6 +165,19 @@ const LectureIdPage = ({
                 <h2 className="text-xl">Add a video</h2>
               </div>
               <LectureVideoForm
+                initialData={lecture}
+                courseId={params.courseId}
+                chapterId={params.chapterId}
+                lectureId={params.lectureId}
+                setRefresh={setRefresh}
+              />
+            </div>
+            <div>
+              <div className="flex items-center gap-x-2">
+                <IconBadge icon={File} />
+                <h2 className="text-xl">Resources & Attachment</h2>
+              </div>
+              <LectureAttachmentForm
                 initialData={lecture}
                 courseId={params.courseId}
                 chapterId={params.chapterId}
