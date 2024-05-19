@@ -1,14 +1,14 @@
 import Stripe from "stripe";
 
-import { headers } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 import { stripe } from "@/lib/stripe";
 import { db } from "@/lib/db";
 
-export async function POST(req: Request) {
-  const body = await req.json();
-  const signature = headers().get("Stripe-Customer") as string;
+
+export async function POST(req: NextRequest) {
+  const body = await req.text();
+  const signature = req.headers.get("Stripe-Signature") as string;
 
   let event: Stripe.Event;
 
@@ -19,6 +19,7 @@ export async function POST(req: Request) {
       process.env.STRIPE_WEBHOOK_SECRET!
     );
   } catch (error: any) {
+    console.log(error);
     return new NextResponse(`Webhook Error: ${error.message}`, { status: 400 });
   }
 

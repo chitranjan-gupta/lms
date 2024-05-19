@@ -5,7 +5,7 @@ import { SearchInput } from "@/components/search-input";
 import { CoursesList } from "@/components/courses-list";
 import { Category, Course } from "@prisma/client";
 import { useEffect, useState, Suspense } from "react";
-import { Progress } from "@/components/ui/progress"
+import Loader from "@/components/loader";
 
 interface SearchPageProps {
   searchParams: {
@@ -21,9 +21,11 @@ type CourseWithProgressWithCategory = Course & {
 };
 
 const SearchPage = ({ searchParams }: SearchPageProps) => {
+  const [loading, setLoading] = useState<boolean>(false);
   const [categories, setCategories] = useState<Category[]>([]);
   const [courses, setCourses] = useState<CourseWithProgressWithCategory[]>([]);
   const getData = async () => {
+    setLoading(true);
     try {
       const categories = await (
         await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, {
@@ -47,6 +49,8 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
       }
     } catch (error) {
       console.log(error);
+    } finally {
+      setLoading(false);
     }
   };
   useEffect(() => {
@@ -54,17 +58,21 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   }, [searchParams.title, searchParams.categoryId]);
   return (
     <>
-      <div className="p-6 space-y-4">
-        <Categories items={categories} />
-        <CoursesList items={courses} />
-      </div>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="p-6 space-y-4">
+          <Categories items={categories} />
+          <CoursesList items={courses} />
+        </div>
+      )}
     </>
   );
 };
 
 export default function Page({ searchParams }: SearchPageProps) {
   return (
-    <Suspense fallback={<div><Progress value={33} /></div>}>
+    <Suspense fallback={<Loader />}>
       <div className="px-6 pt-6 block md:mb-0">
         <SearchInput />
       </div>

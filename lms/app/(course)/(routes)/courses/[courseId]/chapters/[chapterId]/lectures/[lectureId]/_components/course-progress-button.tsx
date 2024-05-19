@@ -2,6 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
+import { Chapter, Lecture } from "@prisma/client";
 import axios from "axios";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
@@ -9,17 +10,25 @@ import { useState } from "react";
 import toast from "react-hot-toast";
 
 interface CourseProgressButtonProps {
+  chapter: Chapter & { lectures: Lecture[] };
   chapterId: string;
   courseId: string;
+  lectureId: string;
   isCompleted?: boolean;
+  isChapterCompleted?: boolean;
   nextChapterId?: string;
+  nextLectureId?: string;
 }
 
 export const CourseProgressButton = ({
+  chapter,
   chapterId,
   courseId,
+  lectureId,
   isCompleted,
+  isChapterCompleted,
   nextChapterId,
+  nextLectureId,
 }: CourseProgressButtonProps) => {
   const router = useRouter();
   const confetti = useConfettiStore();
@@ -28,16 +37,33 @@ export const CourseProgressButton = ({
     try {
       setIsLoading(true);
       await axios.put(
-        `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
         {
           isCompleted: !isCompleted,
         }
       );
-      if (!isCompleted && !nextChapterId) {
+      if (!isCompleted && !nextChapterId && !nextLectureId) {
         confetti.onOpen();
       }
-      if (!isCompleted && nextChapterId) {
-        router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+      if (!isCompleted && (nextChapterId || nextLectureId)) {
+        const current = chapter.lectures.some(({ id }) => id === nextLectureId);
+        if (current) {
+          router.push(
+            `/courses/${courseId}/chapters/${chapterId}/lectures/${nextLectureId}`
+          );
+        } else {
+          if (!isChapterCompleted) {
+            await axios.put(
+              `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+              {
+                isCompleted: true,
+              }
+            );
+          }
+          router.push(
+            `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
+          );
+        }
       }
       toast.success("Progress updated");
       router.refresh();

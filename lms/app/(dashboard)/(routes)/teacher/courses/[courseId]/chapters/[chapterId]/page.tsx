@@ -16,11 +16,12 @@ import { Banner } from "@/components/banner";
 import { ChapterActions } from "./_components/chapter-actions";
 import { LecturesForm } from "./_components/lectures-form";
 import { useAuth } from "@/context/AuthContext";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import { Chapter, Lecture, ChapterAttachment } from "@prisma/client";
 import axios from "axios";
 import { ChapterDurationForm } from "./_components/chapter-duration-form";
 import { ChapterAttachmentForm } from "./_components/chapter-attachment-form";
+import Loader from "@/components/loader";
 
 const ChapterIdPage = ({
   params,
@@ -28,7 +29,7 @@ const ChapterIdPage = ({
   params: { courseId: string; chapterId: string };
 }) => {
   const { userId } = useAuth();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [chapter, setChapter] = useState<
     Chapter & { lectures: Lecture[] } & { attachments: ChapterAttachment[] }
   >();
@@ -60,7 +61,7 @@ const ChapterIdPage = ({
   }, [refresh]);
 
   if (!chapter) {
-    return <div>No Chapter</div>;
+    return <Loader />;
   }
 
   const requiredFields = [
@@ -76,7 +77,7 @@ const ChapterIdPage = ({
   const isComplete = requiredFields.every(Boolean);
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       {!chapter.isPublished && (
         <Banner
           variant="warning"
@@ -183,7 +184,7 @@ const ChapterIdPage = ({
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 };
 

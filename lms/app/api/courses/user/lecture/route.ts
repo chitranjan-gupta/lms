@@ -2,8 +2,10 @@ import { db } from "@/lib/db";
 import {
   Chapter,
   ChapterAttachment,
+  ChapterProgress,
   Lecture,
   LectureAttachment,
+  LectureProgress,
 } from "@prisma/client";
 import { NextRequest, NextResponse } from "next/server";
 
@@ -31,14 +33,24 @@ export async function POST(req: NextRequest) {
           price: true,
         },
       });
+      if (!course) {
+        return new NextResponse("Course not found", { status: 404 });
+      }
       const chapter = await db.chapter.findUnique({
         where: {
           id: data.chapterId,
           isPublished: true,
         },
+        include: {
+          lectures: {
+            where: {
+              isPublished: true,
+            },
+          },
+        },
       });
-      if (!chapter || !course) {
-        return new NextResponse("Chapter or course not found", { status: 404 });
+      if (!chapter) {
+        return new NextResponse("Chapter not found", { status: 404 });
       }
       const lecture = await db.lecture.findUnique({
         where: {
@@ -50,12 +62,12 @@ export async function POST(req: NextRequest) {
         return new NextResponse("Lecture not found", { status: 404 });
       }
       let muxData = null;
-      let attachments: LectureAttachment[] = [];
+      let lectureAttachments: LectureAttachment[] = [];
       let chapterAttachments: ChapterAttachment[] = [];
       let nextChapter: Chapter | null = null;
       let nextLecture: Lecture | null = null;
       if (purchase) {
-        attachments = await db.lectureAttachment.findMany({
+        lectureAttachments = await db.lectureAttachment.findMany({
           where: {
             lectureId: data.lectureId,
           },
@@ -73,10 +85,10 @@ export async function POST(req: NextRequest) {
             lectureId: data.lectureId,
           },
         });
-
         nextLecture = await db.lecture.findFirst({
           where: {
             courseId: data.courseId,
+            chapterId: chapter.id,
             isPublished: true,
             position: {
               gt: lecture?.position,
@@ -99,10 +111,25 @@ export async function POST(req: NextRequest) {
             position: "asc",
           },
         });
+
+        if (nextChapter && !nextLecture) {
+          nextLecture = await db.lecture.findFirst({
+            where: {
+              courseId: data.courseId,
+              chapterId: nextChapter.id,
+              isPublished: true,
+            },
+            orderBy: {
+              position: "asc",
+            },
+          });
+        }
       }
-      let userProgress;
+
+      let chapterProgress: ChapterProgress | null = null;
+      let lectureProgress: LectureProgress | null = null;
       if (data.userId) {
-        userProgress = await db.chapterProgress.findUnique({
+        chapterProgress = await db.chapterProgress.findUnique({
           where: {
             userId_chapterId: {
               userId: data.userId,
@@ -110,17 +137,28 @@ export async function POST(req: NextRequest) {
             },
           },
         });
+
+        lectureProgress = await db.lectureProgress.findUnique({
+          where: {
+            userId_lectureId: {
+              userId: data.userId,
+              lectureId: data.lectureId,
+            },
+          },
+        });
       }
+
       return NextResponse.json({
         lecture,
         chapter,
         course,
         muxData,
-        attachments,
+        lectureAttachments,
         chapterAttachments,
         nextChapter,
         nextLecture,
-        userProgress,
+        chapterProgress,
+        lectureProgress,
         purchase,
       });
     } else if (

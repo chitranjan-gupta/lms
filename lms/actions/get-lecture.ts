@@ -32,11 +32,12 @@ export const getLecture = async ({
       chapter: res.chapter,
       course: res.course,
       muxData: res.muxData,
-      attachments: res.attachments as LectureAttachment[],
+      lectureAttachments: res.lectureAttachments as LectureAttachment[],
       chapterAttachments: res.chapterAttachments as ChapterAttachment[],
       nextLecture: res.nextLecture,
       nextChapter: res.nextChapter,
-      userProgress: res.userProgress,
+      chapterProgress: res.chapterProgress,
+      lectureProgress: res.lectureProgress,
       purchase: res.purchase,
     };
   } catch (error: any) {
@@ -48,11 +49,12 @@ export const getLecture = async ({
       chapter: null,
       course: null,
       muxData: null,
-      attachments: [],
+      lectureAttachments: [],
       chapterAttachments: [],
       nextLecture: null,
       nextChapter: null,
-      userProgress: null,
+      chapterProgress: null,
+      lectureProgress: null,
       purchase: null,
     };
   }

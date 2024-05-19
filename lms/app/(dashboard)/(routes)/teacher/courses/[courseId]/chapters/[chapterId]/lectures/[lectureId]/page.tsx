@@ -17,10 +17,11 @@ import { Banner } from "@/components/banner";
 import { LectureActions } from "./_components/lecture-actions";
 import { useAuth } from "@/context/AuthContext";
 import { Lecture, LectureAttachment } from "@prisma/client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import axios from "axios";
 import { LectureDurationForm } from "./_components/lecture-duration-form";
 import { LectureAttachmentForm } from "./_components/lecture-attachment-form";
+import Loader from "@/components/loader";
 
 const LectureIdPage = ({
   params,
@@ -28,7 +29,7 @@ const LectureIdPage = ({
   params: { courseId: string; chapterId: string; lectureId: string };
 }) => {
   const { userId } = useAuth();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [lecture, setLecture] = useState<
     Lecture & { attachments: LectureAttachment[] }
   >();
@@ -58,7 +59,7 @@ const LectureIdPage = ({
     }
   }, [refresh]);
   if (!lecture) {
-    return <div>No Lecture</div>;
+    return <Loader />;
   }
 
   const requiredFields = [
@@ -74,7 +75,7 @@ const LectureIdPage = ({
   const isComplete = requiredFields.every(Boolean);
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       {!lecture.isPublished && (
         <Banner
           variant="warning"
@@ -188,7 +189,7 @@ const LectureIdPage = ({
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 };
 

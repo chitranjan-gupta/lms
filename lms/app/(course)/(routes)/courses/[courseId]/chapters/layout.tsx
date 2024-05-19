@@ -1,11 +1,13 @@
 "use client";
-import React, { useEffect, useState } from "react";
+
+import React, { useEffect, useState, Suspense } from "react";
 import { getProgress } from "@/actions/get-actions";
-import { CourseSidebar } from "./_components/course-sidebar";
-import { CourseNavbar } from "./_components/course-navbar";
+import { CourseSidebar } from "./[chapterId]/lectures/[lectureId]/_components/course-sidebar";
+import { CourseNavbar } from "./[chapterId]/lectures/[lectureId]/_components/course-navbar";
 import { useAuth } from "@/context/AuthContext";
 import { Chapter, Course, Lecture } from "@prisma/client";
 import axios from "axios";
+import Loader from "@/components/loader";
 
 const CourseLayout = ({
   children,
@@ -15,11 +17,13 @@ const CourseLayout = ({
   params: { courseId: string };
 }) => {
   const { userId } = useAuth();
+  const [loading, setLoading] = useState<boolean>(false);
   const [course, setCourse] = useState<
     Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
   >();
   const [progressCount, setProgressCount] = useState<number>(0);
   async function getData() {
+    setLoading(true);
     try {
       const res = await axios.get(
         `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`
@@ -31,6 +35,8 @@ const CourseLayout = ({
       if (error.response) {
         console.log(error.response);
       }
+    } finally {
+      setLoading(false);
     }
   }
   async function getAuthData() {
@@ -61,18 +67,24 @@ const CourseLayout = ({
     }
   }, [userId, params.courseId]);
   if (!course) {
-    return <div>No Course</div>;
+    return <Loader />;
   }
   return (
-    <div className="h-full">
-      <div className="h-[80px] md:pl-80 fixed inset-y-0 bg-white w-full z-50">
-        <CourseNavbar course={course} progressCount={progressCount} />
-      </div>
-      <div className="hidden md:flex h-full w-80 flex-col bg-white fixed inset-y-0 z-50">
-        <CourseSidebar course={course} progressCount={progressCount} />
-      </div>
-      <main className="md:pl-80 pt-[80px] h-full">{children}</main>
-    </div>
+    <Suspense fallback={<Loader />}>
+      {loading ? (
+        <Loader />
+      ) : (
+        <div className="h-full">
+          <div className="h-[80px] md:pl-80 fixed inset-y-0 bg-white w-full z-50">
+            <CourseNavbar course={course} progressCount={progressCount} />
+          </div>
+          <div className="hidden md:flex h-full w-80 flex-col bg-white fixed inset-y-0 z-50">
+            <CourseSidebar course={course} progressCount={progressCount} />
+          </div>
+          <main className="md:pl-80 pt-[80px] h-full">{children}</main>
+        </div>
+      )}
+    </Suspense>
   );
 };
 

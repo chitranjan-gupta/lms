@@ -19,13 +19,13 @@ import { Banner } from "@/components/banner";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
 import { Category, Chapter, Course, CourseAttachment } from "@prisma/client";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState, Suspense } from "react";
 import axios from "axios";
-import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { userId } = useAuth();
-  const [refresh, setRefresh] = useState(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
   const [course, setCourse] = useState<
     Course & { chapters: Chapter[] } & { attachments: CourseAttachment[] }
   >();
@@ -59,8 +59,9 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
       void getData();
     }
   }, [refresh]);
+
   if (!course) {
-    return <div>No course found</div>;
+    return <Loader/>;
   }
   const requiredFields = [
     course.title,
@@ -79,7 +80,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const isComplete = requiredFields.every(Boolean);
 
   return (
-    <>
+    <Suspense fallback={<Loader />}>
       {!course.isPublished && (
         <Banner label="This course is unpublished. It will not be visible to the students." />
       )}
@@ -175,7 +176,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
           </div>
         </div>
       </div>
-    </>
+    </Suspense>
   );
 };
 

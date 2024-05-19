@@ -4,6 +4,7 @@ import "./globals.css";
 import { ToastProvider } from "@/components/providers/toaster-provider";
 import { ConfettiProvider } from "@/components/providers/confetti-provider";
 import { AuthContextProvider } from "@/context/AuthContext";
+import { Toaster } from "@/components/ui/sonner";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,14 +19,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-      <html lang="en">
-        <body className={inter.className}>
-          <ConfettiProvider />
-          <ToastProvider />
-          <AuthContextProvider>
-          {children}
-          </AuthContextProvider>
-          </body>
-      </html>
+    <html lang="en">
+      <body className={inter.className}>
+        <ConfettiProvider />
+        <ToastProvider />
+        <AuthContextProvider>{children}</AuthContextProvider>
+        <Toaster />
+      </body>
+    </html>
   );
 }

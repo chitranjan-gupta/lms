@@ -10,7 +10,9 @@ const { video } = new Mux({
 
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { courseId: string; chapterId: string; lectureId: string; } }
+  {
+    params,
+  }: { params: { courseId: string; chapterId: string; lectureId: string } }
 ) {
   try {
     const { user } = await auth(req);
@@ -41,7 +43,7 @@ export async function DELETE(
         courseId: params.courseId,
       },
       include: {
-        muxData: true
+        muxData: true,
       },
     });
     if (!lecture) {
@@ -95,7 +97,9 @@ export async function DELETE(
 
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { courseId: string; chapterId: string; lectureId: string; } }
+  {
+    params,
+  }: { params: { courseId: string; chapterId: string; lectureId: string } }
 ) {
   try {
     const { user } = await auth(req);
@@ -137,7 +141,13 @@ export async function PATCH(
         },
       });
       if (existingMuxData) {
-        await video.assets.delete(existingMuxData.assetId);
+        // const existingAsset = await video.assets.retrieve(
+        //   existingMuxData.assetId
+        // );
+        // if (existingAsset) {
+        //   console.log("Existing asset");
+        //   await video.assets.delete(existingMuxData.assetId);
+        // }
         await db.muxData.delete({
           where: {
             id: existingMuxData.id,

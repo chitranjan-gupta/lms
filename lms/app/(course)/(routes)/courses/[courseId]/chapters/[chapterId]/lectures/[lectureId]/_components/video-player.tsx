@@ -8,12 +8,16 @@ import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
+import { Lecture, Chapter } from "@prisma/client";
 
 interface VideoPlayerProps {
   playbackId: string;
   courseId: string;
+  chapter: Chapter & { lectures: Lecture[] };
   chapterId: string;
+  lectureId: string;
   nextChapterId?: string;
+  nextLectureId?: string;
   isLocked: boolean;
   completeOnEnd: boolean;
   title: string;
@@ -22,8 +26,11 @@ interface VideoPlayerProps {
 export const VideoPlayer = ({
   playbackId,
   courseId,
+  chapter,
   chapterId,
+  lectureId,
   nextChapterId,
+  nextLectureId,
   isLocked,
   completeOnEnd,
   title,
@@ -36,19 +43,29 @@ export const VideoPlayer = ({
     // try {
     //   if (completeOnEnd) {
     //     await axios.put(
-    //       `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+    //       `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
     //       {
     //         isCompleted: true,
     //       }
     //     );
     //   }
-    //   if (!nextChapterId) {
+    //   if (!nextChapterId && !nextLectureId) {
     //     confetti.onOpen();
     //   }
     //   toast.success("Progress updated");
     //   router.refresh();
-    //   if (nextChapterId) {
-    //     router.push(`/courses/${courseId}/chapters/${nextChapterId}`);
+    //   if (nextChapterId || nextLectureId) {
+    //     const current = chapter.lectures.some(({ id }) => id === nextLectureId);
+    //     if (current) {
+    //       router.push(
+    //         `/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`
+    //       );
+    //     } else {
+
+    //       router.push(
+    //         `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
+    //       );
+    //     }
     //   }
     // } catch (error) {
     //   toast.error("Something went wrong");
