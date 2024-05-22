@@ -36,13 +36,16 @@ const LectureIdPage = ({
   async function getData() {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/lecture`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/lecture`,
         JSON.stringify({
           userId: userId,
           lectureId: params.lectureId,
           chapterId: params.chapterId,
           courseId: params.courseId,
-        })
+        }),
+        {
+          withCredentials: true
+        }
       );
       if (res.status == 200) {
         setLecture(res.data);

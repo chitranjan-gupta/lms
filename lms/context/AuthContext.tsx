@@ -39,7 +39,10 @@ export function AuthContextProvider({
     try {
       setLoading(true);
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/${path}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/${path}`,
+        {
+          withCredentials: true,
+        }
       );
       if (res.status === 200) {
         console.log(res.data);
@@ -68,25 +71,30 @@ export function AuthContextProvider({
   async function logOut() {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/user/logout`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/logout`,
+        {
+          withCredentials: true,
+        }
       );
       if (res.status === 200) {
         console.log(res.data);
         setUserId("");
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
     }
   }
   useEffect(() => {
     if (process.env.NODE_ENV === "production") {
       if (typeof window !== "undefined") {
-        void getData(true, "auth");
+        void getData(true, "user/auth");
       }
     } else if (process.env.NODE_ENV === "development") {
       if (ready) {
         if (typeof window !== "undefined") {
-          void getData(true, "auth");
+          void getData(true, "user/auth");
         }
       }
       if (ready) {

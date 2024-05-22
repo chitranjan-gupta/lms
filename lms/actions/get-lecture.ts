@@ -17,14 +17,20 @@ export const getLecture = async ({
   try {
     const res = (
       await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/lecture`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/lecture`,
         JSON.stringify({
           userId: userId,
           courseId: courseId,
           chapterId: chapterId,
           lectureId: lectureId,
           purchase: true,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
     ).data;
     return {

@@ -34,13 +34,24 @@ export const ImageForm = ({
   const toggleEdit = () => setIsEditing((current) => !current);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.patch(`/api/courses/${courseId}`, values);
+      await axios.patch(
+        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${courseId}`,
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Course updated");
       toggleEdit();
       setRefresh((prev) => !prev);
       // router.refresh();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     }
   };

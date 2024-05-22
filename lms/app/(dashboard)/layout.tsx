@@ -4,6 +4,7 @@ import { Navbar } from "./_components/navbar";
 import { Sidebar } from "./_components/sidebar";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
   const { userId } = useAuth();
@@ -34,7 +35,7 @@ const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
           <main className="md:pl-56 pt-[80px] h-full">{children}</main>
         </div>
       ) : (
-        <></>
+        <Loader />
       )}
     </>
   );

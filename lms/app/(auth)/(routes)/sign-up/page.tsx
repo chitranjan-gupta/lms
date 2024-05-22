@@ -34,8 +34,13 @@ export default function Page() {
     setLoading(true);
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/user/signup`,
-        JSON.stringify(jsonData)
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/signup`,
+        JSON.stringify(jsonData),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status === 200) {
         router.push("/sign-in");
@@ -43,8 +48,18 @@ export default function Page() {
         setError(res.data);
       }
     } catch (error: any) {
-      console.log(error);
-      setError(error.message);
+      if (error.response) {
+        if (error.response.data) {
+          if (error.response.data.message) {
+            setError(error.response.data.message);
+          } else {
+            setError(error.response.statusText);
+          }
+        } else {
+          setError(error.response.statusText);
+        }
+        console.log(error.response);
+      }
     } finally {
       setLoading(false);
     }
@@ -106,7 +121,7 @@ export default function Page() {
                   name="username"
                   id="username"
                   className="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg focus:ring-sky-600 focus:border-sky-600 block w-full p-2.5"
-                  placeholder="name"
+                  placeholder="username"
                   required
                 />
               </div>

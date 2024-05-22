@@ -25,7 +25,13 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   async function getData() {
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/categories`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         setCategories(res.data);

@@ -11,13 +11,19 @@ const CoursesPage = () => {
   async function getData() {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user`,
         JSON.stringify({
           userId: userId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
-        console.log(res.data)
+        console.log(res.data);
         setCourses(res.data);
       }
     } catch (error: any) {

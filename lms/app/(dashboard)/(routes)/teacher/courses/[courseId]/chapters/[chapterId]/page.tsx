@@ -37,12 +37,15 @@ const ChapterIdPage = ({
   async function getData() {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/chapter`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/chapter`,
         JSON.stringify({
           userId: userId,
           courseId: params.courseId,
           chapterId: params.chapterId,
-        })
+        }),
+        {
+          withCredentials: true
+        }
       );
       if (res.status == 200) {
         setChapter(res.data);

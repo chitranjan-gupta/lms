@@ -20,11 +20,17 @@ export default function Page() {
     try {
       setLoading(true);
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/user/signin`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/user/signin`,
         JSON.stringify({
           email: email,
           password: password,
-        })
+        }),
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          withCredentials: true
+        }
       );
       if (res.status == 200) {
         if (res.data.userId) {
@@ -37,8 +43,18 @@ export default function Page() {
         setError(res.data);
       }
     } catch (error: any) {
-      console.log(error);
-      setError(error.message);
+      if (error.response) {
+        if(error.response.data){
+          if(error.response.data.message){
+            setError(error.response.data.message);
+          }else{
+            setError(error.response.statusText);  
+          }
+        }else{
+          setError(error.response.statusText);
+        }
+        console.log(error.response);
+      }
     } finally {
       setLoading(false);
     }

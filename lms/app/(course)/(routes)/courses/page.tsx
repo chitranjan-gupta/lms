@@ -28,12 +28,12 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
     setLoading(true);
     try {
       const categories = await (
-        await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/categories`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`, {
           method: "GET",
         })
       ).json();
       const courses = await (
-        await fetch(`${process.env.NEXT_PUBLIC_APP_URL}/api/courses/search`, {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/search`, {
           method: "POST",
           body: JSON.stringify({
             title: searchParams.title,

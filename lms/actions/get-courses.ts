@@ -22,12 +22,18 @@ export const getCourses = async ({
   try {
     const courses = (
       await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/course`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/course`,
         JSON.stringify({
           userId: userId,
           title: title,
           categoryId: categoryId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
     ).data as (Course & { category: Category } & { chapters: Chapter[] } & {
       purchases: Purchase[];

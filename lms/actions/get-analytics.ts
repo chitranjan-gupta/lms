@@ -22,10 +22,16 @@ export const getAnalytics = async (userId: string) => {
   try {
     const purchases = (
       await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/purchase`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/purchase`,
         JSON.stringify({
           userId: userId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
     ).data;
     const groupedEarnings = groupByCourse(purchases);

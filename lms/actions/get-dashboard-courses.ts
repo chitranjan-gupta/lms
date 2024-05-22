@@ -1,4 +1,3 @@
-//import { db } from "@/lib/db";
 import { Category, Chapter, Course } from "@prisma/client";
 import { getProgress } from "./get-actions";
 import axios from "axios";
@@ -20,10 +19,16 @@ export const getDashboardCourses = async (
   try {
     const purchasedCourses = (
       await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/purchases`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/purchases`,
         JSON.stringify({
           userId: userId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       )
     ).data as { course: Course }[];
     const courses = purchasedCourses.map(

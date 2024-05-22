@@ -51,25 +51,48 @@ export const ChaptersForm = ({
   const { isSubmitting, isValid } = form.formState;
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${courseId}/chapters`, values);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters`,
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Chapter created");
       toggleCreating();
       // router.refresh();
       setRefresh((prev) => !prev);
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     }
   };
   const onReorder = async (updateData: { id: string; position: number }[]) => {
     try {
       setIsUpdating(true);
-      await axios.put(`/api/courses/${courseId}/chapters/reorder`, {
-        list: updateData,
-      });
+      await axios.put(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/reorder`,
+        {
+          list: updateData,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Chapters reordered");
       router.refresh();
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsUpdating(false);

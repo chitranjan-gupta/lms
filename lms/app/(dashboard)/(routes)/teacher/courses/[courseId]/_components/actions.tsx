@@ -29,16 +29,37 @@ export const Actions = ({
     try {
       setIsLoading(false);
       if (isPublished) {
-        await axios.patch(`/api/courses/${courseId}/unpublish`);
+        await axios.patch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/unpublish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         toast.success("Course unpublished");
       } else {
-        await axios.patch(`/api/courses/${courseId}/publish`);
+        await axios.patch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/publish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
+        );
         toast.success("Course Published");
         confetti.onOpen();
       }
       setRefresh((prev) => !prev);
       // router.refresh();
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -47,12 +68,23 @@ export const Actions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/courses/${courseId}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Course deleted");
       setRefresh((prev) => !prev);
       //router.refresh();
       router.push(`/teacher/courses`);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);

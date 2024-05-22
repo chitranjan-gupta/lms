@@ -33,17 +33,26 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   async function getData() {
     try {
       const resp = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/categories`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+        {
+          withCredentials: true,
+        }
       );
       if (resp.status == 200) {
         setCategories(resp.data);
       }
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user`,
         JSON.stringify({
           userId: userId,
           courseId: params.courseId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         setCourse(res.data);
@@ -61,7 +70,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   }, [refresh]);
 
   if (!course) {
-    return <Loader/>;
+    return <Loader />;
   }
   const requiredFields = [
     course.title,
