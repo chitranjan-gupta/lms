@@ -30,18 +30,35 @@ export const ChapterActions = ({
       setIsLoading(false);
       if (isPublished) {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/unpublish`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/unpublish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         toast.success("Chapter unpublished");
       } else {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/publish`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/publish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         toast.success("Chapter Published");
       }
       setRefresh((prev) => !prev);
       //router.refresh();
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -50,12 +67,23 @@ export const ChapterActions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Chapter deleted");
       setRefresh((prev) => !prev);
       //router.refresh();
       router.push(`/teacher/courses/${courseId}`);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);

@@ -54,15 +54,23 @@ export const LecturesForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.post(
-        `/api/courses/${courseId}/chapters/${chapterId}/lectures`,
-        values
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures`,
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       toast.success("Lecture created");
       toggleCreating();
       setRefresh((prev) => !prev);
       // router.refresh();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     }
   };
@@ -70,15 +78,24 @@ export const LecturesForm = ({
     try {
       setIsUpdating(true);
       await axios.put(
-        `/api/courses/${courseId}/chapters/${chapterId}/lectures/reorder`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/reorder`,
         {
           list: updateData,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       toast.success("Lectures reordered");
-      router.refresh();
-    } catch (error) {
-      console.log(error);
+      setRefresh((prev) => !prev);
+      // router.refresh();
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsUpdating(false);

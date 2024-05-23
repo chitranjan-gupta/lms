@@ -88,7 +88,8 @@ export const ChaptersForm = ({
         }
       );
       toast.success("Chapters reordered");
-      router.refresh();
+      //router.refresh();
+      setRefresh((prev) => !prev);
     } catch (error: any) {
       if (error.response) {
         console.log(error.response);

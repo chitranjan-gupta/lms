@@ -26,7 +26,13 @@ const CourseLayout = ({
     setLoading(true);
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${params.courseId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         setCourse(res.data);
@@ -42,11 +48,17 @@ const CourseLayout = ({
   async function getAuthData() {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/user/progress`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/progress`,
         JSON.stringify({
           userId: userId,
           courseId: params.courseId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       const progress = await getProgress(userId, params.courseId);
       if (res.status == 200) {

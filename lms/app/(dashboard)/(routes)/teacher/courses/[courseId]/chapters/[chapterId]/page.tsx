@@ -44,7 +44,10 @@ const ChapterIdPage = ({
           chapterId: params.chapterId,
         }),
         {
-          withCredentials: true
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (res.status == 200) {

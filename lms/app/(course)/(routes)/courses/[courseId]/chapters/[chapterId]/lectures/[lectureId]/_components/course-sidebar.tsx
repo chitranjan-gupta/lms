@@ -7,9 +7,7 @@ import {
   ChapterProgress,
   Purchase,
 } from "@prisma/client";
-import {
-  CourseSidebarDropDownItem,
-} from "./course-sidebar-item";
+import { CourseSidebarDropDownItem } from "./course-sidebar-item";
 import { CourseProgress } from "@/components/course-progress";
 import { useAuth } from "@/context/AuthContext";
 import axios from "axios";
@@ -35,11 +33,17 @@ export const CourseSidebar = ({
   async function getData() {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/purchases`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/purchases`,
         JSON.stringify({
           userId: userId,
           courseId: course.id,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         setPurchase(res.data);

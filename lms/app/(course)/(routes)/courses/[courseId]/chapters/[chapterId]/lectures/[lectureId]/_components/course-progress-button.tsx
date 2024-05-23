@@ -37,9 +37,15 @@ export const CourseProgressButton = ({
     try {
       setIsLoading(true);
       await axios.put(
-        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
         {
           isCompleted: !isCompleted,
+        },
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (!isCompleted && !nextChapterId && !nextLectureId) {
@@ -54,9 +60,15 @@ export const CourseProgressButton = ({
         } else {
           if (!isChapterCompleted) {
             await axios.put(
-              `/api/courses/${courseId}/chapters/${chapterId}/progress`,
+              `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/progress`,
               {
                 isCompleted: true,
+              },
+              {
+                withCredentials: true,
+                headers: {
+                  "Content-Type": "application/json",
+                },
               }
             );
           }

@@ -43,9 +43,15 @@ export const VideoPlayer = ({
     // try {
     //   if (completeOnEnd) {
     //     await axios.put(
-    //       `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
+    //       `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
     //       {
     //         isCompleted: true,
+    //       },
+    //       {
+    //         withCredentials: true,
+    //         headers: {
+    //           "Content-Type": "application/json",
+    //         },
     //       }
     //     );
     //   }
@@ -61,7 +67,6 @@ export const VideoPlayer = ({
     //         `/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`
     //       );
     //     } else {
-
     //       router.push(
     //         `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
     //       );

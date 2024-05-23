@@ -34,13 +34,24 @@ export const ChapterAttachmentForm = ({
   const toggleEdit = () => setIsEditing((current) => !current);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
-      await axios.post(`/api/courses/${courseId}/chapters/${chapterId}/attachments`, values);
+      await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/attachments`,
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Chapter updated");
       toggleEdit();
       setRefresh((prev) => !prev);
       //router.refresh();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     }
   };
@@ -48,10 +59,22 @@ export const ChapterAttachmentForm = ({
   const onDelete = async (id: string) => {
     try {
       setDeletingId(id);
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/attachments/${id}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/attachments/${id}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Attachment deleted");
-      router.refresh();
-    } catch (error) {
+      setRefresh((prev) => !prev)
+      //router.refresh();
+    } catch (error:any) {
+      if(error.response){
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setDeletingId(null);

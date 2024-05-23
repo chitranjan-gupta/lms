@@ -5,7 +5,7 @@ import { Button } from "@/components/ui/button";
 import axios from "axios";
 import { Trash } from "lucide-react";
 import { useRouter } from "next/navigation";
-import { SetStateAction, Dispatch,useState } from "react";
+import { SetStateAction, Dispatch, useState } from "react";
 import toast from "react-hot-toast";
 
 interface LectureActionsProps {
@@ -14,7 +14,7 @@ interface LectureActionsProps {
   chapterId: string;
   lectureId: string;
   isPublished: boolean;
-  setRefresh: Dispatch<SetStateAction<boolean>>
+  setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
 export const LectureActions = ({
@@ -23,7 +23,7 @@ export const LectureActions = ({
   chapterId,
   lectureId,
   isPublished,
-  setRefresh
+  setRefresh,
 }: LectureActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
@@ -32,18 +32,35 @@ export const LectureActions = ({
       setIsLoading(false);
       if (isPublished) {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/unpublish`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/unpublish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         toast.success("Lecture unpublished");
       } else {
         await axios.patch(
-          `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/publish`
+          `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/publish`,
+          null,
+          {
+            withCredentials: true,
+            headers: {
+              "Content-Type": "application/json",
+            },
+          }
         );
         toast.success("Lecture Published");
       }
-      setRefresh((prev) => !prev)
+      setRefresh((prev) => !prev);
       // router.refresh();
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
@@ -52,12 +69,23 @@ export const LectureActions = ({
   const onDelete = async () => {
     try {
       setIsLoading(true);
-      await axios.delete(`/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`);
+      await axios.delete(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
       toast.success("Lecture deleted");
       setRefresh(true);
       //router.refresh();
       router.push(`/teacher/courses/${courseId}/chapters/${chapterId}`);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);

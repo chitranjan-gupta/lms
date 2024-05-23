@@ -35,7 +35,7 @@ export const ImageForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${courseId}`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}`,
         values,
         {
           withCredentials: true,

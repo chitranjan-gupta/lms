@@ -23,7 +23,6 @@ const CoursesPage = () => {
         }
       );
       if (res.status == 200) {
-        console.log(res.data);
         setCourses(res.data);
       }
     } catch (error: any) {

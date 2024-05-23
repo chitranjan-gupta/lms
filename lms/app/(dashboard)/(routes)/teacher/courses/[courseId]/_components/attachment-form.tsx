@@ -67,7 +67,8 @@ export const AttachmentForm = ({
         }
       );
       toast.success("Attachment deleted");
-      router.refresh();
+      setRefresh((prev) => !prev);
+      //router.refresh();
     } catch (error: any) {
       if (error.response) {
         console.log(error.response);

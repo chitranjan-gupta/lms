@@ -6,6 +6,7 @@ import { CoursesList } from "@/components/courses-list";
 import { Category, Course } from "@prisma/client";
 import { useEffect, useState, Suspense } from "react";
 import Loader from "@/components/loader";
+import axios from "axios";
 
 interface SearchPageProps {
   searchParams: {
@@ -27,28 +28,38 @@ const SearchPage = ({ searchParams }: SearchPageProps) => {
   const getData = async () => {
     setLoading(true);
     try {
-      const categories = await (
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/categories`, {
-          method: "GET",
-        })
-      ).json();
-      const courses = await (
-        await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/courses/search`, {
-          method: "POST",
-          body: JSON.stringify({
-            title: searchParams.title,
-            categoryId: searchParams.categoryId,
-          }),
-        })
-      ).json();
-      if (categories) {
-        setCategories(categories);
+      const getCategories = await axios.get(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      const getCourses = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/search`,
+        JSON.stringify({
+          title: searchParams.title,
+          categoryId: searchParams.categoryId,
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (getCategories.status == 200) {
+        setCategories(getCategories.data);
       }
-      if (courses) {
-        setCourses(courses);
+      if (getCourses.status == 200) {
+        setCourses(getCourses.data);
       }
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
     } finally {
       setLoading(false);
     }

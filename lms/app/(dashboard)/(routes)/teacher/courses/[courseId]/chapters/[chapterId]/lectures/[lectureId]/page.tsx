@@ -44,7 +44,10 @@ const LectureIdPage = ({
           courseId: params.courseId,
         }),
         {
-          withCredentials: true
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
         }
       );
       if (res.status == 200) {

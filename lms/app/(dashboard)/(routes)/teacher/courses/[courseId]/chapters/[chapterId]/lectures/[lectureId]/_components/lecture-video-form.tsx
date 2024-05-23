@@ -13,7 +13,7 @@ import { FileUpload } from "@/components/file-upload";
 import MuxPlayer from "@mux/mux-player-react";
 
 interface LectureVideoFormProps {
-  initialData: Lecture & { muxData?: MuxData | null };
+  initialData: Lecture & { mux_data?: MuxData | null };
   courseId: string;
   chapterId: string;
   lectureId: string;
@@ -37,15 +37,23 @@ export const LectureVideoForm = ({
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
-        `/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
-        values
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`,
+        values,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       toast.success("Lecture updated");
       toggleEdit();
       setRefresh((prev) => !prev);
       //router.refresh();
-    } catch (error) {
-      console.log(error);
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     }
   };
@@ -75,7 +83,7 @@ export const LectureVideoForm = ({
           </div>
         ) : (
           <div className="relative aspect-video mt-2">
-            <MuxPlayer playbackId={initialData?.muxData?.playbackId || ""} />
+            <MuxPlayer playbackId={initialData?.mux_data?.playbackId || ""} />
           </div>
         ))}
       {isEditing && (

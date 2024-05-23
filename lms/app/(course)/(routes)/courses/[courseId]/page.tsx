@@ -34,11 +34,17 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const getPurchase = async () => {
     try {
       const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/purchases`,
+        `${process.env.NEXT_PUBLIC_API_URL}/api/purchases`,
         JSON.stringify({
           userId: userId,
           courseId: params.courseId,
-        })
+        }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         if (res.data) {
@@ -60,7 +66,13 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
     setLoading(true);
     try {
       const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_APP_URL}/api/courses/${params.courseId}`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${params.courseId}`,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       if (res.status == 200) {
         setCourse(res.data);
@@ -79,10 +91,20 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
     try {
       setIsLoading(true);
       const response = await axios.post(
-        `/api/courses/${params.courseId}/checkout`
+        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${params.courseId}/checkout`,
+        null,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
       );
       window.location.assign(response.data.url);
-    } catch (error) {
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
       toast.error("Something went wrong");
     } finally {
       setIsLoading(false);
