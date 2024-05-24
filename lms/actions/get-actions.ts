@@ -6,25 +6,36 @@ export const getProgress = async (
   courseId: string
 ): Promise<number> => {
   try {
-    const publishedChapters = (
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/chapter`,
-        JSON.stringify({
-          userId: userId,
-          courseId: courseId,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-    ).data as Chapter[];
+    const getpublishedChapters = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/chapter`,
+      JSON.stringify({
+        userId: userId,
+        courseId: courseId,
+      }),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
 
-    const publishedChaptersIds = publishedChapters.map((chapter) => chapter.id);
-    const validCompletedChapters = (
-      await axios.post(
+    let publishedChapters: Chapter[] = [];
+
+    if (getpublishedChapters.status == 200) {
+      publishedChapters = getpublishedChapters.data;
+    }
+
+    let publishedChaptersIds: string[] = [];
+
+    if (publishedChapters.length > 0) {
+      publishedChaptersIds = publishedChapters.map((chapter) => chapter.id);
+    }
+
+    let validCompletedChapters;
+
+    if (publishedChaptersIds.length > 0) {
+      const getvalidCompletedChapters = await axios.post(
         `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/progress`,
         JSON.stringify({
           userId: userId,
@@ -36,10 +47,19 @@ export const getProgress = async (
             "Content-Type": "application/json",
           },
         }
-      )
-    ).data;
-    const progressPercentage =
-      (validCompletedChapters / publishedChaptersIds.length) * 100;
+      );
+      if (getvalidCompletedChapters.status == 200) {
+        validCompletedChapters = getvalidCompletedChapters.data;
+      }
+    }
+
+    let progressPercentage: number = 0;
+
+    if (validCompletedChapters) {
+      progressPercentage =
+        (validCompletedChapters / publishedChaptersIds.length) * 100;
+    }
+
     return progressPercentage;
   } catch (error: any) {
     if (error.response) {
