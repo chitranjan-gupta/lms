@@ -5,13 +5,13 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import Loader from "@/components/loader";
 
-const TeacherLayout = ({ children }: { children: React.ReactNode }) => {
+const AdminLayout = ({ children }: { children: React.ReactNode }) => {
   const { userId, role } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(true);
   useEffect(() => {
     if (!loading) {
-      if (!(userId.length > 0) || role != "subadmin") {
+      if (!(userId.length > 0) || role != "admin") {
         router.push("/sign-in");
       }
     }
@@ -23,7 +23,7 @@ const TeacherLayout = ({ children }: { children: React.ReactNode }) => {
   }, [loading]);
   return (
     <Suspense fallback={<Loader />}>
-      {!loading && userId.length > 0 && role == "subadmin" ? (
+      {!loading && userId.length > 0 && role == "admin" ? (
         <>{children}</>
       ) : (
         <Loader />
@@ -32,4 +32,4 @@ const TeacherLayout = ({ children }: { children: React.ReactNode }) => {
   );
 };
 
-export default TeacherLayout;
+export default AdminLayout;

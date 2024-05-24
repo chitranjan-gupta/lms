@@ -1,14 +1,15 @@
 "use client";
-import axios from "axios";
-import { type FormEvent, useState } from "react";
-import Image from "next/image";
-import logo from "@/public/logo.svg";
-import { useAuth } from "@/context/AuthContext";
+
+import React, { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import axios from "axios";
 import { Eye } from "lucide-react";
+import { useAuth } from "@/context/AuthContext";
+import logo from "@/public/logo.svg";
 
 export default function Page() {
-  const { setUserId } = useAuth();
+  const { setUserId, setRole } = useAuth();
   const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<string>("");
@@ -29,14 +30,19 @@ export default function Page() {
           headers: {
             "Content-Type": "application/json",
           },
-          withCredentials: true
+          withCredentials: true,
         }
       );
       if (res.status == 200) {
-        if (res.data.userId) {
-          if (setUserId) {
+        if (res.data.userId && res.data.role) {
+          if (setUserId && setRole) {
             setUserId(res.data.userId);
-            router.push("/dashboard");
+            setRole(res.data.role);
+            if (res.data.role == "admin") {
+              router.push("/admin/courses");
+            } else {
+              router.push("/dashboard");
+            }
           }
         }
       } else {
@@ -44,13 +50,13 @@ export default function Page() {
       }
     } catch (error: any) {
       if (error.response) {
-        if(error.response.data){
-          if(error.response.data.message){
+        if (error.response.data) {
+          if (error.response.data.message) {
             setError(error.response.data.message);
-          }else{
-            setError(error.response.statusText);  
+          } else {
+            setError(error.response.statusText);
           }
-        }else{
+        } else {
           setError(error.response.statusText);
         }
         console.log(error.response);

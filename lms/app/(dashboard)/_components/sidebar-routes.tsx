@@ -1,10 +1,11 @@
 "use client";
 
-import { Layout, Compass, List, BarChart } from "lucide-react";
-import { SidebarItem } from "./siebar-item";
+import { Layout, Compass, List, BarChart, Users, Layers } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { SidebarItem } from "./sidebar-item";
+import { useAuth } from "@/context/AuthContext";
 
-const guestRoutes = [
+const userRoutes = [
   {
     icon: Layout,
     label: "Dashboard",
@@ -30,11 +31,50 @@ const teacherRoutes = [
   },
 ];
 
+const adminRoutes = [
+  {
+    icon: List,
+    label: "Courses",
+    href: "/admin/courses",
+  },
+  {
+    icon: BarChart,
+    label: "Analytics",
+    href: "/admin/analytics",
+  },
+  {
+    icon: Layers,
+    label: "Categories",
+    href: "/admin/categories",
+  },
+  {
+    icon: Users,
+    label: "Users",
+    href: "/admin/users",
+  },
+  {
+    icon: Users,
+    label: "Teachers",
+    href: "/admin/teachers",
+  },
+  {
+    icon: Users,
+    label: "Applications",
+    href: "/admin/applications",
+  },
+];
+
 export const SidebarRoutes = () => {
+  const { role } = useAuth();
   const pathname = usePathname();
   const isTeacherPage = pathname?.includes("/teacher");
-
-  const routes = isTeacherPage ? teacherRoutes : guestRoutes;
+  const isAdminPage = pathname?.includes("/admin");
+  const routes =
+    isAdminPage && role == "admin"
+      ? adminRoutes
+      : isTeacherPage
+      ? teacherRoutes
+      : userRoutes;
   return (
     <div className="flex flex-col w-full">
       {routes.map((route) => (

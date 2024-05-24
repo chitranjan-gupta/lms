@@ -7,7 +7,7 @@ import React, {
   useState,
   Suspense,
 } from "react";
-import { Book, BookOpen } from "lucide-react";
+import { Book, BookOpen, ArrowLeft } from "lucide-react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";

@@ -1,10 +1,11 @@
 "use client";
-import Image from "next/image";
-import logo from "@/public/logo.svg";
-import { type FormEvent, useState } from "react";
-import { Eye } from "lucide-react";
-import axios from "axios";
+
+import React, { type FormEvent, useState } from "react";
 import { useRouter } from "next/navigation";
+import Image from "next/image";
+import axios from "axios";
+import { Eye } from "lucide-react";
+import logo from "@/public/logo.svg";
 
 export default function Page() {
   const [loading, setLoading] = useState(false);
