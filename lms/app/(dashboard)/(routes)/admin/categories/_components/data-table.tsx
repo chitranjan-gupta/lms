@@ -23,8 +23,10 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import Link from "next/link";
 import { PlusCircle } from "lucide-react";
+import {
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
@@ -65,12 +67,12 @@ export function DataTable<TData, TValue>({
           }
           className="max-w-sm"
         />
-        <Link href="">
+        <DialogTrigger asChild>
           <Button>
             <PlusCircle className="h-4 w-4 mr-2" />
             New Category
           </Button>
-        </Link>
+        </DialogTrigger>
       </div>
       <div className="rounded-md border">
         <Table>

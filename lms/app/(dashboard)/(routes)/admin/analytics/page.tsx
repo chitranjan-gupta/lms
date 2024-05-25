@@ -1,12 +1,13 @@
 "use client";
+
 import React, { useEffect, useState } from "react";
-import { getAnalytics } from "@/actions/get-analytics";
 import { DataCard } from "./_components/data-card";
 import { Chart } from "./_components/chart";
 import { useAuth } from "@/context/AuthContext";
+import axios from "axios";
 
 const AnalyticsPage = () => {
-  const { userId } = useAuth();
+  const { userId, role } = useAuth();
   const [data, setData] = useState<
     {
       name: string;
@@ -15,14 +16,32 @@ const AnalyticsPage = () => {
   >([]);
   const [totalRevenue, setTotalRevenue] = useState<number>(0);
   const [totalSales, setTotalSales] = useState<number>(0);
-
+  async function getAnalytics() {
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/analytics`,
+        JSON.stringify({ userId: userId, role: role }),
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+      if (res.status == 200) {
+        setData(res.data.data);
+        setTotalRevenue(res.data.totalRevenue);
+        setTotalSales(res.data.totalSales);
+      }
+    } catch (error: any) {
+      if (error.response) {
+        console.log(error.response);
+      }
+    }
+  }
   useEffect(() => {
     if (userId) {
-      getAnalytics(userId).then((value) => {
-        setData(value.data);
-        setTotalRevenue(value.totalRevenue);
-        setTotalSales(value.totalSales);
-      });
+      getAnalytics();
     }
   }, [userId]);
 

@@ -25,28 +25,26 @@ export const approve = async (id: string) => {
   }
 };
 
-
 export const reject = async (id: string) => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/applications/reject`,
-        JSON.stringify({
-          applicationId: id,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        toast.success("Rejected");
+  try {
+    const res = await axios.post(
+      `${process.env.NEXT_PUBLIC_API_URL}/api/admin/applications/reject`,
+      JSON.stringify({
+        applicationId: id,
+      }),
+      {
+        withCredentials: true,
+        headers: {
+          "Content-Type": "application/json",
+        },
       }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
+    );
+    if (res.status == 200) {
+      toast.success("Rejected");
     }
-  };
-  
+  } catch (error: any) {
+    if (error.response) {
+      console.log(error.response);
+    }
+  }
+};
