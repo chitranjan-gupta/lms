@@ -27,7 +27,7 @@ export const NavbarRoutes = () => {
   return (
     <>
       <div className="font-bold text-3xl mr-2">
-        LMS {isAdminPage && "Admin"} {isTeacherPage && "Teacher"}
+        ShikshaSetu {isAdminPage && "Admin"} {isTeacherPage && "Teacher"}
       </div>
       {isSearchPage && (
         <div className="hidden md:block">

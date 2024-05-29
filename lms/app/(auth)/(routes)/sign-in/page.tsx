@@ -40,6 +40,8 @@ export default function Page() {
             setRole(res.data.role);
             if (res.data.role == "admin") {
               router.push("/admin/courses");
+            } else if(res.data.role == "subadmin"){
+              router.push("/teacher/courses");
             } else {
               router.push("/dashboard");
             }

@@ -99,7 +99,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
       <div className="p-6">
         <div>
           <Link
-            href={`/teacher/courses/`}
+            href={`/admin/courses/`}
             className="flex items-center text-sm hover:opacity-75 transition mb-6"
           >
             <ArrowLeft className="h-4 w-4 mr-2" />

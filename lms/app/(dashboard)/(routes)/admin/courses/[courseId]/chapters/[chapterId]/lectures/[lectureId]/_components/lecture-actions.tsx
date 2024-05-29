@@ -81,7 +81,7 @@ export const LectureActions = ({
       toast.success("Lecture deleted");
       setRefresh(true);
       //router.refresh();
-      router.push(`/teacher/courses/${courseId}/chapters/${chapterId}`);
+      router.push(`/admin/courses/${courseId}/chapters/${chapterId}`);
     } catch (error: any) {
       if (error.response) {
         console.log(error.response);

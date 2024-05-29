@@ -80,7 +80,7 @@ export const Actions = ({
       toast.success("Course deleted");
       setRefresh((prev) => !prev);
       //router.refresh();
-      router.push(`/teacher/courses`);
+      router.push(`/admin/courses`);
     } catch (error: any) {
       if (error.response) {
         console.log(error.response);

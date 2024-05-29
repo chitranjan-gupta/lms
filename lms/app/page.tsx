@@ -65,11 +65,12 @@ export default function Page() {
           aria-label="Global"
         >
           <div className="flex lg:flex-1">
-            <Link href="/" className="-m-1.5 p-1.5 relative" prefetch={false}>
+            <Link href="/" className="-m-1.5 p-1.5 relative flex flex-row items-center" prefetch={false}>
               <span className="sr-only">LMS</span>
               <div className="relative h-10 w-28">
                 <Image src={logo} alt="logo" fill />
               </div>
+              <span className="text-4xl">ShikshaSetu</span>
             </Link>
           </div>
           <div className="flex lg:hidden">
@@ -467,7 +468,7 @@ export default function Page() {
                   <Image src={logo} className="" fill alt="Logo" />
                 </div>
                 <span className="self-center text-2xl font-semibold whitespace-nowrap ">
-                  LMS
+                  ShikshaSetu
                 </span>
               </a>
             </div>

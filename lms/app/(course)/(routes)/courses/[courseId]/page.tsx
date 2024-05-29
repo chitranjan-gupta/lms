@@ -7,7 +7,7 @@ import React, {
   useState,
   Suspense,
 } from "react";
-import { Book, BookOpen, ArrowLeft } from "lucide-react";
+import { Book, BookOpen, File } from "lucide-react";
 import Image from "next/image";
 import { formatPrice } from "@/lib/format";
 import Link from "next/link";
@@ -18,16 +18,21 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Course, Chapter, Lecture } from "@prisma/client";
+import { Course, Chapter, Lecture, CourseAttachment } from "@prisma/client";
 import { useAuth } from "@/context/AuthContext";
+import { useRouter } from "next/navigation";
 import axios from "axios";
 import toast from "react-hot-toast";
 import Loader from "@/components/loader";
+import { Separator } from "@/components/ui/separator";
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { userId } = useAuth();
+  const router = useRouter();
   const [course, setCourse] = useState<
-    Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
+    Course & { chapters: (Chapter & { lectures: Lecture[] })[] } & {
+      attachments: CourseAttachment[];
+    }
   >();
   const [loading, setLoading] = useState<boolean>(false);
   const [isPurchased, setIsPurchased] = useState(false);
@@ -103,6 +108,9 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
       window.location.assign(response.data.url);
     } catch (error: any) {
       if (error.response) {
+        if (error.response.status == 401) {
+          router.push("/sign-in");
+        }
         console.log(error.response);
       }
       toast.error("Something went wrong");
@@ -188,6 +196,7 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
                   <h3 className="text-xl font-bold text-gray-900">
                     Course overview
                   </h3>
+                  <Separator />{" "}
                   <div className="mt-4">
                     <Accordion type="single" collapsible>
                       {course.chapters.map((chapter) => (
@@ -228,7 +237,29 @@ const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
                 </div>
 
                 <div className="mt-10">
-                  <h2 className="text-xl font-bold text-gray-900">Details</h2>
+                  <h2 className="text-xl font-bold text-gray-900">
+                    Attachments:
+                  </h2>
+                  {course &&
+                    course.attachments &&
+                    !!course.attachments.length && (
+                      <>
+                        <Separator />{" "}
+                        <div className="p-4">
+                          {course.attachments.map((courseAttachment) => (
+                            <a
+                              href={courseAttachment.url}
+                              key={courseAttachment.id}
+                              target="_blank"
+                              className="flex items-center p-3 w-full bg-sky-200 border text-sky-700 rounded-md hover:underline"
+                            >
+                              <File className="" />
+                              <p>{courseAttachment.name}</p>
+                            </a>
+                          ))}
+                        </div>
+                      </>
+                    )}
                 </div>
               </div>
             </div>

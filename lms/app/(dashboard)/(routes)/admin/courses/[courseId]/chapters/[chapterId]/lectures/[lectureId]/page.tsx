@@ -93,7 +93,7 @@ const LectureIdPage = ({
         <div className="flex items-center justify-between">
           <div className="w-full">
             <Link
-              href={`/teacher/courses/${params.courseId}/chapters/${params.chapterId}`}
+              href={`/admin/courses/${params.courseId}/chapters/${params.chapterId}`}
               className="flex items-center text-sm hover:opacity-75 transition mb-6"
             >
               <ArrowLeft className="h-4 w-4 mr-2" />
