@@ -214,7 +214,7 @@ export default function Page() {
 
       <div>
         <div>
-          <h2 className="text-center text-4xl font-semibold leading-8 text-gray-900">Courses</h2>
+          <h2 className="text-center text-4xl font-extrabold text-gray-900">Courses</h2>
         </div>
         <SearchPage categories={categories} courses={courses} />
       </div>
@@ -404,7 +404,7 @@ export default function Page() {
           </div>
         </div>
       </div>
-      <section id="#fyq">
+      <section id="fyq">
         <div className="py-16 flex flex-col justify-center items-center">
           <div className="mb-5">
             <h3 className="text-4xl font-extrabold text-gray-900">
@@ -412,7 +412,7 @@ export default function Page() {
             </h3>
           </div>
           <div>
-            <Accordion type="single" collapsible>
+            <Accordion type="single" collapsible className="w-[400px]">
               <AccordionItem value="item-1">
                 <AccordionTrigger>
                   Will I receive a certificate for each course?
