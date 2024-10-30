@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Compass, List, BarChart, Users, Layers } from "lucide-react";
+import { Layout, Compass, List, BarChart, Users, Layers, Building2 } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SidebarItem } from "./sidebar-item";
 import { useAuth } from "@/context/AuthContext";
@@ -62,6 +62,11 @@ const adminRoutes = [
     label: "Applications",
     href: "/admin/applications",
   },
+  {
+    icon: Building2,
+    label: "Companies",
+    href: "/admin/companies"
+  }
 ];
 
 export const SidebarRoutes = () => {
