@@ -16,15 +16,16 @@ generator client {
 }
 
 model User {
-  id            String   @id @default(uuid())
-  name          String   @db.Text
-  email         String   @unique @db.VarChar(45)
-  username      String   @unique @db.VarChar(45)
-  password      String   @db.Text
+  id            String    @id @default(uuid())
+  name          String    @db.Text
+  email         String    @unique @db.VarChar(45)
+  username      String    @unique @db.VarChar(45)
+  password      String    @db.Text
   courses       Course[]
-  refresh_token String?  @db.LongText
-  createdAt     DateTime @default(now())
-  updatedAt     DateTime @updatedAt
+  refresh_token String?   @db.LongText
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  Company       Company[]
 }
 
 model Course {
@@ -183,4 +184,53 @@ model StripeCustomer {
   stripeCustomerId String   @unique
   createdAt        DateTime @default(now())
   updatedAt        DateTime @updatedAt
+}
+
+model Company {
+  id            String   @id @default(uuid())
+  name          String
+  industry      String?
+  sector_type   String?
+  location      String?
+  contact_no    String?
+  contact_email String?
+  website_url   String?
+  careers_url   String?
+  logo_url      String?
+  description   String?
+  culture       String?
+  userId        String
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  created_at    DateTime
+  updated_at    DateTime
+  careers       Career[]
+
+  @@index([userId])
+}
+
+model Career {
+  id                   String    @id @default(uuid())
+  title                String
+  contact_no           String?
+  contact_email        String?
+  description          String?
+  location             String?
+  salary_range         String?
+  application_deadline DateTime?
+  career_url           String?
+  work_mode            String?
+  date_posted          DateTime?
+  responsibilities     Json
+  benefits             Json
+  requirements         Json
+  skills               Json
+  level                String?
+  experience           String?
+  department           String?
+  companyId            String
+  company              Company   @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  created_at           DateTime
+  updated_at           DateTime
+
+  @@index([companyId])
 }
