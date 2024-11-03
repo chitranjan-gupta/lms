@@ -11,7 +11,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { useState } from "react";
-import { Company } from "@prisma/client";
+import { Company } from "@/types";
 import { CompanyFormFields, formSchema } from "./form-type";
 import { z } from "zod";
 

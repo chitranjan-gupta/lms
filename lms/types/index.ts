@@ -5,10 +5,10 @@ export interface User {
   username: string;
   password: string;
   refresh_token?: string;
-  created_at: Date;
-  updated_at: Date;
+  created_at: string;
+  updated_at: string;
   courses: Course[];
-  Company: Company[];
+  companies: Company[];
 }
 
 export interface Course {
@@ -179,7 +179,7 @@ export interface Career {
   work_mode?: string;
   date_posted?: string;
   responsibilities?: string[];
-  benefits?: string[]; 
+  benefits?: string[];
   requirements?: string[];
   skills?: string[];
   level?: string;
@@ -189,4 +189,16 @@ export interface Career {
   company: Company;
   created_at: string;
   updated_at: string;
+}
+
+export interface Notification {
+  id: string;
+  userId: string;
+  expopushtoken: string;
+  user: User;
+}
+
+export interface Pagination {
+  pageIndex: number;
+  pageSize: number;
 }

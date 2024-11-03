@@ -1,7 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { User } from "@/types";
+import { Notification } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
 
@@ -11,11 +11,11 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { removeTeachers } from "@/core";
+import { removeNotifications } from "@/core";
 
-export const columns: ColumnDef<User>[] = [
+export const columns: ColumnDef<Notification>[] = [
   {
-    accessorKey: "name",
+    accessorKey: "id",
     header: ({ column }) => {
       return (
         <Button
@@ -42,7 +42,7 @@ export const columns: ColumnDef<User>[] = [
           </DropdownMenuTrigger>
           <DropdownMenuContent>
             <DropdownMenuItem>
-              <Button onClick={() => removeTeachers(id)}>
+              <Button onClick={() => removeNotifications(id)}>
                 <Trash2 className="h-4 w-4 mr-2" />
                 Delete
               </Button>

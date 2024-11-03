@@ -7,7 +7,7 @@ import { useForm } from "react-hook-form";
 import { InputForm } from "./input-form";
 import { Dispatch, SetStateAction } from "react";
 import toast from "react-hot-toast";
-import { Company } from "@prisma/client";
+import { Company } from "@/types";
 import { form_attrs, formSchema } from "./form-type";
 
 interface CompanyFormProps {

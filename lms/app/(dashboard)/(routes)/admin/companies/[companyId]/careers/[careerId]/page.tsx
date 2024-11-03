@@ -4,46 +4,25 @@ import { IconBadge } from "@/components/icon-badge";
 import { LayoutDashboard, ArrowLeft } from "lucide-react";
 import { CareerForm } from "./_components/career-form";
 import Link from "next/link";
-import { useAuth } from "@/context/AuthContext";
-import { Career } from "@/types";
-import React, { useEffect, useState, Suspense } from "react";
-import axios from "axios";
+import { useEffect, useState, Suspense } from "react";
 import Loader from "@/components/loader";
 import { Actions } from "./_components/actions";
+import { useCareer } from "@/core/store/career";
 
 const CareerIdPage = ({
   params,
 }: {
   params: { companyId: string; careerId: string };
 }) => {
-  const { userId } = useAuth();
+  const { companyId, careerId } = params;
   const [refresh, setRefresh] = useState<boolean>(false);
-  const [career, setCareer] = useState<Career>();
+  const { career, getCareer } = useCareer();
   useEffect(() => {
-    async function getData() {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/companies/${params.companyId}/careers/${params.careerId}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (res.status == 200) {
-          setCareer(res.data);
-        }
-      } catch (error: any) {
-        if (error.response) {
-          console.log(error.response);
-        }
-      }
+    
+    if (careerId && companyId) {
+      void getCareer(companyId, careerId);
     }
-    if (userId) {
-      void getData();
-    }
-  }, [params.careerId, params.companyId, refresh, userId]);
+  }, [careerId, companyId, refresh, getCareer]);
 
   if (!career) {
     return <Loader />;

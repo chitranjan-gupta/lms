@@ -7,42 +7,23 @@ import {
   ArrowRight,
 } from "lucide-react";
 import { CompanyForm } from "./_components/company-form";
+import { Actions } from "./_components/actions";
 import Link from "next/link";
 import { useAuth } from "@/context/AuthContext";
-import { Company } from "@prisma/client";
 import React, { useEffect, useState, Suspense } from "react";
-import axios from "axios";
 import Loader from "@/components/loader";
+import { useCompany } from "@/core/store/company";
 
 const CompanyIdPage = ({ params }: { params: { companyId: string } }) => {
+  const { companyId } = params;
   const { userId } = useAuth();
   const [refresh, setRefresh] = useState<boolean>(false);
-  const [company, setCompany] = useState<Company>();
+  const { company, getCompany } = useCompany();
   useEffect(() => {
-    async function getData() {
-      try {
-        const res = await axios.get(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/companies/${params.companyId}`,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
-        if (res.status == 200) {
-          setCompany(res.data);
-        }
-      } catch (error: any) {
-        if (error.response) {
-          console.log(error.response);
-        }
-      }
+    if (userId && companyId) {
+      void getCompany(companyId);
     }
-    if (userId) {
-      void getData();
-    }
-  }, [params.companyId, refresh, userId]);
+  }, [companyId, getCompany, refresh, userId]);
 
   if (!company) {
     return <Loader />;
@@ -81,6 +62,9 @@ const CompanyIdPage = ({ params }: { params: { companyId: string } }) => {
             <span className="text-sm text-slate-700">
               Complete all fields {completionText}
             </span>
+          </div>
+          <div>
+            <Actions company={company} setRefresh={setRefresh} />
           </div>
         </div>
         <div className="w-full">

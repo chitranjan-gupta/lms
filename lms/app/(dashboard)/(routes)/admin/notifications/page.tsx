@@ -3,17 +3,17 @@
 import { useEffect } from "react";
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
-import { useUsers } from "@/core";
+import { useNotifications } from "@/core";
 
 const CoursesPage = () => {
-  const { users, getUsers } = useUsers();
+  const { notifications, getNotifications } = useNotifications();
   useEffect(() => {
-    getUsers();
-  }, [getUsers]);
+    getNotifications();
+  }, [getNotifications]);
 
   return (
     <div className="p-6">
-      <DataTable columns={columns} data={users} />
+      <DataTable columns={columns} data={notifications} />
     </div>
   );
 };

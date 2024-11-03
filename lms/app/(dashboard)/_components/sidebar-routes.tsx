@@ -1,6 +1,6 @@
 "use client";
 
-import { Layout, Compass, List, BarChart, Users, Layers, Building2 } from "lucide-react";
+import { Layout, Compass, List, BarChart, Users, Layers, Building2, BellRing } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { SidebarItem } from "./sidebar-item";
 import { useAuth } from "@/context/AuthContext";
@@ -66,6 +66,11 @@ const adminRoutes = [
     icon: Building2,
     label: "Companies",
     href: "/admin/companies"
+  },
+  {
+    icon: BellRing,
+    label: "Notifications",
+    href: "/admin/notifications"
   }
 ];
 
