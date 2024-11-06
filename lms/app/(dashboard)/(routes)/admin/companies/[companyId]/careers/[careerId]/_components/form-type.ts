@@ -31,6 +31,7 @@ export const formSchema = z.object({
     .nullable()
     .optional(),
   career_url: z.string().url("Invalid URL").nullable().optional(),
+  career_type: z.string().nullable().optional(),
   work_mode: z.string().nullable().optional(),
   date_posted: z
     .string()
@@ -73,6 +74,7 @@ export const form_attrs: Array<keyof CareerFormFields> = [
   "salary_range",
   "application_deadline",
   "career_url",
+  "career_type",
   "work_mode",
   "date_posted",
   "responsibilities",

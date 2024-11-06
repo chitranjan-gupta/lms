@@ -176,6 +176,7 @@ export interface Career {
   salary_range?: string;
   application_deadline?: string;
   career_url?: string;
+  career_type?: string;
   work_mode?: string;
   date_posted?: string;
   responsibilities?: string[];
