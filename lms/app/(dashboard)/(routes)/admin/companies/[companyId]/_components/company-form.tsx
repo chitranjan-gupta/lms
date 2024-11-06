@@ -5,7 +5,7 @@ import axios from "axios";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { InputForm } from "./input-form";
-import { Dispatch, SetStateAction } from "react";
+import { type Dispatch, type SetStateAction, useEffect } from "react";
 import toast from "react-hot-toast";
 import { Company } from "@/types";
 import { form_attrs, formSchema } from "./form-type";
@@ -21,6 +21,11 @@ export const CompanyForm = ({ initialData, setRefresh }: CompanyFormProps) => {
     defaultValues: initialData,
   });
   const { isSubmitting, isValid } = form.formState;
+  // Effect to reset form values whenever initialData changes
+  useEffect(() => {
+    form.reset(initialData); // Reset form values to the new career data
+  }, [initialData, form]);
+
   const onSubmit = async (values: z.infer<typeof formSchema>) => {
     try {
       await axios.patch(
