@@ -1,10 +1,13 @@
 import type { Company } from "@/types";
 
 interface ValueFormProps {
-  value: string | Date | string[] | undefined | Company;
+  value: string | Date | string[] | undefined | Company | null;
 }
 
 export const ValueForm: React.FC<ValueFormProps> = ({ value }) => {
+  if (value === null) {
+    return <span>No data available</span>;
+  }
   if (value === undefined) {
     return <span>No data available</span>;
   }

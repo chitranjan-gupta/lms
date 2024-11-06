@@ -18,7 +18,6 @@ const CareerIdPage = ({
   const [refresh, setRefresh] = useState<boolean>(false);
   const { career, getCareer } = useCareer();
   useEffect(() => {
-    
     if (careerId && companyId) {
       void getCareer(companyId, careerId);
     }
