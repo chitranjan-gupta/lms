@@ -1,6 +1,6 @@
 import Link from "next/link";
 import Image from "next/image";
-import logo from "@/public/logo.svg";
+import { logo } from "@/assets";
 import { NavbarRoutes } from "@/components/navbar-routes";
 
 const CourseLayout = ({ children }: { children: React.ReactNode }) => {

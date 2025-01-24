@@ -4,3 +4,6 @@ export * from "./teacher";
 export * from "./notification";
 export * from "./company";
 export * from "./career";
+export * from "./auth";
+export * from "./category";
+export * from "./course";

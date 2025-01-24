@@ -1,5 +1,6 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
 import { BASE_API_URL } from "@/constants";
+import { Log } from "@/lib";
 
 const server = axios.create({
   baseURL: BASE_API_URL,
@@ -22,20 +23,21 @@ const requestWrapper = async <T>(
       // Axios-specific error handling
       if (error.response) {
         // Server responded with a status other than 2xx
-        console.error("Error response:", error.response.data);
+        Log.info(error.response.data);
+        Log.error("Error response:", error.response.data);
         throw new Error(error.response.data.message || "An error occurred");
       } else if (error.request) {
         // Request was made but no response received
-        console.error("Error request:", error.request);
+        Log.error("Error request:", error.request);
         throw new Error("No response received from the server");
       }
     } else if (error instanceof Error) {
       // Handle other errors that are instances of Error
-      console.error("Error message:", error.message);
+      Log.error("Error message:", error.message);
       throw new Error("An unexpected error occurred");
     } else {
       // Handle non-error objects
-      console.error("An unknown error occurred:", error);
+      Log.error("An unknown error occurred:", error);
       throw new Error("An unexpected error occurred");
     }
   }
@@ -50,25 +52,8 @@ const fetchData = async <T>(config: AxiosRequestConfig): Promise<T | null> => {
     const data = await requestWrapper<T>(config);
     return data;
   } catch (error) {
-    console.error(
-      "Error fetching data:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
     return null; // Explicitly returning null
   }
 };
 
-const giveData = async <T>(config: AxiosRequestConfig): Promise<T | null> => {
-  try {
-    const data = await requestWrapper<T>(config);
-    return data;
-  } catch (error) {
-    console.error(
-      "Error giving data:",
-      error instanceof Error ? error.message : "Unknown error"
-    );
-    return null; // Explicitly returning null
-  }
-};
-
-export { server, requestWrapper, fetchData, giveData };
+export { server, requestWrapper, fetchData };
