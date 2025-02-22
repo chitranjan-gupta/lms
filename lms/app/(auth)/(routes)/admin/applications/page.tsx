@@ -6,7 +6,7 @@ import { useUser } from "@/hooks";
 import axios from "axios";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, BadgeCheck, CircleX } from "lucide-react";
-import { Course } from "@prisma/client";
+import { Course } from "@/types";
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,

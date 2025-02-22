@@ -7,7 +7,7 @@ import {
 } from "@/actions/get-courses";
 import { CoursesList } from "@/components/courses-list";
 import { useUser } from "@/hooks";
-import { Category } from "@prisma/client";
+import { Category } from "@/types";
 import { useState, useEffect } from "react";
 import axios from "axios";
 

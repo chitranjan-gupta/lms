@@ -19,7 +19,7 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Lecture } from "@prisma/client";
+import { Lecture } from "@/types";
 import { Checkbox } from "@/components/ui/checkbox";
 
 interface LectureAccessFormProps {

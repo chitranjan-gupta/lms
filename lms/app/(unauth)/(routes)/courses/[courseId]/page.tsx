@@ -19,7 +19,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { Course, Chapter, Lecture, CourseAttachment } from "@prisma/client";
+import { Course, Chapter, Lecture, CourseAttachment } from "@/types";
 import { useUser } from "@/hooks";
 import { useRouter } from "next/navigation";
 import axios from "axios";

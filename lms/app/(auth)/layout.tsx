@@ -12,7 +12,6 @@ interface DashboardLayoutProps { children: React.ReactNode }
 
 const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
   const { status } = useAuth();
-  console.log("dashboard", status)
   const router = useRouter();
 
   useEffect(() => {

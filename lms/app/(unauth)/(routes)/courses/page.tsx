@@ -3,7 +3,7 @@
 import { Categories } from "@/components/categories_";
 import { SearchInput } from "@/components/search-input";
 import { CoursesList } from "@/components/courses-list";
-import { Category, Course } from "@prisma/client";
+import { Category, Course } from "@/types";
 import { useEffect, useState, Suspense, useCallback } from "react";
 import Loader from "@/components/loader";
 import axios from "axios";

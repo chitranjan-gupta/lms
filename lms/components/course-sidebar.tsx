@@ -6,7 +6,7 @@ import {
   Lecture,
   ChapterProgress,
   Purchase,
-} from "@prisma/client";
+} from "@/types";
 import { CourseSidebarDropDownItem } from "./course-sidebar-item";
 import { CourseProgress } from "@/components/course-progress";
 import { useUser } from "@/hooks";

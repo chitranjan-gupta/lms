@@ -17,7 +17,7 @@ import { ChapterActions } from "./_components/chapter-actions";
 import { LecturesForm } from "./_components/lectures-form";
 import { useUser } from "@/hooks";
 import React, { useEffect, useState, Suspense, useCallback } from "react";
-import { Chapter, Lecture, ChapterAttachment } from "@prisma/client";
+import { Chapter, Lecture, ChapterAttachment } from "@/types";
 import axios from "axios";
 import { ChapterDurationForm } from "./_components/chapter-duration-form";
 import { ChapterAttachmentForm } from "./_components/chapter-attachment-form";

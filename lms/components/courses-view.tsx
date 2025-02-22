@@ -1,7 +1,7 @@
 "use client";
 import { Categories } from "./categories";
 import { CoursesList } from "@/components/courses-list";
-import { Category, Course } from "@prisma/client";
+import { Category, Course } from "@/types";
 
 export type CourseWithProgressWithCategory = Course & {
   category: Category | null;

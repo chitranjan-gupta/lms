@@ -6,8 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint",
-    "postinstall": "prisma generate"
+    "lint": "next lint"
   },
   "dependencies": {
     "@hello-pangea/dnd": "^16.6.0",
@@ -15,7 +14,6 @@
     "@mux/mux-node": "^8.5.1",
     "@mux/mux-player": "^2.6.0",
     "@mux/mux-player-react": "^2.6.0",
-    "@prisma/client": "^5.13.0",
     "@radix-ui/react-accordion": "^1.1.2",
     "@radix-ui/react-alert-dialog": "^1.0.5",
     "@radix-ui/react-avatar": "^1.0.4",
@@ -30,16 +28,13 @@
     "@tanstack/react-table": "^8.16.0",
     "@uploadthing/react": "^6.5.1",
     "axios": "^1.6.8",
-    "bcryptjs": "^2.4.3",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "cmdk": "0.2.0",
     "input-otp": "^1.4.1",
-    "jsonwebtoken": "^9.0.2",
     "lucide-react": "^0.376.0",
     "next": "14.2.3",
     "next-themes": "^0.3.0",
-    "prisma": "^5.13.0",
     "query-string": "^9.0.0",
     "react": "^18",
     "react-confetti": "^6.1.0",
@@ -59,13 +54,12 @@
     "zustand": "^4.5.2"
   },
   "devDependencies": {
-    "@types/bcryptjs": "^2.4.6",
-    "@types/jsonwebtoken": "^9.0.6",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
     "eslint": "^8",
     "eslint-config-next": "14.2.3",
+    "eslint-config-prettier": "^10.0.1",
     "postcss": "^8",
     "tailwindcss": "^3.4.1",
     "typescript": "^5"

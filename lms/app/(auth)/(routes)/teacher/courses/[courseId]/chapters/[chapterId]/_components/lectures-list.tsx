@@ -1,6 +1,6 @@
 "use client";
 
-import { Lecture } from "@prisma/client";
+import { Lecture } from "@/types";
 import { useEffect, useState } from "react";
 import {
   DragDropContext,

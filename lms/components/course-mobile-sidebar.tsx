@@ -1,6 +1,6 @@
 "use client";
 import { Menu } from "lucide-react";
-import { Chapter, Course, ChapterProgress, Lecture } from "@prisma/client";
+import { Chapter, Course, ChapterProgress, Lecture } from "@/types";
 
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 

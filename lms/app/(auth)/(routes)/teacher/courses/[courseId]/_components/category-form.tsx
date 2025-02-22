@@ -19,7 +19,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Course } from "@prisma/client";
+import { Course } from "@/types";
 import { Combobox } from "@/components/ui/combobox";
 
 interface CategoryFormProps {

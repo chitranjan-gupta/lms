@@ -1,4 +1,4 @@
-import { LectureAttachment, ChapterAttachment } from "@prisma/client";
+import { LectureAttachment, ChapterAttachment } from "@/types";
 import axios from "axios";
 
 interface GetLectureProps {

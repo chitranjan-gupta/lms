@@ -8,7 +8,7 @@ import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Course } from "@prisma/client";
+import { Course } from "@/types";
 import Image from "next/image";
 import { FileUpload } from "@/components/file-upload";
 

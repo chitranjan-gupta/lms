@@ -19,7 +19,7 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Chapter, Lecture } from "@prisma/client";
+import { Chapter, Lecture } from "@/types";
 import { Input } from "@/components/ui/input";
 import { LecturesList } from "./lectures-list";
 

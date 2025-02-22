@@ -36,10 +36,10 @@ const navigation = [
 export default function Page() {
   const { categories, getCategories } = useCategories();
   const { courses, getCourses } = useCourses();
-  // useEffect(() => {
-  //   getCategories({ pageIndex: 1, pageSize: 10 });
-  //   getCourses({ pageIndex: 1, pageSize: 10 });
-  // }, [getCategories, getCourses]);
+  useEffect(() => {
+    getCategories({ pageIndex: 1, pageSize: 10 });
+    getCourses({ pageIndex: 1, pageSize: 10 });
+  }, [getCategories, getCourses]);
 
   return (
     <div className="bg-white">
@@ -460,7 +460,7 @@ export default function Page() {
           <hr className="my-6 border-gray-200 sm:mx-auto  lg:my-8" />
           <div className="sm:flex sm:items-center sm:justify-between">
             <span className="text-sm text-gray-500 sm:text-center ">
-              © 2024{" "}
+              © 2025{" "}
               <a href="#" className="hover:underline">
                 Chitranjan Gupta
               </a>

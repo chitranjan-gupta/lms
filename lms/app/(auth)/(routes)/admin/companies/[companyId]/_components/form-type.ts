@@ -1,4 +1,4 @@
-import { Company } from "@prisma/client";
+import { Company } from "@/types";
 import { z } from "zod";
 
 // Regex for basic phone number validation

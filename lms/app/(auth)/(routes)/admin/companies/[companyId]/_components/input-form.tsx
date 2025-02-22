@@ -51,7 +51,7 @@ export const InputForm = ({
           )}
         </Button>
       </div>
-      {!isEditing && <p className="text-sm mt-2">{initialData[form_attr]}</p>}
+      {!isEditing && <p className="text-sm mt-2">{String(initialData[form_attr])}</p>}
       {isEditing && (
         <Form {...form}>
           <form

@@ -1,4 +1,4 @@
-import { Course, Purchase } from "@prisma/client";
+import { Course, Purchase } from "@/types";
 import axios from "axios";
 
 type PurchaseWithCourse = Purchase & {

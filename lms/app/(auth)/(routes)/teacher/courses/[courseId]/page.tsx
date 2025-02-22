@@ -18,7 +18,7 @@ import { Actions } from "./_components/actions";
 import { Banner } from "@/components/banner";
 import Link from "next/link";
 import { useUser } from "@/hooks";
-import { Category, Chapter, Course, CourseAttachment } from "@prisma/client";
+import { Category, Chapter, Course, CourseAttachment } from "@/types";
 import React, { useEffect, useState, Suspense, useCallback } from "react";
 import axios from "axios";
 import Loader from "@/components/loader";

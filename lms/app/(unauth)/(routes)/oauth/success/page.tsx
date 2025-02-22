@@ -14,10 +14,7 @@ const OAuth: FC = () => {
   useEffect(() => {
     if (searchParams.get("code")) {
       (async () => {
-        const status = await oauth_success(window.location.search);
-        if (status) {
-          router.push("/dashboard");
-        }
+        await oauth_success(window.location.search);
       })();
     }
   }, [router, oauth_success, searchParams]);

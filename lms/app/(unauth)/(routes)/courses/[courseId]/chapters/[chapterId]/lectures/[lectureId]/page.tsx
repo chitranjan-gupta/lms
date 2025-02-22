@@ -18,7 +18,7 @@ import {
   LectureAttachment,
   LectureProgress,
   MuxData,
-} from "@prisma/client";
+} from "@/types";
 import React, { useEffect, useState, Suspense } from "react";
 import Loader from "@/components/loader";
 

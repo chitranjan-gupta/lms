@@ -17,7 +17,7 @@ import { LectureVideoForm } from "./_components/lecture-video-form";
 import { Banner } from "@/components/banner";
 import { LectureActions } from "./_components/lecture-actions";
 import { useUser } from "@/hooks";
-import { Lecture, LectureAttachment } from "@prisma/client";
+import { Lecture, LectureAttachment } from "@/types";
 import React, { useEffect, useState, Suspense, useCallback } from "react";
 import axios from "axios";
 import { LectureDurationForm } from "./_components/lecture-duration-form";

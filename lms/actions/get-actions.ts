@@ -1,4 +1,4 @@
-import { Chapter } from "@prisma/client";
+import { Chapter } from "@/types";
 import axios from "axios";
 
 export const getProgress = async (

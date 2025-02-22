@@ -21,7 +21,7 @@ const UnAuthLayout: FC<UnAuthLayoutProps> = ({ children }) => {
 
   useEffect(() => {
     if (status === "signIn") {
-      router.push(user?.role === "subadmin" ? "/teacher" : user?.role || "/user");
+      router.replace(user?.role === "subadmin" ? "/teacher" : `/${user?.role}` || "/user");
     }
   }, [router, status, user]);
 

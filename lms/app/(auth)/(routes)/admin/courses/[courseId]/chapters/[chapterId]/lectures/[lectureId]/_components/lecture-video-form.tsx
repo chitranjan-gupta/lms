@@ -7,7 +7,7 @@ import { Pencil, PlusCircle, Video } from "lucide-react";
 import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Lecture, MuxData } from "@prisma/client";
+import { Lecture, MuxData } from "@/types";
 import { FileUpload } from "@/components/file-upload";
 import MuxPlayer from "@mux/mux-player-react";
 

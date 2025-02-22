@@ -1,7 +1,7 @@
 'use client';
 import React from "react";
 import { NavbarRoutes } from "@/components/navbar-routes";
-import { Chapter, Course, ChapterProgress, Lecture } from "@prisma/client";
+import { Chapter, Course, ChapterProgress, Lecture } from "@/types";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
 
 interface CourseNavbarProps {

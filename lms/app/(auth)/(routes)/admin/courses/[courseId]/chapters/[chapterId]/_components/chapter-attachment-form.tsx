@@ -8,7 +8,7 @@ import { PlusCircle, File, Loader2, X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { Chapter, ChapterAttachment } from "@prisma/client";
+import { Chapter, ChapterAttachment } from "@/types";
 import { FileUpload } from "@/components/file-upload";
 
 interface ChapterAttachmentFormProps {

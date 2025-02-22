@@ -5,7 +5,7 @@ import { getProgress } from "@/actions/get-actions";
 import { CourseSidebar } from "@/components/course-sidebar";
 import { CourseNavbar } from "@/components/course-navbar";
 import { useUser } from "@/hooks";
-import { Chapter, Course, Lecture } from "@prisma/client";
+import { Chapter, Course, Lecture } from "@/types";
 import axios from "axios";
 import Loader from "@/components/loader";
 

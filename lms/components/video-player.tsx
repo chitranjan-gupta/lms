@@ -8,7 +8,7 @@ import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
-import { Lecture, Chapter } from "@prisma/client";
+import { Lecture, Chapter } from "@/types";
 
 interface VideoPlayerProps {
   playbackId: string;

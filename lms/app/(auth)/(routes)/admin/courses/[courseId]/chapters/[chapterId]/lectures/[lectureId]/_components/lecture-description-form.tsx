@@ -17,7 +17,7 @@ import { useState, Dispatch, SetStateAction } from "react";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
-import { Lecture } from "@prisma/client";
+import { Lecture } from "@/types";
 import { Editor } from "@/components/editor";
 import { Preview } from "@/components/preview";
 

@@ -51,7 +51,7 @@ export const CompanyForm = ({ initialData, setRefresh }: CompanyFormProps) => {
     <div className="flex flex-row flex-wrap gap-x-5 gap-y-5">
       {form_attrs.map((form_attr) => (
         <InputForm
-          key={form_attr}
+          key={String(form_attr)}
           form_attr={form_attr}
           form={form}
           initialData={initialData}

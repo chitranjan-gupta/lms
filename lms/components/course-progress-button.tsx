@@ -2,7 +2,7 @@
 
 import { Button } from "@/components/ui/button";
 import { useConfettiStore } from "@/hooks/use-confetti-store";
-import { Chapter, Lecture } from "@prisma/client";
+import { Chapter, Lecture } from "@/types";
 import axios from "axios";
 import { CheckCircle, XCircle } from "lucide-react";
 import { useRouter } from "next/navigation";
