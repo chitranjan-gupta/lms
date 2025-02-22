@@ -10,7 +10,6 @@
     "postinstall": "prisma generate"
   },
   "dependencies": {
-    "@clerk/nextjs": "^5.0.5",
     "@hello-pangea/dnd": "^16.6.0",
     "@hookform/resolvers": "^3.9.1",
     "@mux/mux-node": "^8.5.1",

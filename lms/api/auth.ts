@@ -1,40 +1,32 @@
-import { User } from "@/types";
-import { fetchData } from "./common";
+import axios from 'axios';
 
-export const login = async (email: string, password: string) => {
-  const response = await fetchData({
-    method: "POST",
-    url: `user/signin`,
-    data: {
-      email: email,
-      password: password,
-    },
-  });
-  return response as User;
-};
+import { client } from '@/api';
+import { API_URL } from '@/constants';
 
-export const register = async (
-  name: string,
-  username: string,
-  email: string,
-  password: string
-) => {
-  const response = await fetchData({
-    method: "POST",
-    url: `user/signup`,
-    data: {
-      name: name,
-      username: username,
-      email: email,
-      password: password,
-    },
-  });
-  return response as User;
-};
+import type { SignUpState, SignInState } from '@/types';
 
-export const logout = async () => {
-  return fetchData({
-    method: "GET",
-    url: `user/logout`
-  });
+export async function login(data: SignInState) {
+  return await axios.post(`${API_URL}/user/signin`, data);
+}
+
+export async function oauth_google_redirect(register: boolean = true) {
+  return await axios.get(
+    `${API_URL}/user/oauth-${register ? 'register' : 'login'}`
+  );
+}
+
+export async function oauth_google_callback(searchParams: string) {
+  return await axios.get(`${API_URL}/user/oauth-success${searchParams}`);
+}
+
+export async function logout() {
+  return await client.get(`user/logout`);
+}
+
+export async function register(data: SignUpState) {
+  return await axios.post(`${API_URL}/user/signup`, data);
+}
+
+export async function me() {
+  return await client.get(`user/auth`);
 }

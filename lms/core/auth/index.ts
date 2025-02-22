@@ -20,9 +20,9 @@ export const useAuth = create<AuthState>()((set) => ({
   user: null,
   status: "idle",
   isloading: false,
-  login: async (username: string, password: string) => {
+  login: async (email: string, password: string) => {
     set({ isloading: true });
-    const data = await login(username, password);
+    const data = (await login({email, password})).data;
     if (data) {
       set({ user: data, status: "signIn" });
     }
@@ -35,7 +35,7 @@ export const useAuth = create<AuthState>()((set) => ({
     password: string
   ) => {
     set({ isloading: true });
-    const data = await register(name, username, email, password);
+    const data = (await register({name, username, email, password})).data;
     if (data) {
       set({ user: data });
     }

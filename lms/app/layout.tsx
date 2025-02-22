@@ -3,14 +3,14 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { ToastProvider } from "@/components/providers/toaster-provider";
 import { ConfettiProvider } from "@/components/providers/confetti-provider";
-import { AuthContextProvider } from "@/context/AuthContext";
 import { Toaster } from "@/components/ui/sonner";
+import ContextProvider from "@/provider";
 
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "shikshasetu",
-  description: "shikshasetu",
+  title: "Shikshasetu",
+  description: "Shikshasetu",
 };
 
 export default function RootLayout({
@@ -23,7 +23,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <ConfettiProvider />
         <ToastProvider />
-        <AuthContextProvider>{children}</AuthContextProvider>
+        <ContextProvider>{children}</ContextProvider>
         <Toaster />
       </body>
     </html>

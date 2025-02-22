@@ -1,9 +1,9 @@
 import axios, { type AxiosRequestConfig, type AxiosResponse } from "axios";
-import { BASE_API_URL } from "@/constants";
+import { API_URL } from "@/constants";
 import { Log } from "@/lib";
 
 const server = axios.create({
-  baseURL: BASE_API_URL,
+  baseURL: API_URL,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",

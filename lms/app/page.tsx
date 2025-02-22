@@ -8,7 +8,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CourseWithProgressWithCategory, SearchPage } from "./_components/courses-view";
+import { CourseWithProgressWithCategory, SearchPage } from "../components/courses-view";
 import {
   laravel,
   reactjs,

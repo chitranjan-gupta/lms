@@ -1,38 +1,43 @@
 "use client";
 
-import { type ReactNode, useEffect } from "react";
-import { logo } from "@/assets";
-import Image from "next/image";
-import Link from "next/link";
-import { useAuth } from "@/core";
+import { Suspense, type FC } from "react";
+import { useAuth } from "@/hooks";
+import { Navbar } from "./_components/navbar";
+import { Sidebar } from "./_components/sidebar";
+import { useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Loader from "@/components/loader";
 
-const AuthLayout = ({ children }: { children: ReactNode }) => {
+interface DashboardLayoutProps { children: React.ReactNode }
+
+const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
   const { status } = useAuth();
+  console.log("dashboard", status)
   const router = useRouter();
 
   useEffect(() => {
-    if (status === "signIn") {
-      router.push("/");
-    }
     if (status === "signOut") {
       router.push("/sign-in");
     }
   }, [router, status]);
 
   return (
-    <div className="w-full h-full flex flex-col items-center justify-center p-20">
-      <Link
-        href="/"
-        className="flex items-center mb-6 text-2xl font-semibold text-gray-900 "
-      >
-        <div className="relative w-20 h-20 mr-2">
-          <Image fill src={logo} alt="logo" />
+    <Suspense fallback={<Loader />}>
+      {status ==="signIn" ? (
+        <div className="h-full">
+          <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
+            <Navbar />
+          </div>
+          <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
+            <Sidebar />
+          </div>
+          <main className="md:pl-56 pt-[80px] h-full">{children}</main>
         </div>
-      </Link>
-      <div className="w-full h-full bg-white">{children}</div>
-    </div>
+      ) : (
+        <Loader />
+      )}
+    </Suspense>
   );
 };
 
-export default AuthLayout;
+export default DashboardLayout;

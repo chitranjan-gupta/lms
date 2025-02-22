@@ -1,13 +1,26 @@
 export interface TokenType {
   access_token: string;
   refresh_token: string;
-  expires_in: number;
+}
+
+export interface SignInState {
+  email: string;
+  password: string;
+}
+
+export interface SignUpState {
+  name: string;
+  email: string;
+  username: string;
+  password: string;
 }
 
 export interface User {
+  userId: string;
   id: string;
   name: string;
   email: string;
+  role: string;
   username: string;
   password: string;
   refresh_token?: string;

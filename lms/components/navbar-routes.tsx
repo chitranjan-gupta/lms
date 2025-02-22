@@ -14,20 +14,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
-import { useAuth } from "@/context/AuthContext";
+import { useAuth, useUser } from "@/hooks";
 
 export const NavbarRoutes = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const isTeacherPage = pathname?.startsWith("/teacher");
-  const isCoursePage = pathname?.startsWith("/courses");
   const isAdminPage = pathname?.startsWith("/admin");
+  const isTeacherPage = pathname?.startsWith("/teacher");
+  const isUserPage = pathname?.startsWith("/user");
+  const isCoursePage = pathname?.startsWith("/courses");
   const isSearchPage = pathname === "/search";
-  const { userId, role, logOut, apply } = useAuth();
+  const { user } = useUser();
+  const { handleLogout } = useAuth();
   return (
     <>
       <div className="font-bold text-3xl mr-2">
-        ShikshaSetu {isAdminPage && "Admin"} {isTeacherPage && "Teacher"}
+        ShikshaSetu {isAdminPage && "Admin"} {isTeacherPage && "Teacher"} {isUserPage && "User"}
       </div>
       {isSearchPage && (
         <div className="hidden md:block">
@@ -35,10 +37,10 @@ export const NavbarRoutes = () => {
         </div>
       )}
       <div className="flex gap-x-2 ml-auto">
-        {isTeacherPage || isAdminPage ? (
+        {isTeacherPage || isAdminPage || isUserPage ? (
           <div className="flex flex-row items-center">
-            <Link href="/dashboard">
-              <Button size="sm" variant="ghost">
+            <Link href="/">
+              <Button type="button" size="sm" variant="ghost">
                 <LogOut className="h-4 w-4 mr-2" />
                 Exit
               </Button>
@@ -49,26 +51,23 @@ export const NavbarRoutes = () => {
             {!isAdminPage &&
               !isTeacherPage &&
               !isCoursePage &&
-              role !== "admin" &&
-              role !== "subadmin" && (
+              isUserPage &&
+              user?.role !== "admin" &&
+              user?.role !== "subadmin" &&
+              user?.role === "user" && (
                 <Button
                   size="sm"
                   variant="ghost"
                   className="mr-2"
-                  onClick={apply}
+                  //onClick={apply}
                 >
                   Apply for Teacher
                 </Button>
               )}
-            {isCoursePage && (
-              <div className="mr-2">
-                <Link href="/courses">Courses</Link>
-              </div>
-            )}
           </>
         )}
       </div>
-      {userId ? (
+      {user?.userId ? (
         <div>
           <DropdownMenu>
             <DropdownMenuTrigger>
@@ -83,12 +82,12 @@ export const NavbarRoutes = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() =>
-                  router.push(`/${isAdminPage ? "admin" : "dashboard"}`)
+                  router.push(`/${user?.role === "subadmin" ? "subadmin" : user?.role}`)
                 }
               >
                 Dashboard
               </DropdownMenuItem>
-              <DropdownMenuItem onClick={logOut}>Logout</DropdownMenuItem>
+              <DropdownMenuItem onClick={handleLogout}>Logout</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
