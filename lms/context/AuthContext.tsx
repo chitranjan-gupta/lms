@@ -38,7 +38,7 @@ interface AuthContextType {
   oauth: (provider: string, register: boolean) => Promise<void>;
   oauth_success: (url: string) => Promise<boolean>;
   hydrate: () => Promise<void>;
-  handleLogout: () => void;
+  handleLogout: () => Promise<void>;
 }
 
 const defaultContextValue = {
@@ -61,7 +61,7 @@ const defaultContextValue = {
     return false;
   },
   hydrate: async () => {},
-  handleLogout: () => {},
+  handleLogout: async () => {},
 };
 
 // Create the context with the default value

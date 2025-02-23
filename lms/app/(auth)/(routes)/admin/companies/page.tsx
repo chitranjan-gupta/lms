@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
-import { DataTable } from "./_components/data-table";
-import { useUser } from "@/hooks";
+import { useEffect, useState } from "react";
 import type { PaginationState } from "@tanstack/react-table";
+
+import { DataTable } from "./_components/data-table";
 import { columns } from "./_components/columns";
-import { useCompanies } from "@/core/store/companies";
+
+import { useUser } from "@/hooks";
+import { useCompanies } from "@/core";
 
 const CompaniesPage = () => {
   const { user } = useUser();
@@ -15,9 +17,11 @@ const CompaniesPage = () => {
     pageIndex: 0,
     pageSize: 10,
   });
-  useEffect(() => {    
-    if (user?.userId) {
-      getCompanies(pagination);
+  useEffect(() => {
+    if (user) {
+      (async () => {
+        await getCompanies(pagination);
+      })()
     }
   }, [user, pagination, getCompanies]);
 

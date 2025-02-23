@@ -1,12 +1,10 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
-import { DataTable } from "./_components/data-table";
-import { useUser } from "@/hooks";
-import axios from "axios";
+import { useEffect, useCallback } from "react";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, BadgeCheck, CircleX } from "lucide-react";
-import { Course } from "@/types";
+import toast from "react-hot-toast";
+
 import { Button } from "@/components/ui/button";
 import {
   DropdownMenu,
@@ -15,62 +13,43 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { Badge } from "@/components/ui/badge";
-import { cn } from "@/lib/utils";
-import toast from "react-hot-toast";
+
+import { DataTable } from "./_components/data-table";
+
+import { useUser } from "@/hooks";
+import { useApplications } from "@/core";
+import { cn } from "@/lib";
+
+import type { Application } from "@/types";
 
 const ApplicationsPage = () => {
   const { user } = useUser();
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const [applications, setApplications] = useState([]);
-  const approve = async (id: string) => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/applications/approve`,
-        JSON.stringify({
-          applicationId: id,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setRefresh((prev) => !prev);
+  const {
+    applications,
+    getApplications,
+    approveApplications,
+    rejectApplications,
+  } = useApplications();
+  const approve = useCallback(
+    async (id: string) => {
+      try {
+        await approveApplications(id);
         toast.success("Approved");
+      } catch (error: any) {
+        console.log(error);
       }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  };
-  const reject = async (id: string) => {
+    },
+    [approveApplications]
+  );
+  const reject = useCallback(async (id: string) => {
     try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/applications/reject`,
-        JSON.stringify({
-          applicationId: id,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setRefresh((prev) => !prev);
-        toast.success("Rejected");
-      }
+      await rejectApplications(id);
+      toast.success("Rejected");
     } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
+      console.log(error);
     }
-  };
-  const columns: ColumnDef<Course>[] = [
+  }, [rejectApplications]);
+  const columns: ColumnDef<Application>[] = [
     {
       accessorKey: "name",
       header: ({ column }) => {
@@ -160,36 +139,13 @@ const ApplicationsPage = () => {
       },
     },
   ];
-  const getData = useCallback(async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/applications`,
-        JSON.stringify({
-          userId: user?.userId,
-          role: user?.role,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        console.log(res.data)
-        setApplications(res.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [user?.role, user?.userId])
   useEffect(() => {
-    if (user?.userId) {
-      void getData();
+    if (user) {
+      (async () => {
+        await getApplications();
+      })()
     }
-  }, [user, refresh, getData]);
+  }, [getApplications, user]);
   return (
     <div className="p-6">
       <DataTable columns={columns} data={applications} />

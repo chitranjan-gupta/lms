@@ -1,35 +1,59 @@
-import { getCategories, deleteCategory, addCategory } from "@/api";
-import type { Category, Pagination } from "@/types";
 import { create } from "zustand";
 
-interface categories {
+import {
+  getCategories,
+  deleteCategory,
+  addCategory,
+  editCategory,
+} from "@/api";
+import type { Category, Pagination } from "@/types";
+
+interface Categories {
   categories: Category[];
   pageCount: number;
-  getCategories: (pagination: Pagination) => Promise<void>;
-  addCategories: (categoryId: string, title: string) => Promise<void>;
-  removeCategories: (removeCategoryId: string) => Promise<void>;
+  getCategories: (pagination: Pagination, path?: string) => Promise<void>;
+  addCategories: (name: string, path?: string) => Promise<void>;
+  editCategories: (
+    categoryId: string,
+    name: string,
+    path?: string
+  ) => Promise<void>;
+  removeCategories: (categoryId: string, path?:string) => Promise<void>;
 }
 
-export const useCategories = create<categories>()((set) => ({
+export const useCategories = create<Categories>()((set) => ({
   categories: [],
   pageCount: 0,
-  getCategories: async (pagination: Pagination) => {
-    const data: any = await getCategories(pagination);
+  getCategories: async (
+    pagination: Pagination,
+    path: string = "categories"
+  ) => {
+    const data: any = await getCategories(pagination, path);
     if (data.data) {
       set({ categories: data.data as Category[], pageCount: data.last_page });
     }
   },
-  addCategories: async (title: string) => {
-    const data = await addCategory(title);
+  addCategories: async (name: string, path: string = "categories") => {
+    const data = await addCategory(name, path);
     if (data) {
       set((state) => ({ categories: [...state.categories, data] }));
     }
   },
-  removeCategories: async (removeCategoryId: string) => {
-    const data = await deleteCategory(removeCategoryId);
+  editCategories: async (
+    categoryId: string,
+    name: string,
+    path: string = "categories"
+  ) => {
+    const data = await editCategory(categoryId, name, path);
+    if (data) {
+      set((state) => ({ categories: [...state.categories.filter((category) => category.id !== data.id), data] }));
+    }
+  },
+  removeCategories: async (categoryId: string, path: string = "categories") => {
+    const data = await deleteCategory(categoryId, path);
     if (data) {
       set((state) => ({
-        categories: state.categories.filter((user) => user.id !== data.id),
+        categories: state.categories.filter((category) => category.id !== data.id),
       }));
     }
   },

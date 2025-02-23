@@ -30,7 +30,7 @@ const TOKEN = 'token';
 
 export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
   const router = useRouter();
-  const { editUser, getUser, user, removeUser } = useUser();
+  const { getUser, user, removeUser, saveUser } = useUser();
   const [token, setToken] = useState<TokenType | null>(null);
   const [status, setStatus] = useState<string>('idle');
   const [isloading, setIsloading] = useState<boolean>(false);
@@ -89,13 +89,13 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
             access_token: response.data.access_token,
             refresh_token: response.data.access_token,
           };
-          setStatus('signIn');
           setToken(token);
           setRequestInterceptor({ token });
           setResponseInterceptior({ token: token, refresh: refresh });
-          editUser(response.data);
+          await saveUser(response.data);
           await setItem<TokenType>(TOKEN, token);
           auth = true;
+          setStatus('signIn');
         }
       } catch (e: any) {
         console.log(e?.response || 'Error in OAuth');
@@ -104,11 +104,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       }
       return auth;
     },
-    [refresh, editUser, setToken, setStatus]
+    [refresh, saveUser, setToken, setStatus]
   );
   const signIn = useCallback(
     async (data: SignInState) => {
       try {
+        setError(null);
         setIsloading(true);
         const response = await login(data);
         if (response.status === 200) {
@@ -116,12 +117,12 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
             access_token: response.data.access_token,
             refresh_token: response.data.access_token,
           };
-          setStatus('signIn');
           setToken(token);
           setRequestInterceptor({ token });
           setResponseInterceptior({ token: token, refresh: refresh });
-          editUser(response.data);
+          await saveUser(response.data);
           await setItem<TokenType>(TOKEN, token);
+          setStatus('signIn');
         }
       } catch (e: any) {
         console.log(e?.response || 'Error in signIn');
@@ -130,7 +131,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         setIsloading(false);
       }
     },
-    [refresh, editUser]
+    [refresh, saveUser]
   );
   const signOut = useCallback(async () => {
     try {
@@ -138,11 +139,11 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       const response = await logout();
       if (response.status === 200) {
         await removeItem(TOKEN);
-        setStatus('signOut');
         setToken(null);
         const tempToken = { access_token: '', refresh_token: '' };
         setRequestInterceptor({ token: tempToken });
         setResponseInterceptior({ token: tempToken, refresh: refresh });
+        setStatus('signOut');
       }
     } catch (e) {
       console.log(e);
@@ -158,8 +159,8 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
       if (token !== null) {
         setRequestInterceptor({ token });
         setResponseInterceptior({ token: token, refresh: refresh });
-        setStatus('signIn');
         setToken(token);
+        setStatus('signIn');
       } else {
         setStatus('signOut');
         setToken(null);

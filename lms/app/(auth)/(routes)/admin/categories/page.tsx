@@ -1,11 +1,11 @@
 "use client";
 
-import toast from "react-hot-toast";
 import { useEffect, useState, useCallback } from "react";
+import toast from "react-hot-toast";
+import { ColumnDef } from "@tanstack/react-table";
+import { ArrowUpDown, MoreHorizontal, Pencil, X } from "lucide-react";
+
 import { Button } from "@/components/ui/button";
-import { DataTable } from "./_components/data-table";
-import { useUser } from "@/hooks";
-import axios from "axios";
 import {
   Dialog,
   DialogContent,
@@ -16,9 +16,6 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Category } from "@/types";
-import { ColumnDef } from "@tanstack/react-table";
-import { ArrowUpDown, MoreHorizontal, Pencil, X } from "lucide-react";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -26,10 +23,22 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
+import { DataTable } from "./_components/data-table";
+
+import { useUser } from "@/hooks";
+import { useCategories } from "@/core";
+
+import type { Category } from "@/types";
+
 const CategoriesPage = () => {
   const { user } = useUser();
-  const [refresh, setRefresh] = useState<boolean>(false);
-  const [categories, setCategories] = useState([]);
+  const {
+    categories,
+    getCategories,
+    editCategories,
+    addCategories,
+    removeCategories,
+  } = useCategories();
   const [name, setName] = useState<string>("");
   const [selectedId, setSelectedId] = useState<string>("");
   const [edit, setEdit] = useState(false);
@@ -94,99 +103,49 @@ const CategoriesPage = () => {
       },
     },
   ];
-  const getData = useCallback(async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories`,
-        JSON.stringify({
-          userId: user?.userId,
-          role: user?.role,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setCategories(res.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [user?.role, user?.userId])
 
-  const upsert = async () => {
+  const upsert = useCallback(async () => {
     try {
       setLoading(true);
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories/${
-          edit ? "edit" : "add"
-        }`,
-        JSON.stringify({
-          categoryId: selectedId,
-          name: name,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        toast.success("Success");
-        setName("");
-        setSelectedId("");
-        setRefresh((prev) => !prev);
+      if (edit) {
+        await editCategories(selectedId, name, "admin/categories/edit");
+      } else {
+        await addCategories(name, "admin/categories/add");
       }
+      toast.success("Success");
+      setName("");
+      setSelectedId("");
     } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
+      console.log(error);
     } finally {
       setLoading(false);
     }
-  };
+  }, [addCategories, edit, editCategories, name, selectedId]);
 
-  const deleteCategory = async (id: string) => {
-    try {
-      setLoading(true);
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/categories/delete`,
-        JSON.stringify({
-          categoryId: id,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
+  const deleteCategory = useCallback(
+    async (id: string) => {
+      try {
+        setLoading(true);
+        await removeCategories(id, "admin/categories/delete");
         toast.success("Success");
         setName("");
         setSelectedId("");
-        setRefresh((prev) => !prev);
+      } catch (error: any) {
+        console.log(error);
+      } finally {
+        setLoading(false);
       }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    } finally {
-      setLoading(false);
-    }
-  };
+    },
+    [removeCategories]
+  );
 
   useEffect(() => {
-    if (user?.userId) {
-      void getData();
+    if (user) {
+      (async () => {
+        await getCategories({ pageIndex: 1, pageSize: 10 }, "admin/categories");
+      })();
     }
-  }, [user, refresh, getData]);
+  }, [user, getCategories]);
   return (
     <Dialog
       onOpenChange={(open) => {

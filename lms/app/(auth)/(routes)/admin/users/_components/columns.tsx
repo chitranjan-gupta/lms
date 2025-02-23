@@ -1,7 +1,5 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { User } from "@/types";
 import { ColumnDef } from "@tanstack/react-table";
 import { ArrowUpDown, MoreHorizontal, Trash2 } from "lucide-react";
 
@@ -11,6 +9,10 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
+import { Button } from "@/components/ui/button";
+
+import type { User } from "@/types";
+
 import { removeUsers } from "@/core";
 
 export const columns: ColumnDef<User>[] = [

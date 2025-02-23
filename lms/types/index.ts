@@ -1,3 +1,8 @@
+export interface Navigation {
+  name: string;
+  href: string;
+}
+
 export interface TokenType {
   access_token: string;
   refresh_token: string;
@@ -216,6 +221,16 @@ export interface Notification {
   userId: string;
   expopushtoken: string;
   user: User;
+}
+
+export interface Application{
+  id: string;
+  userId: string;
+  name: string;
+  status: string;
+  isAccepted?: string | null;
+  created_at: Date;
+  updated_at: Date;
 }
 
 export interface Pagination {

@@ -1,13 +1,13 @@
 import type { Course, Pagination } from "@/types";
 import { fetchData } from "./common";
 
-export const getCourses = async (pagination: Pagination) => {
+export const getCourses = async (pagination: Pagination, path: string = "courses") => {
     const response = await fetchData({
         method: "GET",
         // url: `courses?page=${pagination.pageIndex + 1}&per_page=${
         //     pagination.pageSize
         // }`,
-        url: `courses`,
+        url: path,
     });
     return {
         data: response as unknown as Course[],

@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-import { client } from '@/api';
+import { client } from './common';
 import { API_URL } from '@/constants';
 
 import type { SignUpState, SignInState } from '@/types';

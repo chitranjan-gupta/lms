@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import {
   useState,
@@ -6,76 +6,98 @@ import {
   useEffect,
   type ReactNode,
   type FC,
-} from 'react';
-import { UserContext } from '@/context';
-import { register, me } from '@/api';
-import { getItem, removeItem, setItem } from '@/lib';
+} from "react";
+import { UserContext } from "@/context";
+import { register, me, applyApplication } from "@/api";
+import { getItem, removeItem, setItem } from "@/lib";
 
-import type { User, SignUpState } from '@/types';
+import type { User, SignUpState } from "@/types";
+import toast from "react-hot-toast";
 
 interface UserProviderProps {
   children: ReactNode;
 }
 
-const USER = 'user';
+const USER = "user";
 
 export const UserProvider: FC<UserProviderProps> = ({ children }) => {
   const [user, editUser] = useState<User | null>(null);
   const [isloading, setIsloading] = useState<boolean>(false);
-  const [status, setStatus] = useState<string>('idle');
+  const [status, setStatus] = useState<string>("idle");
   const [error, setError] = useState<string | null>(null);
-  const setUser = useCallback(async (data: SignUpState) => {
-    let auth = false;
-    try {
-      setIsloading(true);
-      setStatus('pending');
-      const response = await register(data);
-      if (response.status === 200) {
-        if (response.data && response.data.userId) {
-          auth = true;
+  const saveUser = useCallback(
+    async (user: User) => {
+      editUser(user);
+      await setItem<User>(USER, user);
+    },
+    [editUser]
+  );
+  const setUser = useCallback(
+    async (data: SignUpState) => {
+      let auth = false;
+      try {
+        setIsloading(true);
+        setStatus("pending");
+        const response = await register(data);
+        if (response.status === 200) {
+          if (response.data && response.data.userId) {
+            auth = true;
+          }
         }
+      } catch (e: any) {
+        console.log(e?.response || "Error in Register");
+        setError(e?.response?.data?.message || "Error in Register");
+        setIsloading(false);
+        setStatus("idle");
       }
-    } catch (e: any) {
-      console.log(e?.response || 'Error in Register');
-      setError(e?.response?.data?.message || 'Error in Register');
-      setIsloading(false);
-      setStatus('idle');
-    }
-    return auth;
-  }, [setIsloading, setStatus, setError]);
+      return auth;
+    },
+    [setIsloading, setStatus, setError]
+  );
   const getUser = useCallback(async () => {
     try {
       setIsloading(true);
-      setStatus('pending');
+      setStatus("pending");
       const response = await me();
       if (response.status === 200) {
-        editUser(response.data);
-        await setItem<User>(USER, response.data);
+        await saveUser(response.data);
       }
     } catch (e) {
       console.log(e);
     } finally {
       setIsloading(false);
-      setStatus('idle');
+      setStatus("idle");
     }
-  }, []);
+  }, [saveUser]);
   const removeUser = useCallback(async () => {
     try {
       setIsloading(true);
-      setStatus('pending');
+      setStatus("pending");
       editUser(null);
       await removeItem(USER);
     } catch (e) {
       console.log(e);
     } finally {
       setIsloading(false);
-      setStatus('idle');
+      setStatus("idle");
+    }
+  }, []);
+  const apply = useCallback(async () => {
+    try {
+      const res = await applyApplication();
+      if (res) {
+        toast.success("Applied Sucessfully");
+      } else {
+        toast.error("Error");
+      }
+    } catch (err: any) {
+      console.log(err);
     }
   }, []);
   const hydrate = useCallback(async () => {
     try {
       setIsloading(true);
-      setStatus('pending');
+      setStatus("pending");
       const savedUser = await getItem<User>(USER);
       if (savedUser !== null) {
         editUser(savedUser);
@@ -86,7 +108,7 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
       console.error(e);
     } finally {
       setIsloading(false);
-      setStatus('idle');
+      setStatus("idle");
     }
   }, []);
 
@@ -102,14 +124,15 @@ export const UserProvider: FC<UserProviderProps> = ({ children }) => {
         error,
         user,
         editUser,
+        saveUser,
         setUser,
         getUser,
         removeUser,
         hydrate,
+        apply
       }}
     >
       {children}
     </UserContext.Provider>
   );
 };
-

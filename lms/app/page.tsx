@@ -1,14 +1,19 @@
 "use client";
-import React, { useEffect } from "react";
+
+import { useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion";
-import { CourseWithProgressWithCategory, SearchPage } from "../components/courses-view";
+import {
+  CourseWithProgressWithCategory,
+  SearchPage,
+} from "@/components/courses-view";
 import {
   laravel,
   reactjs,
@@ -22,85 +27,23 @@ import {
   discord,
   twitter,
 } from "@/assets";
-import { AlignRight } from "lucide-react"
 import { useCategories, useCourses } from "@/core";
-
-const navigation = [
-  { name: "Home", href: "/" },
-  { name: "Courses", href: "/courses" },
-  { name: "About", href: "#" },
-  { name: "Policy", href: "#" },
-  { name: "FAQ", href: "#fyq" },
-];
+import { navigation } from "@/constants";
+import { Header } from "@/components/header";
 
 export default function Page() {
   const { categories, getCategories } = useCategories();
   const { courses, getCourses } = useCourses();
-  useEffect(() => {
-    getCategories({ pageIndex: 1, pageSize: 10 });
-    getCourses({ pageIndex: 1, pageSize: 10 });
-  }, [getCategories, getCourses]);
+  // useEffect(() => {
+  //   (async() => {
+  //     await getCategories({ pageIndex: 1, pageSize: 10 });
+  //     await getCourses({ pageIndex: 1, pageSize: 10 });
+  //   })()
+  // }, [getCategories, getCourses]);
 
   return (
     <div className="bg-white">
-      <header className="absolute inset-x-0 top-0 z-50">
-        <nav
-          className="flex items-center justify-between p-6 lg:px-8"
-          aria-label="Global"
-        >
-          <div className="flex lg:flex-1">
-            <Link
-              href="/"
-              className="-m-1.5 p-1.5 relative flex flex-row items-center"
-              prefetch={false}
-            >
-              <div className="relative h-10 w-10">
-                <Image src={logo} alt="logo" fill />
-              </div>
-              <span className="text-4xl">ShikshaSetu</span>
-            </Link>
-          </div>
-          <div className="flex lg:hidden">
-            <button
-              type="button"
-              className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5 text-gray-700"
-            >
-              <span className="sr-only">Open main menu</span>
-              <AlignRight size={24} />
-            </button>
-          </div>
-          <div className="hidden lg:flex lg:gap-x-12">
-            {navigation.map((item) => (
-              <Link
-                key={item.name}
-                href={item.href}
-                className="text-sm font-semibold leading-6 text-gray-900"
-                prefetch={false}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </div>
-          <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link
-              href="/sign-in"
-              className="text-sm font-semibold leading-6 text-gray-900"
-              prefetch={false}
-            >
-              Sign in <span aria-hidden="true">&rarr;</span>
-            </Link>
-          </div>
-          <div className="hidden ml-5 lg:flex lg:justify-end">
-            <Link
-              href="/sign-up"
-              className="text-sm font-semibold leading-6 text-gray-900"
-              prefetch={false}
-            >
-              Sign up <span aria-hidden="true">&rarr;</span>
-            </Link>
-          </div>
-        </nav>
-      </header>
+      <Header navigation={navigation} logo={logo} />
 
       <div className="my-16 w-full h-svh">
         <div className="relative mx-auto max-w-7xl px-4 sm:static sm:px-6 lg:px-8">
@@ -206,7 +149,10 @@ export default function Page() {
             Courses
           </h2>
         </div>
-        <SearchPage categories={categories} courses={courses as unknown as CourseWithProgressWithCategory[]} />
+        <SearchPage
+          categories={categories}
+          courses={courses as unknown as CourseWithProgressWithCategory[]}
+        />
       </div>
 
       <div>

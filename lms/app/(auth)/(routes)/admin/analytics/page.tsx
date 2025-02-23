@@ -1,47 +1,21 @@
 "use client";
 
-import React, { useEffect, useState, useCallback } from "react";
+import { useEffect } from "react";
+
 import { DataCard } from "./_components/data-card";
 import { Chart } from "./_components/chart";
+
 import { useUser } from "@/hooks";
-import axios from "axios";
+import { useAnalytics } from "@/core";
 
 const AnalyticsPage = () => {
   const { user } = useUser();
-  const [data, setData] = useState<
-    {
-      name: string;
-      total: number;
-    }[]
-  >([]);
-  const [totalRevenue, setTotalRevenue] = useState<number>(0);
-  const [totalSales, setTotalSales] = useState<number>(0);
-  const getAnalytics = useCallback(async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/admin/analytics`,
-        JSON.stringify({ userId: user?.userId, role: user?.role }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setData(res.data.data);
-        setTotalRevenue(res.data.totalRevenue);
-        setTotalSales(res.data.totalSales);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [user?.role, user?.userId])
+  const { data, totalRevenue, totalSales, getAnalytics } = useAnalytics();
   useEffect(() => {
-    if (user?.userId) {
-      getAnalytics();
+    if (user) {
+      (async () => {
+        await getAnalytics("admin/analytics");
+      })();
     }
   }, [getAnalytics, user]);
 

@@ -1,15 +1,23 @@
 "use client";
 
 import { useEffect } from "react";
+
 import { columns } from "./_components/columns";
 import { DataTable } from "./_components/data-table";
+
+import { useUser } from "@/hooks";
 import { useUsers } from "@/core";
 
-const CoursesPage = () => {
+const UsersPage = () => {
+  const { user } = useUser();
   const { users, getUsers } = useUsers();
   useEffect(() => {
-    getUsers();
-  }, [getUsers]);
+    if(user){
+      (async () => {
+        await getUsers();
+      })()
+    }
+  }, [user, getUsers]);
 
   return (
     <div className="p-6">
@@ -18,4 +26,4 @@ const CoursesPage = () => {
   );
 };
 
-export default CoursesPage;
+export default UsersPage;

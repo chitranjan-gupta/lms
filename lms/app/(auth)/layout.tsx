@@ -1,17 +1,32 @@
 "use client";
 
-import { Suspense, type FC } from "react";
-import { useAuth } from "@/hooks";
-import { Navbar } from "./_components/navbar";
-import { Sidebar } from "./_components/sidebar";
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect, Suspense, type FC } from "react";
+import { useRouter, usePathname } from "next/navigation";
+
 import Loader from "@/components/loader";
+import { Dashboard } from "@/components/dashboard";
 
-interface DashboardLayoutProps { children: React.ReactNode }
+import { useAuth, useUser } from "@/hooks";
+import { data, userRoutes, teacherRoutes, adminRoutes } from "@/constants";
 
-const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
-  const { status } = useAuth();
+interface AuthLayoutProps {
+  children: React.ReactNode;
+}
+
+const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
+  const pathname = usePathname();
+  const isAdminPage = pathname?.includes("/admin");
+  const isTeacherPage = pathname?.includes("/teacher");
+  const isUserPage = pathname?.includes("/user");
+  const routes = isAdminPage
+    ? adminRoutes
+    : isTeacherPage
+    ? teacherRoutes
+    : isUserPage
+    ? userRoutes
+    : [];
+  const { status, handleLogout } = useAuth();
+  const { user, apply } = useUser();
   const router = useRouter();
 
   useEffect(() => {
@@ -22,16 +37,8 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
 
   return (
     <Suspense fallback={<Loader />}>
-      {status ==="signIn" ? (
-        <div className="h-full">
-          <div className="h-[80px] md:pl-56 fixed inset-y-0 w-full z-50">
-            <Navbar />
-          </div>
-          <div className="hidden md:flex h-full w-56 flex-col fixed inset-y-0 z-50">
-            <Sidebar />
-          </div>
-          <main className="md:pl-56 pt-[80px] h-full">{children}</main>
-        </div>
+      {status === "signIn" ? (
+        <Dashboard data={{ ...data, navPrimary: routes, user: user }} handleLogout={handleLogout} handleApply={apply}>{children}</Dashboard>
       ) : (
         <Loader />
       )}
@@ -39,4 +46,4 @@ const DashboardLayout: FC<DashboardLayoutProps> = ({ children }) => {
   );
 };
 
-export default DashboardLayout;
+export default AuthLayout;

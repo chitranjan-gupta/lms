@@ -5,7 +5,7 @@ import { create } from "zustand";
 interface Courses {
     courses: Course[];
     pageCount: number;
-    getCourses: (pagination: Pagination) => Promise<void>;
+    getCourses: (pagination: Pagination, path?: string) => Promise<void>;
     addCourse: (values: { name: string }) => Promise<void>;
     removeCourse: (removeCourseId: string) => Promise<void>;
 }
@@ -13,8 +13,8 @@ interface Courses {
 export const useCourses = create<Courses>()((set) => ({
     courses: [],
     pageCount: 0,
-    getCourses: async (pagination: Pagination) => {
-        const data: any = await getCourses(pagination);
+    getCourses: async (pagination: Pagination, path: string = "courses") => {
+        const data: any = await getCourses(pagination, path);
         if (data.data) {
             set({ courses: data.data as Course[], pageCount: data.last_page });
         }

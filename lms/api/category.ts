@@ -1,10 +1,10 @@
 import type { Category, Pagination } from "@/types";
 import { fetchData } from "./common";
 
-export const getCategories = async (pagination: Pagination) => {
+export const getCategories = async (pagination: Pagination, path: string = "categories") => {
   const response = await fetchData({
     method: "GET",
-    url: "categories",
+    url: path,
     // url: `categories?page=${
     //   pagination.pageIndex + 1
     // }&per_page=${pagination.pageSize}`,
@@ -15,20 +15,28 @@ export const getCategories = async (pagination: Pagination) => {
   }
 };
 
-export const addCategory = async (title: string) => {
+export const addCategory = async (name: string, path: string = "categories") => {
   return fetchData<Category>({
     method: "POST",
-    url: `categories`,
-    data: { title },
+    url: path,
+    data: { name },
   });
 };
 
-export const deleteCategory = async (removeCategoryId: string) => {
+export const editCategory = async (categoryId: string, name: string, path: string = "categories") => {
+  return fetchData<Category>({
+    method: "PUT",
+    url: path,
+    data: { categoryId, name },
+  });
+};
+
+export const deleteCategory = async (categoryId: string, path: string = "categories") => {
   return fetchData<Category>({
     method: "DELETE",
-    url: "categories",
+    url: path,
     data: {
-      removeCategoryId: removeCategoryId,
+      categoryId: categoryId,
     },
   });
 };
