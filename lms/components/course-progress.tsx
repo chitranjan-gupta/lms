@@ -1,5 +1,10 @@
-import { cn } from "@/lib/utils";
-import { Progress } from "@/components/ui/progress";
+"use client";
+
+import { memo, type FC } from "react"
+
+import { Progress } from "./ui/progress";
+
+import { cn } from "@/lib";
 
 interface CourseProgressProps {
   value: number;
@@ -17,11 +22,11 @@ const sizeByVariant = {
   sm: "text-xs",
 };
 
-export const CourseProgress = ({
+const CourseProgressComponent: FC<CourseProgressProps> = ({
   value,
   variant,
   size,
-}: CourseProgressProps) => {
+}) => {
   return (
     <div>
       <Progress className="h-2" value={value} variant={variant} />
@@ -37,3 +42,5 @@ export const CourseProgress = ({
     </div>
   );
 };
+
+export const CourseProgress = memo(CourseProgressComponent);

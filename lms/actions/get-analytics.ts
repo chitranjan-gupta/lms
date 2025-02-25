@@ -1,5 +1,5 @@
-import { Course, Purchase } from "@/types";
-import axios from "axios";
+import { getCourseAnalytics } from "@/api";
+import type { Course, Purchase } from "@/types";
 
 type PurchaseWithCourse = Purchase & {
   course: Course;
@@ -18,22 +18,9 @@ const groupByCourse = (purchases: PurchaseWithCourse[]) => {
   return grouped;
 };
 
-export const getAnalytics = async (userId: string) => {
+export const getAnalytics = async () => {
   try {
-    const purchases = (
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/purchase`,
-        JSON.stringify({
-          userId: userId,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-    ).data;
+    const purchases = (await getCourseAnalytics()) as PurchaseWithCourse[];
     const groupedEarnings = groupByCourse(purchases);
     const data = Object.entries(groupedEarnings).map(
       ([courseTitle, total]) => ({

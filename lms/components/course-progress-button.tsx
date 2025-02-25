@@ -1,13 +1,16 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { useConfettiStore } from "@/hooks/use-confetti-store";
-import { Chapter, Lecture } from "@/types";
-import axios from "axios";
-import { CheckCircle, XCircle } from "lucide-react";
+import { useState, memo, type FC } from "react";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
 import toast from "react-hot-toast";
+import { CheckCircle, XCircle } from "lucide-react";
+
+import { Button } from "./ui/button";
+
+import { useConfettiStore } from "@/hooks";
+import { setChapterProgress, setCourseProgress } from "@/api";
+
+import type { Chapter, Lecture } from "@/types";
 
 interface CourseProgressButtonProps {
   chapter: Chapter & { lectures: Lecture[] };
@@ -20,7 +23,7 @@ interface CourseProgressButtonProps {
   nextLectureId?: string;
 }
 
-export const CourseProgressButton = ({
+const CourseProgressButtonComponent: FC<CourseProgressButtonProps> = ({
   chapter,
   chapterId,
   courseId,
@@ -29,25 +32,14 @@ export const CourseProgressButton = ({
   isChapterCompleted,
   nextChapterId,
   nextLectureId,
-}: CourseProgressButtonProps) => {
+}) => {
   const router = useRouter();
   const confetti = useConfettiStore();
   const [isLoading, setIsLoading] = useState(false);
   const onClick = async () => {
     try {
       setIsLoading(true);
-      await axios.put(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
-        {
-          isCompleted: !isCompleted,
-        },
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
+      await setCourseProgress(courseId, chapterId, lectureId, !isCompleted)
       if (!isCompleted && !nextChapterId && !nextLectureId) {
         confetti.onOpen();
       }
@@ -59,18 +51,7 @@ export const CourseProgressButton = ({
           );
         } else {
           if (!isChapterCompleted) {
-            await axios.put(
-              `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/progress`,
-              {
-                isCompleted: true,
-              },
-              {
-                withCredentials: true,
-                headers: {
-                  "Content-Type": "application/json",
-                },
-              }
-            );
+            await setChapterProgress(courseId, chapterId, true)
           }
           router.push(
             `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
@@ -101,3 +82,5 @@ export const CourseProgressButton = ({
     </Button>
   );
 };
+
+export const CourseProgressButton = memo(CourseProgressButtonComponent);

@@ -1,5 +1,12 @@
-import React from "react"
-import { type LucideIcon } from "lucide-react"
+"use client";
+
+import {
+  memo,
+  type FC,
+  type ComponentPropsWithoutRef,
+  type ReactNode,
+} from "react";
+import { type LucideIcon } from "lucide-react";
 
 import {
   SidebarGroup,
@@ -8,19 +15,18 @@ import {
   SidebarMenuBadge,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar"
+} from "./ui/sidebar";
 
-export function NavSecondary({
-  items,
-  ...props
-}: {
+type NavSecondaryProps = {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    badge?: React.ReactNode
-  }[]
-} & React.ComponentPropsWithoutRef<typeof SidebarGroup>) {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    badge?: ReactNode;
+  }[];
+} & ComponentPropsWithoutRef<typeof SidebarGroup>;
+
+const NavSecondaryComponent: FC<NavSecondaryProps> = ({ items, ...props }) => {
   return (
     <SidebarGroup {...props}>
       <SidebarGroupContent>
@@ -39,5 +45,7 @@ export function NavSecondary({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
-}
+  );
+};
+
+export const NavSecondary = memo(NavSecondaryComponent);

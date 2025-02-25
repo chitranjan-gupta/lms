@@ -1,20 +1,22 @@
 "use client";
 
+import { useEffect, useState, memo, type FC } from "react";
 import qs from "query-string";
-import { Search } from "lucide-react";
-import { useEffect, useState } from "react";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
-import { useDebounce } from "@/hooks/use-debounce";
-import { Input } from "@/components/ui/input";
+import { Search } from "lucide-react";
 
-export const SearchInput = () => {
+import { Input } from "./ui/input";
+
+import { useDebounce } from "@/hooks";
+
+const SearchInputComponent: FC = () => {
   const [value, setValue] = useState("");
   const debouncedValue = useDebounce(value);
   const searchParams = useSearchParams();
   const router = useRouter();
   const pathname = usePathname();
 
-  const currentCategoryId = searchParams.get("cateoryId");
+  const currentCategoryId = searchParams.get("categoryId");
   useEffect(() => {
     const url = qs.stringifyUrl(
       {
@@ -40,3 +42,5 @@ export const SearchInput = () => {
     </div>
   );
 };
+
+export const SearchInput = memo(SearchInputComponent);

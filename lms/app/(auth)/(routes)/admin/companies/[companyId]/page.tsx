@@ -11,7 +11,7 @@ import { Actions } from "./_components/actions";
 import Link from "next/link";
 import { useUser } from "@/hooks";
 import React, { useEffect, useState, Suspense } from "react";
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 import { useCompany } from "@/core/store/company";
 
 const CompanyIdPage = ({ params }: { params: { companyId: string } }) => {

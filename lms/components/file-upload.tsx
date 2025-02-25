@@ -1,7 +1,10 @@
 "use client";
 
+import { memo, type FC } from "react";
 import toast from "react-hot-toast";
-import { UploadDropzone } from "@/lib/uploadthing";
+
+import { UploadDropzone } from "@/lib";
+
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 
 interface FileUploadProps {
@@ -9,7 +12,7 @@ interface FileUploadProps {
   endpoint: keyof typeof ourFileRouter;
 }
 
-export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
+const FileUploadComponent: FC<FileUploadProps> = ({ onChange, endpoint }) => {
   return (
     <UploadDropzone
       endpoint={endpoint}
@@ -22,3 +25,5 @@ export const FileUpload = ({ onChange, endpoint }: FileUploadProps) => {
     />
   );
 };
+
+export const FileUpload = memo(FileUploadComponent);

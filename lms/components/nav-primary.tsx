@@ -1,13 +1,14 @@
-"use client"
+"use client";
 
-import { ChevronRight, type LucideIcon } from "lucide-react"
-import Link from "next/link"
+import { memo, type FC } from "react";
+import { ChevronRight, type LucideIcon } from "lucide-react";
+import Link from "next/link";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "./ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -17,22 +18,22 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "./ui/sidebar";
 
-export function NavPrimary({
-  items,
-}: {
+interface NavPrimaryProps {
   items: {
-    title: string
-    url: string
-    icon?: LucideIcon
-    isActive?: boolean
+    title: string;
+    url: string;
+    icon?: LucideIcon;
+    isActive?: boolean;
     items?: {
-      title: string
-      url: string
-    }[]
-  }[]
-}) {
+      title: string;
+      url: string;
+    }[];
+  }[];
+}
+
+const NavPrimaryComponent: FC<NavPrimaryProps> = ({ items }) => {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Platform</SidebarGroupLabel>
@@ -70,5 +71,7 @@ export function NavPrimary({
         ))}
       </SidebarMenu>
     </SidebarGroup>
-  )
-}
+  );
+};
+
+export const NavPrimary = memo(NavPrimaryComponent);

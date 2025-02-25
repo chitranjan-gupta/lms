@@ -22,7 +22,7 @@ import React, { useEffect, useState, Suspense, useCallback } from "react";
 import axios from "axios";
 import { LectureDurationForm } from "./_components/lecture-duration-form";
 import { LectureAttachmentForm } from "./_components/lecture-attachment-form";
-import Loader from "@/components/loader";
+import { Loader} from "@/components/loader";
 
 const LectureIdPage = ({
   params,

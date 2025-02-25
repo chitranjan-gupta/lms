@@ -1,14 +1,16 @@
 "use client";
 
-import axios from "axios";
+import { useState, memo, useCallback, type FC } from "react";
 import MuxPlayer from "@mux/mux-player-react";
-import { useState } from "react";
 import { toast } from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { Loader2, Lock } from "lucide-react";
-import { cn } from "@/lib/utils";
-import { useConfettiStore } from "@/hooks/use-confetti-store";
-import { Lecture, Chapter } from "@/types";
+
+import { cn } from "@/lib";
+import { useConfettiStore } from "@/hooks";
+
+import type { Lecture, Chapter } from "@/types";
+import { setCourseProgress } from "@/api";
 
 interface VideoPlayerProps {
   playbackId: string;
@@ -23,7 +25,7 @@ interface VideoPlayerProps {
   title: string;
 }
 
-export const VideoPlayer = ({
+const VideoPlayerComponent: FC<VideoPlayerProps> = ({
   playbackId,
   courseId,
   chapter,
@@ -34,48 +36,48 @@ export const VideoPlayer = ({
   isLocked,
   completeOnEnd,
   title,
-}: VideoPlayerProps) => {
+}) => {
   const [isReady, setIsReady] = useState(false);
   const router = useRouter();
   const confetti = useConfettiStore();
 
-  const onEnd = async () => {
-    // try {
-    //   if (completeOnEnd) {
-    //     await axios.put(
-    //       `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}/progress`,
-    //       {
-    //         isCompleted: true,
-    //       },
-    //       {
-    //         withCredentials: true,
-    //         headers: {
-    //           "Content-Type": "application/json",
-    //         },
-    //       }
-    //     );
-    //   }
-    //   if (!nextChapterId && !nextLectureId) {
-    //     confetti.onOpen();
-    //   }
-    //   toast.success("Progress updated");
-    //   router.refresh();
-    //   if (nextChapterId || nextLectureId) {
-    //     const current = chapter.lectures.some(({ id }) => id === nextLectureId);
-    //     if (current) {
-    //       router.push(
-    //         `/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`
-    //       );
-    //     } else {
-    //       router.push(
-    //         `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
-    //       );
-    //     }
-    //   }
-    // } catch (error) {
-    //   toast.error("Something went wrong");
-    // }
-  };
+  const onEnd = useCallback(async () => {
+    try {
+      if (completeOnEnd) {
+        await setCourseProgress(courseId, chapterId, lectureId, true);
+      }
+      if (!nextChapterId && !nextLectureId) {
+        confetti.onOpen();
+      }
+      toast.success("Progress updated");
+      router.refresh();
+      if (nextChapterId || nextLectureId) {
+        const current = chapter.lectures.some(({ id }) => id === nextLectureId);
+        if (current) {
+          router.push(
+            `/courses/${courseId}/chapters/${chapterId}/lectures/${lectureId}`
+          );
+        } else {
+          router.push(
+            `/courses/${courseId}/chapters/${nextChapterId}/lectures/${nextLectureId}`
+          );
+        }
+      }
+    } catch (error) {
+      toast.error("Something went wrong");
+    }
+  }, [
+    chapter.lectures,
+    chapterId,
+    completeOnEnd,
+    confetti,
+    courseId,
+    lectureId,
+    nextChapterId,
+    nextLectureId,
+    router,
+  ]);
+
   return (
     <div className="relative aspect-videos">
       {!isReady && !isLocked && (
@@ -102,3 +104,5 @@ export const VideoPlayer = ({
     </div>
   );
 };
+
+export const VideoPlayer = memo(VideoPlayerComponent);

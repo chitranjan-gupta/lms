@@ -1,23 +1,20 @@
-"use client"
+"use client";
 
-import { type LucideIcon } from "lucide-react"
+import { memo, type FC } from "react";
+import { type LucideIcon } from "lucide-react";
 
-import {
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@/components/ui/sidebar"
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "./ui/sidebar";
 
-export function NavMain({
-  items,
-}: {
+interface NavMainProps {
   items: {
-    title: string
-    url: string
-    icon: LucideIcon
-    isActive?: boolean
-  }[]
-}) {
+    title: string;
+    url: string;
+    icon: LucideIcon;
+    isActive?: boolean;
+  }[];
+}
+
+const NavMainComponent: FC<NavMainProps> = ({ items }) => {
   return (
     <SidebarMenu>
       {items.map((item) => (
@@ -31,5 +28,7 @@ export function NavMain({
         </SidebarMenuItem>
       ))}
     </SidebarMenu>
-  )
-}
+  );
+};
+
+export const NavMain = memo(NavMainComponent);

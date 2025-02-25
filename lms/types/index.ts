@@ -237,3 +237,15 @@ export interface Pagination {
   pageIndex: number;
   pageSize: number;
 }
+
+export type CourseWithProgressWithCategory = Course & {
+  category: Category | null;
+  chapters: { id: string }[];
+  progress: number | null;
+};
+
+export type CourseWithChaptersWithAttachments = Course & {
+  chapters: (Chapter & { lectures: Lecture[] })[];
+} & {
+  attachments: CourseAttachment[];
+};

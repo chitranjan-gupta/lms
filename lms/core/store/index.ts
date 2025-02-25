@@ -3,6 +3,7 @@ export * from "./teachers";
 export * from "./notifications";
 export * from "./categories";
 export * from "./courses";
+export * from "./course";
 export * from "./career";
 export * from "./careers";
 export * from "./companies";

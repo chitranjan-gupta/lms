@@ -43,7 +43,7 @@ export const AuthProvider: FC<AuthProviderProps> = ({ children }) => {
         const res = await oauth_google_redirect(register);
         if (res.status === 200) {
           if (res.data && res.data.url) {
-            window.location.href = res.data.url;
+            window.location.assign(res.data.url);
           }
         }
       } catch (e: any) {

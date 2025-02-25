@@ -5,7 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 
 import { Spinner } from "@/components/spinner";
 import { useAuth } from "@/hooks";
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 
 const OAuth: FC = () => {
   const router = useRouter();

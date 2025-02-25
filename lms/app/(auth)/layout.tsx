@@ -3,7 +3,7 @@
 import { useEffect, Suspense, type FC } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 import { Dashboard } from "@/components/dashboard";
 
 import { useAuth, useUser } from "@/hooks";

@@ -2,9 +2,6 @@
 
 import { memo, type ReactNode, type FC } from "react";
 
-import { NavActions } from "@/components/nav-actions";
-import { SidebarLeft } from "@/components/sidebar-left";
-import { SidebarRight } from "@/components/sidebar-right";
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,13 +9,17 @@ import {
   BreadcrumbList,
   BreadcrumbPage,
   BreadcrumbSeparator,
-} from "@/components/ui/breadcrumb";
-import { Separator } from "@/components/ui/separator";
+} from "./ui/breadcrumb";
+import { Separator } from "./ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
+
+import { NavActions } from "./nav-actions";
+import { SidebarLeft } from "./sidebar-left";
+import { SidebarRight } from "./sidebar-right";
 
 interface DashboardProps {
   data: any;

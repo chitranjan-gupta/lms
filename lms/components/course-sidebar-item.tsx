@@ -1,14 +1,18 @@
 "use client";
 
-import { cn } from "@/lib/utils";
-import { Lecture } from "@/types";
-import { CheckCircle, Lock, PlayCircle } from "lucide-react";
+import { memo, type FC } from "react";
 import { usePathname, useRouter } from "next/navigation";
+import { CheckCircle, Lock, PlayCircle } from "lucide-react";
+
 import {
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
-} from "@/components/ui/accordion";
+} from "./ui/accordion";
+
+import { cn } from "@/lib";
+
+import type { Lecture } from "@/types";
 
 interface CourseSidebarItemProps {
   label: string;
@@ -20,63 +24,14 @@ interface CourseSidebarItemProps {
   purchase: boolean;
 }
 
-interface CouseSidebarDropDownItemsProps {
-  label: string;
-  id: string;
-  isCompleted: boolean;
-  courseId: string;
-  isLocked: boolean;
-  lectures?: Lecture[];
-  purchase: boolean;
-}
-
-export const CourseSidebarDropDownItem = ({
-  label,
-  id,
-  isCompleted,
-  courseId,
-  isLocked,
-  lectures,
-  purchase,
-}: CouseSidebarDropDownItemsProps) => {
-  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
-  return (
-    <AccordionItem value={id}>
-      <AccordionTrigger disabled={isLocked} className="p-2">
-        <div className="flex items-center gap-x-2 py-4">
-          <Icon
-            size={22}
-            className={cn("text-slate-500", isCompleted && "text-emerald-700")}
-          />
-          {label}
-        </div>
-      </AccordionTrigger>
-      <AccordionContent>
-        {lectures?.map((lecture) => (
-          <CourseSidebarItem
-            key={lecture.id}
-            id={lecture.id}
-            label={lecture.title}
-            isCompleted={false}
-            isLocked={!lecture.isFree && !purchase}
-            courseId={lecture.courseId}
-            chapterId={id}
-            purchase={purchase}
-          />
-        ))}
-      </AccordionContent>
-    </AccordionItem>
-  );
-};
-
-export const CourseSidebarItem = ({
+const CourseSidebarItemComponent: FC<CourseSidebarItemProps> = ({
   label,
   id,
   isCompleted,
   courseId,
   isLocked,
   chapterId,
-}: CourseSidebarItemProps) => {
+}) => {
   const pathname = usePathname();
   const router = useRouter();
   const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
@@ -120,3 +75,52 @@ export const CourseSidebarItem = ({
     </>
   );
 };
+
+export const CourseSidebarItem = memo(CourseSidebarItemComponent);
+
+interface CouseSidebarDropDownItemsProps {
+  label: string;
+  id: string;
+  isCompleted: boolean;
+  courseId: string;
+  isLocked: boolean;
+  lectures?: Lecture[];
+  purchase: boolean;
+}
+
+const CourseSidebarDropDownItemComponent: FC<
+  CouseSidebarDropDownItemsProps
+> = ({ label, id, isCompleted, courseId, isLocked, lectures, purchase }) => {
+  const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
+  return (
+    <AccordionItem value={id}>
+      <AccordionTrigger disabled={isLocked} className="p-2">
+        <div className="flex items-center gap-x-2 py-4">
+          <Icon
+            size={22}
+            className={cn("text-slate-500", isCompleted && "text-emerald-700")}
+          />
+          {label}
+        </div>
+      </AccordionTrigger>
+      <AccordionContent>
+        {lectures?.map((lecture) => (
+          <CourseSidebarItem
+            key={lecture.id}
+            id={lecture.id}
+            label={lecture.title}
+            isCompleted={false}
+            isLocked={!lecture.isFree && !purchase}
+            courseId={lecture.courseId}
+            chapterId={id}
+            purchase={purchase}
+          />
+        ))}
+      </AccordionContent>
+    </AccordionItem>
+  );
+};
+
+export const CourseSidebarDropDownItem = memo(
+  CourseSidebarDropDownItemComponent
+);

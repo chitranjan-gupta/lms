@@ -1,13 +1,16 @@
 "use client";
 
-import { IconBadge } from "@/components/icon-badge";
-import { LayoutDashboard, ArrowLeft } from "lucide-react";
-import { CareerForm } from "./_components/career-form";
-import Link from "next/link";
 import { useEffect, useState, Suspense } from "react";
-import Loader from "@/components/loader";
+import { LayoutDashboard, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+import { CareerForm } from "./_components/career-form";
 import { Actions } from "./_components/actions";
-import { useCareer } from "@/core/store/career";
+
+import { Loader } from "@/components/loader";
+import { IconBadge } from "@/components/icon-badge";
+
+import { useCareer } from "@/core";
 
 const CareerIdPage = ({
   params,
@@ -19,7 +22,9 @@ const CareerIdPage = ({
   const { career, getCareer } = useCareer();
   useEffect(() => {
     if (careerId && companyId) {
-      void getCareer(companyId, careerId);
+      (async () => {
+        await getCareer(companyId, careerId);
+      })()
     }
   }, [careerId, companyId, refresh, getCareer]);
 

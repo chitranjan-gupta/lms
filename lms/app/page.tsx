@@ -11,7 +11,6 @@ import {
   AccordionTrigger,
 } from "@/components/ui/accordion";
 import {
-  CourseWithProgressWithCategory,
   SearchPage,
 } from "@/components/courses-view";
 import {
@@ -30,6 +29,8 @@ import {
 import { useCategories, useCourses } from "@/core";
 import { navigation } from "@/constants";
 import { Header } from "@/components/header";
+
+import type { CourseWithProgressWithCategory } from "@/types";
 
 export default function Page() {
   const { categories, getCategories } = useCategories();

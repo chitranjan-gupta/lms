@@ -1,7 +1,7 @@
 "use client";
 
+import { useMemo, memo, type FC } from "react";
 import dynamic from "next/dynamic";
-import { useMemo } from "react";
 
 import "react-quill/dist/quill.snow.css";
 
@@ -10,7 +10,7 @@ interface EditorProps {
   value: string;
 }
 
-export const Editor = ({ onChange, value }: EditorProps) => {
+const EditorComponent: FC<EditorProps> = ({ onChange, value }) => {
   const ReactQuill = useMemo(
     () => dynamic(() => import("react-quill"), { ssr: false }),
     []
@@ -21,3 +21,5 @@ export const Editor = ({ onChange, value }: EditorProps) => {
     </div>
   );
 };
+
+export const Editor = memo(EditorComponent);

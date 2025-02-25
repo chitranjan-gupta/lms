@@ -1,5 +1,6 @@
 "use client";
 
+import { memo, type FC } from "react";
 import {
   BadgeCheck,
   Bell,
@@ -10,7 +11,7 @@ import {
   CircleCheckBig,
 } from "lucide-react";
 
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -19,25 +20,27 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
+} from "./ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
 import type { User } from "@/types";
 
-export function NavUser({
-  user,
-  handleLogout,
-  handleApply,
-}: {
+interface NavUserProps {
   user: User;
   handleLogout: () => Promise<void>;
   handleApply: () => Promise<void>;
-}) {
+}
+
+const NavUserComponent: FC<NavUserProps> = ({
+  user,
+  handleLogout,
+  handleApply,
+}) => {
   const { isMobile } = useSidebar();
 
   return (
@@ -116,4 +119,6 @@ export function NavUser({
       </SidebarMenuItem>
     </SidebarMenu>
   );
-}
+};
+
+export const NavUser = memo(NavUserComponent);

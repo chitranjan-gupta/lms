@@ -1,13 +1,8 @@
 "use client";
 
-import { type ComponentProps } from "react";
+import { type ComponentProps, memo, type FC } from "react";
 import { Plus } from "lucide-react";
 
-import { Calendars } from "@/components/calendars";
-import { DatePicker } from "@/components/date-picker";
-import { SearchForm } from "@/components/search-form";
-import { NavFavorites } from "@/components/nav-favorites";
-import { NavWorkspaces } from "@/components/nav-workspaces";
 import {
   Sidebar,
   SidebarContent,
@@ -17,16 +12,34 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
-export function SidebarRight({
+import { Calendars } from "./calendars";
+import { DatePicker } from "./date-picker";
+import { SearchForm } from "./search-form";
+import { NavFavorites } from "./nav-favorites";
+import { NavWorkspaces } from "./nav-workspaces";
+
+type SidebarRightProps = ComponentProps<typeof Sidebar> & {
+  calendars: any;
+  favorites: any;
+  workspaces: any;
+};
+
+const SidebarRightComponent: FC<SidebarRightProps> = ({
   calendars,
   favorites,
   workspaces,
   ...props
-}: ComponentProps<typeof Sidebar> & { calendars:any; favorites:any; workspaces:any }) {
+}) => {
   return (
-    <Sidebar side="right" collapsible="icon" variant="floating" className="sticky hidden md:flex top-0 w-80" {...props}>
+    <Sidebar
+      side="right"
+      collapsible="icon"
+      variant="floating"
+      className="sticky hidden md:flex top-0 w-80"
+      {...props}
+    >
       <SidebarHeader className="h-16 border-b border-sidebar-border">
         <SearchForm />
       </SidebarHeader>
@@ -49,4 +62,6 @@ export function SidebarRight({
       </SidebarFooter>
     </Sidebar>
   );
-}
+};
+
+export const SidebarRight = memo(SidebarRightComponent);

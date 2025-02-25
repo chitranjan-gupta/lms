@@ -1,8 +1,11 @@
-'use client';
-import React from "react";
-import { NavbarRoutes } from "@/components/navbar-routes";
-import { Chapter, Course, ChapterProgress, Lecture } from "@/types";
+"use client";
+
+import { memo, type FC } from "react";
+
+import { NavbarRoutes } from "./navbar-routes";
 import { CourseMobileSidebar } from "./course-mobile-sidebar";
+
+import type { Chapter, Course, ChapterProgress, Lecture } from "@/types";
 
 interface CourseNavbarProps {
   course: Course & {
@@ -15,7 +18,10 @@ interface CourseNavbarProps {
   progressCount?: number;
 }
 
-export const CourseNavbar = ({ course, progressCount }: CourseNavbarProps) => {
+const CourseNavbarComponent: FC<CourseNavbarProps> = ({
+  course,
+  progressCount,
+}) => {
   return (
     <div className="p-4 border-b h-full flex items-center bg-white shadow-sm">
       <CourseMobileSidebar course={course} progressCount={progressCount} />
@@ -23,3 +29,5 @@ export const CourseNavbar = ({ course, progressCount }: CourseNavbarProps) => {
     </div>
   );
 };
+
+export const CourseNavbar = memo(CourseNavbarComponent);

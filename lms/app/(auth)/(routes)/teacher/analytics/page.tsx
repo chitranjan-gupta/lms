@@ -1,8 +1,11 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { getAnalytics } from "@/actions/get-analytics";
+
+import { useEffect, useState } from "react";
+
 import { DataCard } from "./_components/data-card";
 import { Chart } from "./_components/chart";
+
+import { getAnalytics } from "@/actions";
 import { useUser } from "@/hooks";
 
 const AnalyticsPage = () => {
@@ -17,12 +20,13 @@ const AnalyticsPage = () => {
   const [totalSales, setTotalSales] = useState<number>(0);
 
   useEffect(() => {
-    if (user?.userId) {
-      getAnalytics(user?.userId).then((value) => {
-        setData(value.data);
-        setTotalRevenue(value.totalRevenue);
-        setTotalSales(value.totalSales);
-      });
+    if (user) {
+      (async () => {
+        const { data, totalRevenue, totalSales } = await getAnalytics();
+        setData(data);
+        setTotalRevenue(totalRevenue);
+        setTotalSales(totalSales);
+      })()
     }
   }, [user]);
 

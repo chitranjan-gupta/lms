@@ -1,11 +1,17 @@
-import { getCourses, deleteCourse, addCourse } from "@/api";
+import { getCourses, deleteCourse, addCourse, searchCourses } from "@/api";
 import type { Course, Pagination } from "@/types";
 import { create } from "zustand";
+
+interface Params {
+    title?: string;
+    categoryId?: string;
+}
 
 interface Courses {
     courses: Course[];
     pageCount: number;
     getCourses: (pagination: Pagination, path?: string) => Promise<void>;
+    searchCourses: (pagination: Pagination, params?: Params, path?: string) => Promise<void>;
     addCourse: (values: { name: string }) => Promise<void>;
     removeCourse: (removeCourseId: string) => Promise<void>;
 }
@@ -15,6 +21,12 @@ export const useCourses = create<Courses>()((set) => ({
     pageCount: 0,
     getCourses: async (pagination: Pagination, path: string = "courses") => {
         const data: any = await getCourses(pagination, path);
+        if (data.data) {
+            set({ courses: data.data as Course[], pageCount: data.last_page });
+        }
+    },
+    searchCourses: async (pagination: Pagination, params?: Params, path: string = "courses/search") => {
+        const data: any = await searchCourses(pagination, params, path);
         if (data.data) {
             set({ courses: data.data as Course[], pageCount: data.last_page });
         }

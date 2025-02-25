@@ -1,6 +1,8 @@
 "use client";
 
-export default function Loader() {
+import { memo, type FC } from "react";
+
+const LoaderComponent: FC = () => {
   return (
     <div className="w-full h-full flex flex-col justify-center items-center">
       <div role="status">
@@ -25,4 +27,6 @@ export default function Loader() {
       <span className="">Loading...</span>
     </div>
   );
-}
+};
+
+export const Loader = memo(LoaderComponent);

@@ -1,17 +1,22 @@
 "use client";
-import React, { useEffect, useState, useCallback } from "react";
-import {
+
+import { useEffect, useState, memo, type FC } from "react";
+
+import { Accordion } from "./ui/accordion";
+
+import { CourseSidebarDropDownItem } from "./course-sidebar-item";
+import { CourseProgress } from "./course-progress";
+
+import { useUser } from "@/hooks";
+import { getPurchase } from "@/api";
+
+import type {
   Chapter,
   Course,
   Lecture,
   ChapterProgress,
   Purchase,
 } from "@/types";
-import { CourseSidebarDropDownItem } from "./course-sidebar-item";
-import { CourseProgress } from "@/components/course-progress";
-import { useUser } from "@/hooks";
-import axios from "axios";
-import { Accordion } from "@/components/ui/accordion";
 
 interface CourseSidebarProps {
   course: Course & {
@@ -24,41 +29,22 @@ interface CourseSidebarProps {
   progressCount?: number;
 }
 
-export const CourseSidebar = ({
+const CourseSidebarComponent: FC<CourseSidebarProps> = ({
   course,
   progressCount,
-}: CourseSidebarProps) => {
+}) => {
   const { user } = useUser();
   const [purchase, setPurchase] = useState<Purchase>();
-  const getData = useCallback(async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/purchases`,
-        JSON.stringify({
-          userId: user?.userId,
-          courseId: course.id,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setPurchase(res.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [course.id, user?.userId])
   useEffect(() => {
-    if (user?.userId) {
-      void getData();
+    if (user) {
+      (async () => {
+        const data: any = await getPurchase(course.id);
+        if (data) {
+          setPurchase(data);
+        }
+      })();
     }
-  }, [user, course.id, getData]);
+  }, [user, course.id]);
   return (
     <div className="h-full border-r flex flex-col overflow-y-auto shadow-sm">
       <div className="p-8 flex flex-col border-b">
@@ -88,3 +74,5 @@ export const CourseSidebar = ({
     </div>
   );
 };
+
+export const CourseSidebar = memo(CourseSidebarComponent);

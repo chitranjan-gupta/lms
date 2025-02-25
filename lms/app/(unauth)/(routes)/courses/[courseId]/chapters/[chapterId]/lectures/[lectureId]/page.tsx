@@ -1,15 +1,20 @@
 "use client";
 
-import { getLecture } from "@/actions/get-lecture";
+import { useEffect, useState, Suspense, type FC } from "react";
+import { File, Lock } from "lucide-react";
+
 import { Banner } from "@/components/banner";
 import { VideoPlayer } from "@/components/video-player";
 import { CourseEnrollButton } from "@/components/course-enroll-button";
 import { Separator } from "@/components/ui/separator";
 import { Preview } from "@/components/preview";
-import { File, Lock } from "lucide-react";
 import { CourseProgressButton } from "@/components/course-progress-button";
+import {Loader} from "@/components/loader";
+
+import { getLecture } from "@/actions";
 import { useUser } from "@/hooks";
-import {
+
+import type {
   Chapter,
   ChapterAttachment,
   ChapterProgress,
@@ -19,18 +24,16 @@ import {
   LectureProgress,
   MuxData,
 } from "@/types";
-import React, { useEffect, useState, Suspense } from "react";
-import Loader from "@/components/loader";
 
-const LectureIdPage = ({
-  params,
-}: {
+interface LectureProps {
   params: {
     courseId: string;
     chapterId: string;
     lectureId: string;
   };
-}) => {
+}
+
+const LectureIdPage: FC<LectureProps> = ({ params }) => {
   const { user } = useUser();
   const [lecture, setLecture] = useState<Lecture>();
   const [chapter, setChapter] = useState<Chapter & { lectures: Lecture[] }>();
@@ -49,24 +52,36 @@ const LectureIdPage = ({
   const [purchase, setPurchase] = useState();
 
   useEffect(() => {
-    getLecture({
-      userId: user?.userId,
-      chapterId: params.chapterId,
-      courseId: params.courseId,
-      lectureId: params.lectureId,
-    }).then((value) => {
-      setCourse(value.course);
-      setChapter(value.chapter);
-      setLecture(value.lecture);
-      setMuxData(value.muxData);
-      setLectureAttachments(value.lectureAttachments);
-      setChapterAttachments(value.chapterAttachments);
-      setNextChapter(value.nextChapter);
-      setNextLecture(value.nextLecture);
-      setChapterProgress(value.chapterProgress);
-      setLectureProgress(value.lectureProgress);
-      setPurchase(value.purchase);
-    });
+    (async () => {
+      const {
+        course,
+        chapter,
+        lecture,
+        muxData,
+        lectureAttachments,
+        chapterAttachments,
+        nextChapter,
+        nextLecture,
+        chapterProgress,
+        lectureProgress,
+        purchase,
+      } = await getLecture({
+        chapterId: params.chapterId,
+        courseId: params.courseId,
+        lectureId: params.lectureId,
+      });
+      setCourse(course);
+      setChapter(chapter);
+      setLecture(lecture);
+      setMuxData(muxData);
+      setLectureAttachments(lectureAttachments);
+      setChapterAttachments(chapterAttachments);
+      setNextChapter(nextChapter);
+      setNextLecture(nextLecture);
+      setChapterProgress(chapterProgress);
+      setLectureProgress(lectureProgress);
+      setPurchase(purchase);
+    })();
   }, [params.chapterId, params.courseId, params.lectureId, user]);
 
   if (!chapter || !course || !lecture) {
@@ -77,7 +92,6 @@ const LectureIdPage = ({
   const completeOnEnd = !!purchase && !lectureProgress?.isCompleted;
   return (
     <Suspense fallback={<Loader />}>
-      
       <div>
         {!purchase && lecture.isFree && (
           <Banner variant="success" label="This is free for watching" />

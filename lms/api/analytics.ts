@@ -1,9 +1,15 @@
 import { fetchData } from "./common";
 
 export const getAnalytics = async (path: string = "admin/analytics") => {
-  const response = await fetchData({
+  return await fetchData({
     method: "GET",
     url: path,
   });
-  return response
 };
+
+export const getCourseAnalytics = async () => {
+  return await fetchData({
+    method: "POST",
+    url: "courses/user/purchase"
+  })
+}

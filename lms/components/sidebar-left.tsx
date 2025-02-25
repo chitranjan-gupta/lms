@@ -1,19 +1,30 @@
 "use client";
 
-import { type ComponentProps } from "react";
-import { NavMain } from "@/components/nav-main";
-import { TeamSwitcher } from "@/components/team-switcher";
+import { type ComponentProps, memo, type FC } from "react";
+
 import {
   Sidebar,
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
   SidebarRail,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
+
+import { NavMain } from "./nav-main";
+import { TeamSwitcher } from "./team-switcher";
 import { NavUser } from "./nav-user";
 import { NavPrimary } from "./nav-primary";
 
-export function SidebarLeft({
+type SidebarLeftProps = ComponentProps<typeof Sidebar> & {
+  teams: any;
+  navMain: any;
+  navPrimary: any;
+  user: any;
+  handleLogout: () => Promise<void>;
+  handleApply: () => Promise<void>;
+};
+
+const SidebarLeftComponent: FC<SidebarLeftProps> = ({
   teams,
   navMain,
   navPrimary,
@@ -21,14 +32,7 @@ export function SidebarLeft({
   handleLogout,
   handleApply,
   ...props
-}: ComponentProps<typeof Sidebar> & {
-  teams: any;
-  navMain: any;
-  navPrimary: any;
-  user: any;
-  handleLogout: () => Promise<void>;
-  handleApply: () => Promise<void>;
-}) {
+}) => {
   return (
     <Sidebar
       side="left"
@@ -45,9 +49,15 @@ export function SidebarLeft({
         <NavPrimary items={navPrimary} />
       </SidebarContent>
       <SidebarFooter>
-        <NavUser user={user} handleLogout={handleLogout} handleApply={handleApply} />
+        <NavUser
+          user={user}
+          handleLogout={handleLogout}
+          handleApply={handleApply}
+        />
       </SidebarFooter>
       <SidebarRail />
     </Sidebar>
   );
-}
+};
+
+export const SidebarLeft = memo(SidebarLeftComponent);

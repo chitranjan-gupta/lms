@@ -1,38 +1,24 @@
-import { LectureAttachment, ChapterAttachment } from "@/types";
-import axios from "axios";
+import { getLectureProgress } from "@/api";
+import type { LectureAttachment, ChapterAttachment } from "@/types";
 
 interface GetLectureProps {
-  userId?: string | null;
   courseId: string;
   chapterId: string;
   lectureId: string;
 }
 
 export const getLecture = async ({
-  userId,
   courseId,
   chapterId,
   lectureId,
 }: GetLectureProps) => {
   try {
-    const res = (
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/lecture`,
-        JSON.stringify({
-          userId: userId,
-          courseId: courseId,
-          chapterId: chapterId,
-          lectureId: lectureId,
-          purchase: true,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-    ).data;
+    const res: any = await getLectureProgress(
+      courseId,
+      chapterId,
+      lectureId,
+      true
+    );
     return {
       lecture: res.lecture,
       chapter: res.chapter,

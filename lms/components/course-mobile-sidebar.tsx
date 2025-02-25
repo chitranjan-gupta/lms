@@ -1,10 +1,13 @@
 "use client";
-import { Menu } from "lucide-react";
-import { Chapter, Course, ChapterProgress, Lecture } from "@/types";
 
-import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+import { memo, type FC } from "react";
+import { Menu } from "lucide-react";
+
+import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
 
 import { CourseSidebar } from "./course-sidebar";
+
+import type { Chapter, Course, ChapterProgress, Lecture } from "@/types";
 
 interface CourseMobileSidebarProps {
   course: Course & {
@@ -17,10 +20,10 @@ interface CourseMobileSidebarProps {
   progressCount?: number;
 }
 
-export const CourseMobileSidebar = ({
+const CourseMobileSidebarComponent: FC<CourseMobileSidebarProps> = ({
   course,
   progressCount,
-}: CourseMobileSidebarProps) => {
+}) => {
   return (
     <Sheet>
       <SheetTrigger className="md:hidden pr-4 hover:opacity-75 transition">
@@ -32,3 +35,5 @@ export const CourseMobileSidebar = ({
     </Sheet>
   );
 };
+
+export const CourseMobileSidebar = memo(CourseMobileSidebarComponent);

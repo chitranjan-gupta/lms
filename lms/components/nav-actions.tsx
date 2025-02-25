@@ -1,6 +1,6 @@
 "use client";
 
-import * as React from "react";
+import { memo, type FC, useState, useEffect } from "react";
 import {
   ArrowDown,
   ArrowUp,
@@ -19,12 +19,8 @@ import {
   Trash2,
 } from "lucide-react";
 
-import { Button } from "@/components/ui/button";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover";
+import { Button } from "./ui/button";
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover";
 import {
   Sidebar,
   SidebarContent,
@@ -33,7 +29,7 @@ import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
-} from "@/components/ui/sidebar";
+} from "./ui/sidebar";
 
 const data = [
   [
@@ -98,10 +94,10 @@ const data = [
   ],
 ];
 
-export function NavActions() {
-  const [isOpen, setIsOpen] = React.useState(false);
+const NavActionsComponent: FC = () => {
+  const [isOpen, setIsOpen] = useState(false);
 
-  React.useEffect(() => {
+  useEffect(() => {
     setIsOpen(true);
   }, []);
 
@@ -150,4 +146,6 @@ export function NavActions() {
       </Popover>
     </div>
   );
-}
+};
+
+export const NavActions = memo(NavActionsComponent);

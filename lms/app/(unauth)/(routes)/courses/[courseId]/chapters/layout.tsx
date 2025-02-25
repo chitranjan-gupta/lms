@@ -1,91 +1,42 @@
 "use client";
 
-import React, { useEffect, useState, Suspense, useCallback } from "react";
-import { getProgress } from "@/actions/get-actions";
+import {
+  useEffect,
+  useState,
+  Suspense,
+  type FC,
+  type ReactNode,
+} from "react";
+
 import { CourseSidebar } from "@/components/course-sidebar";
 import { CourseNavbar } from "@/components/course-navbar";
-import { useUser } from "@/hooks";
-import { Chapter, Course, Lecture } from "@/types";
-import axios from "axios";
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 
-const CourseLayout = ({
-  children,
-  params,
-}: {
-  children: React.ReactNode;
+import { getProgress } from "@/actions";
+import { useUser } from "@/hooks";
+import { useCourse } from "@/core";
+
+interface ChapterProps {
+  children: ReactNode;
   params: { courseId: string };
-}) => {
+}
+
+const ChapterLayout: FC<ChapterProps> = ({ children, params }) => {
   const { user } = useUser();
-  const [loading, setLoading] = useState<boolean>(false);
-  const [course, setCourse] = useState<
-    Course & { chapters: (Chapter & { lectures: Lecture[] })[] }
-  >();
+  const { course } = useCourse();
   const [progressCount, setProgressCount] = useState<number>(0);
-  const getData = useCallback(async () => {
-    setLoading(true);
-    try {
-      const res = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${params.courseId}`,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setCourse(res.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    } finally {
-      setLoading(false);
-    }
-  }, [params.courseId])
-  const getAuthData = useCallback(async () => {
-    try {
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user/progress`,
-        JSON.stringify({
-          userId: user?.userId,
-          courseId: params.courseId,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      const progress = await getProgress(user?.userId!, params.courseId);
-      if (res.status == 200) {
-        setCourse(res.data);
-      }
-      setProgressCount(progress);
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [params.courseId, user?.userId])
+
   useEffect(() => {
-    if (user?.userId) {
-      void getAuthData();
-    } else {
-      void getData();
-    }
-  }, [user, params.courseId, getAuthData, getData]);
-  if (!course) {
-    return <Loader />;
-  }
+    if(user){
+      (async () => {
+        setProgressCount(await getProgress(params.courseId));
+      })()
+    }    
+  }, [params.courseId, user])
+
   return (
     <Suspense fallback={<Loader />}>
-      {loading ? (
-        <Loader />
-      ) : (
+      {course && (
         <div className="h-full">
           <div className="h-[80px] md:pl-80 fixed inset-y-0 bg-white w-full z-50">
             <CourseNavbar course={course} progressCount={progressCount} />
@@ -100,4 +51,4 @@ const CourseLayout = ({
   );
 };
 
-export default CourseLayout;
+export default ChapterLayout;

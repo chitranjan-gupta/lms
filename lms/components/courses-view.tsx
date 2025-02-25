@@ -1,20 +1,18 @@
 "use client";
-import { Categories } from "./categories";
-import { CoursesList } from "@/components/courses-list";
-import { Category, Course } from "@/types";
 
-export type CourseWithProgressWithCategory = Course & {
-  category: Category | null;
-  chapters: { id: string }[];
-  progress: number | null;
-};
+import { memo, type FC } from "react";
+
+import { Categories } from "./categories";
+import { CoursesList } from "./courses-list";
+
+import type { Category, CourseWithProgressWithCategory } from "@/types";
 
 interface SearchPageProps {
   categories: Category[];
   courses: CourseWithProgressWithCategory[];
 }
 
-export const SearchPage = ({ categories, courses }: SearchPageProps) => {
+const SearchPageComponent: FC<SearchPageProps> = ({ categories, courses }) => {
   return (
     <>
       <div className="p-6 space-y-4">
@@ -24,3 +22,5 @@ export const SearchPage = ({ categories, courses }: SearchPageProps) => {
     </>
   );
 };
+
+export const SearchPage = memo(SearchPageComponent);

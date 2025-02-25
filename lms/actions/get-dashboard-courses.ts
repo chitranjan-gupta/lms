@@ -1,6 +1,8 @@
-import { Category, Chapter, Course } from "@/types";
-import { getProgress } from "./get-actions";
-import axios from "axios";
+import type { Category, Chapter, Course } from "@/types";
+
+import { getPurchase } from "@/api";
+
+import { getProgress } from "./get-progress";
 
 export type CourseWithProgressWithCategory = Course & {
   category: Category;
@@ -17,26 +19,13 @@ export const getDashboardCourses = async (
   userId: string
 ): Promise<DashboardCourses> => {
   try {
-    const purchasedCourses = (
-      await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/purchases`,
-        JSON.stringify({
-          userId: userId,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      )
-    ).data as { course: Course }[];
+    const purchasedCourses = (await getPurchase()) as { course: Course }[];
     const courses = purchasedCourses.map(
       (purchase) => purchase.course
     ) as CourseWithProgressWithCategory[];
 
     for (let course of courses) {
-      const progress = await getProgress(userId, course.id);
+      const progress = await getProgress(course.id);
       course["progress"] = progress;
     }
 

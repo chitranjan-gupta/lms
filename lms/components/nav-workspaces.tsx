@@ -1,10 +1,13 @@
-import { ChevronRight, MoreHorizontal, Plus } from "lucide-react"
+"use client";
+
+import { memo, type FC } from "react";
+import { ChevronRight, MoreHorizontal, Plus } from "lucide-react";
 
 import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "./ui/collapsible";
 import {
   SidebarGroup,
   SidebarGroupContent,
@@ -16,20 +19,20 @@ import {
   SidebarMenuSub,
   SidebarMenuSubButton,
   SidebarMenuSubItem,
-} from "@/components/ui/sidebar"
+} from "./ui/sidebar";
 
-export function NavWorkspaces({
-  workspaces,
-}: {
+interface NavWorkspacesProps {
   workspaces: {
-    name: string
-    emoji: React.ReactNode
+    name: string;
+    emoji: React.ReactNode;
     pages: {
-      name: string
-      emoji: React.ReactNode
-    }[]
-  }[]
-}) {
+      name: string;
+      emoji: React.ReactNode;
+    }[];
+  }[];
+}
+
+const NavWorkspacesComponent: FC<NavWorkspacesProps> = ({ workspaces }) => {
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workspaces</SidebarGroupLabel>
@@ -81,5 +84,7 @@ export function NavWorkspaces({
         </SidebarMenu>
       </SidebarGroupContent>
     </SidebarGroup>
-  )
-}
+  );
+};
+
+export const NavWorkspaces = memo(NavWorkspacesComponent);

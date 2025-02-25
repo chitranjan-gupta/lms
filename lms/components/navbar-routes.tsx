@@ -1,10 +1,11 @@
 "use client";
 
+import { memo, type FC } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogOut, User } from "lucide-react";
-import { Button } from "@/components/ui/button";
-import { SearchInput } from "@/components/search-input";
+
+import { Button } from "./ui/button";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -12,11 +13,14 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+} from "./ui/dropdown-menu";
+import { Avatar, AvatarFallback } from "./ui/avatar";
+
+import { SearchInput } from "./search-input";
+
 import { useAuth, useUser } from "@/hooks";
 
-export const NavbarRoutes = () => {
+const NavbarRoutesComponent: FC = () => {
   const pathname = usePathname();
   const router = useRouter();
   const isAdminPage = pathname?.startsWith("/admin");
@@ -29,7 +33,8 @@ export const NavbarRoutes = () => {
   return (
     <>
       <div className="font-bold text-3xl mr-2">
-        {isAdminPage && "Admin"} {isTeacherPage && "Teacher"} {isUserPage && "User"}
+        {isAdminPage && "Admin"} {isTeacherPage && "Teacher"}{" "}
+        {isUserPage && "User"}
       </div>
       {isSearchPage && (
         <div className="hidden md:block">
@@ -82,7 +87,9 @@ export const NavbarRoutes = () => {
               <DropdownMenuSeparator />
               <DropdownMenuItem
                 onClick={() =>
-                  router.push(`/${user?.role === "subadmin" ? "subadmin" : user?.role}`)
+                  router.push(
+                    `/${user?.role === "subadmin" ? "subadmin" : user?.role}`
+                  )
                 }
               >
                 Dashboard
@@ -97,3 +104,5 @@ export const NavbarRoutes = () => {
     </>
   );
 };
+
+export const NavbarRoutes = memo(NavbarRoutesComponent);

@@ -1,10 +1,14 @@
-import { Calendar } from "@/components/ui/calendar"
+"use client";
+
+import { memo, type FC } from "react";
+
+import { Calendar } from "./ui/calendar"
 import {
   SidebarGroup,
   SidebarGroupContent,
-} from "@/components/ui/sidebar"
+} from "./ui/sidebar"
 
-export function DatePicker() {
+const DatePickerComponent : FC = () => {
   return (
     <SidebarGroup className="px-0">
       <SidebarGroupContent>
@@ -13,3 +17,5 @@ export function DatePicker() {
     </SidebarGroup>
   )
 }
+
+export const DatePicker = memo(DatePickerComponent)

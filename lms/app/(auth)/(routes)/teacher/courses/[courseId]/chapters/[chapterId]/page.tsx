@@ -21,7 +21,7 @@ import { Chapter, Lecture, ChapterAttachment } from "@/types";
 import axios from "axios";
 import { ChapterDurationForm } from "./_components/chapter-duration-form";
 import { ChapterAttachmentForm } from "./_components/chapter-attachment-form";
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 
 const ChapterIdPage = ({
   params,

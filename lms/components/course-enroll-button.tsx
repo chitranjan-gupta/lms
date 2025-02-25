@@ -1,35 +1,31 @@
 "use client";
 
-import { Button } from "@/components/ui/button";
-import { formatPrice } from "@/lib/format";
-import axios from "axios";
-import { useState } from "react";
+import { useState, memo, type FC } from "react";
 import toast from "react-hot-toast";
+
+import { Button } from "./ui/button";
+
+import { formatPrice } from "@/lib";
+import { checkOut } from "@/api";
 
 interface CourseEnrollButtonProps {
   price: number;
   courseId: string;
 }
 
-export const CourseEnrollButton = ({
+const CourseEnrollButtonComponent: FC<CourseEnrollButtonProps> = ({
   price,
   courseId,
-}: CourseEnrollButtonProps) => {
+}) => {
   const [isLoading, setIsLoading] = useState(false);
+
   const onClick = async () => {
     try {
       setIsLoading(true);
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/${courseId}/checkout`,
-        null,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      window.location.assign(response.data.url);
+      const data:any = await checkOut(courseId)
+      if(data){
+        window.location.assign(data.url);
+      }
     } catch (error) {
       toast.error("Something went wrong");
     } finally {
@@ -47,3 +43,5 @@ export const CourseEnrollButton = ({
     </Button>
   );
 };
+
+export const CourseEnrollButton = memo(CourseEnrollButtonComponent)

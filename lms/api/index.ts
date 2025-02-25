@@ -9,3 +9,4 @@ export * from "./category";
 export * from "./course";
 export * from "./analytics";
 export * from "./application";
+export * from "./progress";

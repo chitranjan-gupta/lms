@@ -1,6 +1,10 @@
+"use client";
+
+import { memo, type FC } from "react";
 import { LucideIcon } from "lucide-react";
 import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "@/lib/utils";
+
+import { cn } from "@/lib";
 
 const backgroundVariants = cva(
   "rounded-full flex items-center justify-center",
@@ -50,10 +54,16 @@ interface IconBadgeProps extends backgroundVariantsProps, IconVariantsProps {
   icon: LucideIcon;
 }
 
-export const IconBadge = ({ icon: Icon, variant, size }: IconBadgeProps) => {
+const IconBadgeComponent: FC<IconBadgeProps> = ({
+  icon: Icon,
+  variant,
+  size,
+}) => {
   return (
     <div className={cn(backgroundVariants({ variant, size }))}>
       <Icon className={cn(iconVariants({ variant, size }))} />
     </div>
   );
 };
+
+export const IconBadge = memo(IconBadgeComponent);

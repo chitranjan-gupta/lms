@@ -21,7 +21,7 @@ import { useUser } from "@/hooks";
 import { Category, Chapter, Course, CourseAttachment } from "@/types";
 import React, { useEffect, useState, Suspense, useCallback } from "react";
 import axios from "axios";
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { user } = useUser();

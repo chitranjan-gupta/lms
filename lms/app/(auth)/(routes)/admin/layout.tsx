@@ -3,7 +3,7 @@
 import { useEffect, Suspense, type FC, type ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
-import Loader from "@/components/loader";
+import {Loader} from "@/components/loader";
 
 import { useUser } from "@/hooks";
 
