@@ -1,22 +1,29 @@
-import axios from 'axios';
+import axios from "axios";
 
-import { client } from './common';
-import { API_URL } from '@/constants';
+import { client } from "./common";
+import { API_URL } from "@/constants";
 
-import type { SignUpState, SignInState } from '@/types';
+import type { SignUpState, SignInState } from "@/types";
 
 export async function login(data: SignInState) {
-  return await axios.post(`${API_URL}/user/signin`, data);
+  return await axios.post(`${API_URL}/user/signin`, data, {
+    withCredentials: true,
+  });
 }
 
 export async function oauth_google_redirect(register: boolean = true) {
   return await axios.get(
-    `${API_URL}/user/oauth-${register ? 'register' : 'login'}`
+    `${API_URL}/user/oauth-${register ? "register" : "login"}`,
+    {
+      withCredentials: true,
+    }
   );
 }
 
 export async function oauth_google_callback(searchParams: string) {
-  return await axios.get(`${API_URL}/user/oauth-success${searchParams}`);
+  return await axios.get(`${API_URL}/user/oauth-success${searchParams}`, {
+    withCredentials: true,
+  });
 }
 
 export async function logout() {
@@ -24,7 +31,9 @@ export async function logout() {
 }
 
 export async function register(data: SignUpState) {
-  return await axios.post(`${API_URL}/user/signup`, data);
+  return await axios.post(`${API_URL}/user/signup`, data, {
+    withCredentials: true,
+  });
 }
 
 export async function me() {

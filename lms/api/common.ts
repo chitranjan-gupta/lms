@@ -7,6 +7,7 @@ import type { TokenType } from "@/types";
 
 export const client = axios.create({
   baseURL: API_URL,
+  withCredentials: true
 });
 
 // Utility function to make requests with try-catch
@@ -90,6 +91,7 @@ export const setResponseInterceptior = ({
         if (refreshToken) {
           try {
             const response = await axios.get(`${API_URL}/user/refresh`, {
+              withCredentials: true,
               headers: {
                 Authorization: `Bearer ${refreshToken}`,
               },

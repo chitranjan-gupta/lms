@@ -1,15 +1,12 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CheckCircle, Clock } from "lucide-react";
 
-import {
-  getDashboardCourses,
-  CourseWithProgressWithCategory,
-} from "@/actions/get-dashboard-courses";
 import { CoursesList } from "@/components/courses-list";
 import { InfoCard } from "./_components/info-card";
 
+import { getDashboardCourses, CourseWithProgressWithCategory } from "@/actions";
 import { useUser } from "@/hooks";
 
 export default function Page() {
@@ -22,11 +19,13 @@ export default function Page() {
   >([]);
 
   useEffect(() => {
-    if (user?.userId) {
-      getDashboardCourses(user?.userId).then((value) => {
-        setCompletedCourses(value.completedCourses);
-        setCoursesInProgress(value.coursesInProgress);
-      });
+    if (user) {
+      (async () => {
+        const { completedCourses, coursesInProgress } =
+          await getDashboardCourses();
+        setCompletedCourses(completedCourses);
+        setCoursesInProgress(coursesInProgress);
+      })();
     }
   }, [user]);
   return (

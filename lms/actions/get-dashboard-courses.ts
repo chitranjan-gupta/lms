@@ -15,9 +15,7 @@ type DashboardCourses = {
   coursesInProgress: CourseWithProgressWithCategory[];
 };
 
-export const getDashboardCourses = async (
-  userId: string
-): Promise<DashboardCourses> => {
+export const getDashboardCourses = async (): Promise<DashboardCourses> => {
   try {
     const purchasedCourses = (await getPurchase()) as { course: Course }[];
     const courses = purchasedCourses.map(

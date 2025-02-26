@@ -18,7 +18,7 @@ export const getCourses = async (
   };
 };
 
-export const addCourse = async (values: { name: string }) => {
+export const addCourse = async (values: { title: string }) => {
   return await fetchData<Course>({
     method: "POST",
     url: "courses",
@@ -76,5 +76,12 @@ export const checkOut = async (courseId: string) => {
   return await fetchData({
     method: "POST",
     url: `courses/${courseId}/checkout`
+  })
+}
+
+export const fetchCourses = async () => {
+  return await fetchData({
+    method: "POST",
+    url: "courses/user"
   })
 }

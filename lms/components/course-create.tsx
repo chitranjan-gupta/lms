@@ -1,11 +1,9 @@
 "use client";
 
-import * as z from "zod";
-import axios from "axios";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { useForm } from "react-hook-form";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import { memo, type FC } from "react";
+import type { UseFormReturn } from "react-hook-form";
+import Link from "next/link";
+import { z } from "zod";
 
 import {
   Form,
@@ -15,50 +13,33 @@ import {
   FormLabel,
   FormMessage,
   FormItem,
-} from "@/components/ui/form";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import Link from "next/link";
+} from "./ui/form";
+import { Button } from "./ui/button";
+import { Input } from "./ui/input";
 
-const formSchema = z.object({
-  title: z.string().min(1, {
-    message: "Title is required",
-  }),
-});
+import { courseTitleSchema } from "@/schema";
 
-const CreatePage = () => {
-  const router = useRouter();
-  const form = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
-    defaultValues: {
-      title: "",
+interface CourseCreateProps {
+  form: UseFormReturn<
+    {
+      title: string;
     },
-  });
+    any,
+    undefined
+  >;
+  onSubmit: (values: z.infer<typeof courseTitleSchema>) => Promise<void>;
+  isSubmitting: boolean;
+  isValid: boolean;
+  path: string;
+}
 
-  const { isSubmitting, isValid } = form.formState;
-
-  const onSubmit = async (values: z.infer<typeof formSchema>) => {
-    try {
-      const response = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses`,
-        values,
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      router.push(`/teacher/courses/${response.data.id}`);
-      toast.success("Course created");
-    } catch (error: any) {
-      toast.error("Something went wrong");
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  };
-
+const CourseCreateComponent: FC<CourseCreateProps> = ({
+  form,
+  onSubmit,
+  isSubmitting,
+  isValid,
+  path,
+}) => {
   return (
     <div className="max-w-5xl mx-auto flex md:items-center md:justify-center h-full p-6">
       <div>
@@ -93,7 +74,7 @@ const CreatePage = () => {
               )}
             />
             <div className="flex items-center gap-x-2">
-              <Link href="/teacher/courses">
+              <Link href={path}>
                 <Button type="button" variant="ghost">
                   Cancel
                 </Button>
@@ -109,4 +90,4 @@ const CreatePage = () => {
   );
 };
 
-export default CreatePage;
+export const CourseCreate = memo(CourseCreateComponent);

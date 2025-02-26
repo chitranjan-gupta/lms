@@ -1,6 +1,7 @@
+import { create } from "zustand";
+
 import { getCourses, deleteCourse, addCourse, searchCourses } from "@/api";
 import type { Course, Pagination } from "@/types";
-import { create } from "zustand";
 
 interface Params {
     title?: string;
@@ -12,7 +13,7 @@ interface Courses {
     pageCount: number;
     getCourses: (pagination: Pagination, path?: string) => Promise<void>;
     searchCourses: (pagination: Pagination, params?: Params, path?: string) => Promise<void>;
-    addCourse: (values: { name: string }) => Promise<void>;
+    addCourse: (values: { title: string }) => Promise<void>;
     removeCourse: (removeCourseId: string) => Promise<void>;
 }
 
@@ -31,7 +32,7 @@ export const useCourses = create<Courses>()((set) => ({
             set({ courses: data.data as Course[], pageCount: data.last_page });
         }
     },
-    addCourse: async (values: { name: string }) => {
+    addCourse: async (values: { title: string }) => {
         const data = await addCourse(values);
         if (data) {
             set((state) => ({ courses: [...state.courses, data] }));
