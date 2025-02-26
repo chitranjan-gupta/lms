@@ -14,7 +14,7 @@ interface ActionsProps {
   setRefresh: Dispatch<SetStateAction<boolean>>;
 }
 
-export const Actions = ({ company, setRefresh }: ActionsProps) => {
+export const Actions = ({ company }: ActionsProps) => {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const onDelete = async () => {

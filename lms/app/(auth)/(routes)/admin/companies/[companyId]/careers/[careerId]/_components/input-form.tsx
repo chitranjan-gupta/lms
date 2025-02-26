@@ -21,6 +21,7 @@ interface InputFormProps {
   initialData: Career;
   form_attr: CareerFormField;
   form: UseFormReturn<z.infer<typeof formSchema>>;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
   isValid: boolean;
   isSubmitting: boolean;

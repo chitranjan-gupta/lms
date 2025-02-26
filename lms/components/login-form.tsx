@@ -33,6 +33,7 @@ interface LoginFormProps {
   }>;
   error: string | null;
   isloading: boolean;
+  // eslint-disable-next-line no-unused-vars
   oauth: (provider: string, register: boolean) => Promise<void>;
 }
 

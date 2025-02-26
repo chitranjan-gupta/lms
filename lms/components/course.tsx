@@ -21,6 +21,7 @@ import { CourseWithChaptersWithAttachments } from "@/types";
 interface CourseProps {
   course: CourseWithChaptersWithAttachments;
   isPurchased: boolean;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (event: FormEvent) => Promise<void>;
   isLoading: boolean;
 }

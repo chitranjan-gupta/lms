@@ -35,12 +35,12 @@ import type { CourseWithProgressWithCategory } from "@/types";
 export default function Page() {
   const { categories, getCategories } = useCategories();
   const { courses, getCourses } = useCourses();
-  // useEffect(() => {
-  //   (async() => {
-  //     await getCategories({ pageIndex: 1, pageSize: 10 });
-  //     await getCourses({ pageIndex: 1, pageSize: 10 });
-  //   })()
-  // }, [getCategories, getCourses]);
+  useEffect(() => {
+    (async() => {
+      await getCategories({ pageIndex: 1, pageSize: 10 });
+      await getCourses({ pageIndex: 1, pageSize: 10 });
+    })()
+  }, [getCategories, getCourses]);
 
   return (
     <div className="bg-white">

@@ -6,7 +6,6 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { PlusCircle, File, Loader2, X } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Lecture, LectureAttachment } from "@/types";
 import { FileUpload } from "@/components/file-upload";
@@ -30,7 +29,6 @@ export const LectureAttachmentForm = ({
   lectureId,
   setRefresh,
 }: LectureAttachmentFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const toggleEdit = () => setIsEditing((current) => !current);

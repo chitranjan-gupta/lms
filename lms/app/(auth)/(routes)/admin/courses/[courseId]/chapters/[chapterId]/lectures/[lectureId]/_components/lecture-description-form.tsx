@@ -14,7 +14,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { useState, Dispatch, SetStateAction } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Lecture } from "@/types";
@@ -40,7 +39,6 @@ export const LectureDescriptionForm = ({
   lectureId,
   setRefresh,
 }: LectureDescriptionFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const form = useForm<z.infer<typeof formSchema>>({

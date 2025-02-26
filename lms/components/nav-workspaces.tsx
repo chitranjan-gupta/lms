@@ -1,6 +1,6 @@
 "use client";
 
-import { memo, type FC } from "react";
+import { memo, type FC, type ReactNode } from "react";
 import { ChevronRight, MoreHorizontal, Plus } from "lucide-react";
 
 import {
@@ -24,10 +24,10 @@ import {
 interface NavWorkspacesProps {
   workspaces: {
     name: string;
-    emoji: React.ReactNode;
+    emoji: ReactNode;
     pages: {
       name: string;
-      emoji: React.ReactNode;
+      emoji: ReactNode;
     }[];
   }[];
 }

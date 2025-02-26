@@ -90,6 +90,7 @@ interface CouseSidebarDropDownItemsProps {
 
 const CourseSidebarDropDownItemComponent: FC<
   CouseSidebarDropDownItemsProps
+// eslint-disable-next-line no-unused-vars
 > = ({ label, id, isCompleted, courseId, isLocked, lectures, purchase }) => {
   const Icon = isLocked ? Lock : isCompleted ? CheckCircle : PlayCircle;
   return (

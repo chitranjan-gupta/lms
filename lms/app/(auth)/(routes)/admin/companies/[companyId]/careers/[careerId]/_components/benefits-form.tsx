@@ -23,6 +23,7 @@ interface BenefitsFormProps {
   initialData: Career;
   form_attr: keyof CareerFormFields;
   form: UseFormReturn<z.infer<typeof formSchema>>;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
   isValid: boolean;
   isSubmitting: boolean;
@@ -77,7 +78,7 @@ export const BenefitsForm = ({
                 control={form.control}
                 name={`benefits.${index}`}
                 key={item.id}
-                render={({ field }) => (
+                render={() => (
                   <FormItem>
                     <FormControl>
                       <div className="flex flex-row">

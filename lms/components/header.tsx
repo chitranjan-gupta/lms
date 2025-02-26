@@ -17,14 +17,14 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 
-import type { Navigation } from "@/types";
+import type { Navigation as NavigationType } from "@/types";
 
-interface Auth {
+interface AuthProps {
   name: string;
   href: string;
 }
 
-const AuthComponent: FC<Auth> = ({ name, href }) => {
+const AuthComponent: FC<AuthProps> = ({ name, href }) => {
   return (
     <Link
       href={href}
@@ -42,7 +42,7 @@ const AuthComponent: FC<Auth> = ({ name, href }) => {
 const Auth = memo(AuthComponent);
 
 interface NavigationProps {
-  navigation: Navigation[];
+  navigation: NavigationType[];
 }
 
 const NavigationComponent: FC<NavigationProps> = ({ navigation }) => {
@@ -58,7 +58,7 @@ const NavigationComponent: FC<NavigationProps> = ({ navigation }) => {
 const Navigation = memo(NavigationComponent);
 
 interface HeaderProps {
-  navigation: Navigation[];
+  navigation: NavigationType[];
   logo: StaticImageData;
   children?: ReactNode;
 }

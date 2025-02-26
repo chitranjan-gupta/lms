@@ -16,7 +16,6 @@ import {
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { cn } from "@/lib/utils";
 import { Course } from "@/types";
@@ -39,7 +38,6 @@ export const CategoryForm = ({
   options,
   setRefresh,
 }: CategoryFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const form = useForm<z.infer<typeof formSchema>>({

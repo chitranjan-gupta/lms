@@ -6,7 +6,6 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { ImageIcon, Pencil, PlusCircle } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Course } from "@/types";
 import Image from "next/image";
@@ -29,7 +28,6 @@ export const ImageForm = ({
   courseId,
   setRefresh,
 }: ImageFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

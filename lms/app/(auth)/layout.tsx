@@ -1,16 +1,16 @@
 "use client";
 
-import { useEffect, Suspense, type FC } from "react";
+import { useEffect, Suspense, type FC, type ReactNode } from "react";
 import { useRouter, usePathname } from "next/navigation";
 
-import {Loader} from "@/components/loader";
+import { Loader } from "@/components/loader";
 import { Dashboard } from "@/components/dashboard";
 
 import { useAuth, useUser } from "@/hooks";
 import { data, userRoutes, teacherRoutes, adminRoutes } from "@/constants";
 
 interface AuthLayoutProps {
-  children: React.ReactNode;
+  children: ReactNode;
 }
 
 const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
@@ -38,7 +38,13 @@ const AuthLayout: FC<AuthLayoutProps> = ({ children }) => {
   return (
     <Suspense fallback={<Loader />}>
       {status === "signIn" ? (
-        <Dashboard data={{ ...data, navPrimary: routes, user: user }} handleLogout={handleLogout} handleApply={apply}>{children}</Dashboard>
+        <Dashboard
+          data={{ ...data, navPrimary: routes, user: user }}
+          handleLogout={handleLogout}
+          handleApply={apply}
+        >
+          {children}
+        </Dashboard>
       ) : (
         <Loader />
       )}

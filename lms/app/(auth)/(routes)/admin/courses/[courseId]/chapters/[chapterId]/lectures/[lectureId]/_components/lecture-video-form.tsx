@@ -5,7 +5,6 @@ import axios from "axios";
 import { Button } from "@/components/ui/button";
 import { Pencil, PlusCircle, Video } from "lucide-react";
 import { useState, Dispatch, SetStateAction } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 import { Lecture, MuxData } from "@/types";
 import { FileUpload } from "@/components/file-upload";
@@ -30,7 +29,6 @@ export const LectureVideoForm = ({
   lectureId,
   setRefresh,
 }: LectureVideoFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const onSubmit = async (values: z.infer<typeof formSchema>) => {

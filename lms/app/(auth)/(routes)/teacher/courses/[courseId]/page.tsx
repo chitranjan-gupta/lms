@@ -1,5 +1,7 @@
 "use client";
-import { IconBadge } from "@/components/icon-badge";
+
+import { useEffect, useState, Suspense } from "react";
+import Link from "next/link";
 import {
   File,
   LayoutDashboard,
@@ -7,6 +9,7 @@ import {
   IndianRupee,
   ArrowLeft,
 } from "lucide-react";
+
 import { TitleForm } from "./_components/title-form";
 import { DescriptionForm } from "./_components/description-form";
 import { ImageForm } from "./_components/image-form";
@@ -15,59 +18,35 @@ import { PriceForm } from "./_components/price-form";
 import { AttachmentForm } from "./_components/attachment-form";
 import { ChaptersForm } from "./_components/chapters-form";
 import { Actions } from "./_components/actions";
+
+import { IconBadge } from "@/components/icon-badge";
 import { Banner } from "@/components/banner";
-import Link from "next/link";
+import { Loader } from "@/components/loader";
+
 import { useUser } from "@/hooks";
-import { Category, Chapter, Course, CourseAttachment } from "@/types";
-import React, { useEffect, useState, Suspense, useCallback } from "react";
-import axios from "axios";
-import {Loader} from "@/components/loader";
+
+import type { Chapter, Course, CourseAttachment } from "@/types";
+
+import { useCategories } from "@/core";
+import { fetchCourses } from "@/api";
 
 const CourseIdPage = ({ params }: { params: { courseId: string } }) => {
   const { user } = useUser();
   const [refresh, setRefresh] = useState<boolean>(false);
+  const { categories } = useCategories();
   const [course, setCourse] = useState<
     Course & { chapters: Chapter[] } & { attachments: CourseAttachment[] }
   >();
-  const [categories, setCategories] = useState<Category[]>([]);
-  const getData = useCallback(async () => {
-    try {
-      const resp = await axios.get(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/categories`,
-        {
-          withCredentials: true,
-        }
-      );
-      if (resp.status == 200) {
-        setCategories(resp.data);
-      }
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/courses/user`,
-        JSON.stringify({
-          userId: user?.userId,
-          courseId: params.courseId,
-        }),
-        {
-          withCredentials: true,
-          headers: {
-            "Content-Type": "application/json",
-          },
-        }
-      );
-      if (res.status == 200) {
-        setCourse(res.data);
-      }
-    } catch (error: any) {
-      if (error.response) {
-        console.log(error.response);
-      }
-    }
-  }, [params.courseId, user?.userId])
   useEffect(() => {
-    if (user?.userId) {
-      void getData();
+    if (user) {
+      (async () => {
+        const data:any = await fetchCourses(params.courseId)
+        if(data){
+          setCourse(data);
+        }
+      })()
     }
-  }, [getData, refresh, user?.userId]);
+  }, [params.courseId, refresh, user]);
 
   if (!course) {
     return <Loader />;

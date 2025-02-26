@@ -16,7 +16,6 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Pencil } from "lucide-react";
 import { Dispatch, SetStateAction, useState } from "react";
-import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
 interface TitleFormProps {
@@ -38,7 +37,6 @@ export const TitleForm = ({
   courseId,
   setRefresh,
 }: TitleFormProps) => {
-  const router = useRouter();
   const [isEditing, setIsEditing] = useState(false);
   const toggleEdit = () => setIsEditing((current) => !current);
   const form = useForm<z.infer<typeof formSchema>>({

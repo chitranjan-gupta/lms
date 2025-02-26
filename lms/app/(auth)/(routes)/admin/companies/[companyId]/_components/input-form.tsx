@@ -19,6 +19,7 @@ interface InputFormProps {
   initialData: Company;
   form_attr: keyof CompanyFormFields;
   form: any;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (values: z.infer<typeof formSchema>) => Promise<void>;
   isValid: boolean;
   isSubmitting: boolean;

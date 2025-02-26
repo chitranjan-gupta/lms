@@ -12,6 +12,7 @@ import { useCompanies } from "@/core";
 const CompaniesPage = () => {
   const { user } = useUser();
   const { companies, getCompanies } = useCompanies();
+  // eslint-disable-next-line no-unused-vars
   const [pageCount, setPageCount] = useState(0);
   const [pagination, setPagination] = useState<PaginationState>({
     pageIndex: 0,

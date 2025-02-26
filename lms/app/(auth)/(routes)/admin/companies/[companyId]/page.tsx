@@ -35,6 +35,7 @@ const CompanyIdPage = ({ params }: { params: { companyId: string } }) => {
 
   const completionText = `(${completedFields}/${totalFields})`;
 
+  // eslint-disable-next-line no-unused-vars
   const isComplete = requiredFields.every(Boolean);
 
   return (

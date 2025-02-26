@@ -1,5 +1,7 @@
 "use client";
 
+import { type ReactNode } from "react";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -13,7 +15,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface ConfirmModalProps {
-  children: React.ReactNode;
+  children: ReactNode;
   onConfirm: () => void;
 }
 

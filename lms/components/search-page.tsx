@@ -13,6 +13,7 @@ interface SearchPageProps {
     categoryId: string;
   };
   courses: CourseWithProgressWithCategory[];
+  // eslint-disable-next-line no-unused-vars
   searchCourses:  (pagination: any, params?: any, path?: string) => Promise<void>;
 }
 

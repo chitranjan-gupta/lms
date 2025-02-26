@@ -27,6 +27,7 @@ interface CourseCreateProps {
     any,
     undefined
   >;
+  // eslint-disable-next-line no-unused-vars
   onSubmit: (values: z.infer<typeof courseTitleSchema>) => Promise<void>;
   isSubmitting: boolean;
   isValid: boolean;

@@ -8,6 +8,7 @@ import { UploadDropzone } from "@/lib";
 import { ourFileRouter } from "@/app/api/uploadthing/core";
 
 interface FileUploadProps {
+  // eslint-disable-next-line no-unused-vars
   onChange: (url?: string) => void;
   endpoint: keyof typeof ourFileRouter;
 }

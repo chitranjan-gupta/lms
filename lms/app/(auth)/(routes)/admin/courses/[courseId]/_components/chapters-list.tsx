@@ -14,7 +14,9 @@ import { Badge } from "@/components/ui/badge";
 
 interface ChaptersListProps {
   items: Chapter[];
+  // eslint-disable-next-line no-unused-vars
   onReorder: (updateData: { id: string; position: number }[]) => void;
+  // eslint-disable-next-line no-unused-vars
   onEdit: (id: string) => void;
 }
 
